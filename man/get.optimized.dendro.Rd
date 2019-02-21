@@ -31,11 +31,9 @@ This is used to pull out actual parameters from other information.}
 every entry is a separate time series of a band on a stem in a year.}
 }
 \value{
-Returns nothing.
+Objects Saves four files to the OUTPUT folder as named above and collected stems.
 }
 \description{
-Estimate LG5 fit, structure output, and get summary statistics for dendrometer band time series.
-}
-\examples{
-none
+This is the wrapper for \emph{get.params()} which uses base \emph{optim()} (with two sequential methods) to
+estimate the parameters of the logistic function. This follows McMahon and Parker 2014. This function organizes output, skips removed datasets, fits a linear model to detect negative or non-significant growth, eliminates time series with small sample sizes, and removes identified outliers (see @identify.outliers ).
 }

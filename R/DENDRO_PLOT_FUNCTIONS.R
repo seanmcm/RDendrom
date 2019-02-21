@@ -50,8 +50,6 @@ plot.dendro <- function(ts.data, params, r.square = NULL,
 #' @return A plot of the dbh and doy of a single band in a year, with, optionally, a fitted line from the optimize output and outlier denotion in red.
 #' @seealso \code{\link{get.param}} which creates Dendro.split, a list vector containing time-series dataframes for every tree, year, band.
 #' @export
-#' @examples
-#' plot.dendro.ts(data.frame(DBH_TRUE = c(10.1, 10.1., 10.2, 10.3), DOY = c(70, 100, 140, 160))
 plot.dendro.ts <- function(ts.data, params = NULL, day = seq(365), outlier = TRUE,
                            par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {
 
@@ -95,6 +93,7 @@ plot.dendro.ts <- function(ts.data, params = NULL, day = seq(365), outlier = TRU
 #' @description Plots an extended time series of dendrometer band measurements (translated into DBH) with
 #' fits, outliers, band position movements, slippage corrections, etc. Can be used for presentation
 #' of single trees, or for diagnostics and fit assessments.
+#' @export
 plot.dendro.multiple <- function(Dendro.tree, params = NULL,
     par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a"),
     par.dim = c(3, 1), print.pdf = FALSE, out.file = "FIGURES/TEST_PLOTS.pdf",
@@ -137,7 +136,7 @@ find.outliers <- function(ts.data, sd.lim = 3) {
 #' This is used to pull out actual parameters from other information.
 #'
 #' @return none
-#' @export none
+#' @export
 #'
 #' @description An interactive figure for the identification and designation of slipped bands, outliers, and problematic bands.
 #' @examples none

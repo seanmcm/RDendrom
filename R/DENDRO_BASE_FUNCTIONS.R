@@ -6,12 +6,10 @@
 #'
 #' @param ts.data  A dataframe of a time series of a single tree in a year.
 #' Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer), as well as other designations.
-#' @description This is the core fitting algorithm, which uses base \emph{optim()} (with a series of different methods) to
-#' estimate the parameters of the logistic function. This follows McMahon and Parker 2015.
+#' @description This is the core fitting algorithm, which uses base \emph{optim()} (with two sequential methods) to
+#' estimate the parameters of the logistic function. This follows McMahon and Parker 2014.
 #' @return Returns a numeric vector of parameters
-#' @export Nothing
-#'
-#' @examples none
+#' @export
 get.params <- function(ts.data) {
   dbh      <- ts.data$DBH_TRUE
   doy      <- as.integer(ts.data$DOY)
@@ -261,9 +259,7 @@ get.QH.resid <- function(rate, params, doy, dbh, log.rate = FALSE) {
 #' Default values return a single day of growth. Using the 'growth'
 #' argument, the derivative can be returned, scaled by annual growth.
 #' @return returns numeric vectore of derivatives
-#' @export Exports nothing
-#'
-#' @examples none
+#' @export
 lg5.deriv <- function(paras, doy, growth = 1, shift = 0.5) {
   paras = as.numeric(paras)
 	.loVal <- lg5.pred(paras, (doy - shift))
@@ -298,9 +294,8 @@ max.growth.rate <- function(params) {
 #' @param resid.sd Numeric scaler that constrains the optimization algorithm in \emph{optim()}.
 #'
 #' @return List with output from the optim function and other metrics.
-#'
-#' @examples none
-outer.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
+#' @export
+quantile.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
 	paras <- as.numeric(params[1:5])
   a <- as.numeric(params[6])
 	b <- as.numeric(params[7])
@@ -351,12 +346,12 @@ outer.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
 	return(OH.list)
 }
 
-fit.outer.hull <- function(dbh, doy.full, params, quant = 0.8) {
+fit.quantile.hull <- function(dbh, doy.full, params, quant = 0.8) {
 	dbh <- as.numeric(dbh)
 	complete <- complete.cases(dbh)
 	dbh <- dbh[complete]
 	doy <- doy.full[complete]
-	out.fit <- outer.hull(dbh, doy, params)
+	out.fit <- quantile.hull(dbh, doy, params)
 }
 
 
@@ -404,12 +399,10 @@ get.alt.a <- function(param.tab) {
 #' @param Dendro.split.name Character string for the data object, Dendro.split, that is a list vector where
 #' every entry is a separate time series of a band on a stem in a year.
 #'
-#' @description Estimate LG5 fit, structure output, and get summary statistics for dendrometer band time series.
-#'
-#' @return Returns nothing.
-#' @export Objects Saves four files to the OUTPUT folder as named above and collected stems.
-#'
-#' @examples none
+#' @description This is the wrapper for \emph{get.params()} which uses base \emph{optim()} (with two sequential methods) to
+#' estimate the parameters of the logistic function. This follows McMahon and Parker 2014. This function organizes output, skips removed datasets, fits a linear model to detect negative or non-significant growth, eliminates time series with small sample sizes, and removes identified outliers (see @identify.outliers ).
+#' @return Objects Saves four files to the OUTPUT folder as named above and collected stems.
+#' @export
 get.optimized.dendro <- function(INPUT.dendro,
   no.neg.growth = TRUE, cutoff = 9,
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),
@@ -550,15 +543,11 @@ get.optimized.dendro <- function(INPUT.dendro,
 #' @param param.table.name Character string for the parameter table output.
 #' @param Dendro.data.name Character string for the data object, Dendro.complete, that is a complete data.frame table output.
 #' @param Quantile.hull.name Character string for the data object, QH.Rdata, that contains the Quantile Hull results.
+#' @description Fits a Quantile Hull to the data and extracts extra growth and
+#'    phenology metrics from dendrometer band time series.
 #'
-#' @return Returns nothing.
-#' @export Objects Saves four files to the OUTPUT folder as named above and collected stems.
-
-#'
-#' @return nothing
-#' @export Objects Saves four files to the OUTPUT folder as named above and collected stems.
-#' @description Fits a Quantile Hull to the data and extracts extra growth and phenology metrics from dendrometer band time series.
-#' @examples none
+#' @return Saves four files to the OUTPUT folder as named above and collected stems.
+#' @export
 get.extra.metrics <- function(
   param.table,
   Dendro.split,
@@ -633,7 +622,7 @@ get.extra.metrics <- function(
     if(!is.na(params$alt.a) & params$alt.a > 0)
       start.doy.alt[i] <- pred.doy(params = params, a = params$alt.a)
 
-    try.hull <- try(fit.outer.hull(dbh, doy, params,
+    try.hull <- try(fit.quantile.hull(dbh, doy, params,
       quant = 0.8), TRUE)
 
     if(class(try.hull) != "try-error") {

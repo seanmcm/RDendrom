@@ -29,13 +29,9 @@ This is used to pull out actual parameters from other information.}
 \item{Quantile.hull.name}{Character string for the data object, QH.Rdata, that contains the Quantile Hull results.}
 }
 \value{
-Returns nothing.
-
-nothing
+Saves four files to the OUTPUT folder as named above and collected stems.
 }
 \description{
-Fits a Quantile Hull to the data and extracts extra growth and phenology metrics from dendrometer band time series.
-}
-\examples{
-none
+Fits a Quantile Hull to the data and extracts extra growth and
+   phenology metrics from dendrometer band time series.
 }

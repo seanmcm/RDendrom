@@ -26,9 +26,6 @@ A plot of the dbh and doy of a single band in a year, with, optionally, a fitted
 \description{
 Plotting Dendrometer Band Time Series
 }
-\examples{
-plot.dendro.ts(data.frame(DBH_TRUE = c(10.1, 10.1., 10.2, 10.3), DOY = c(70, 100, 140, 160))
-}
 \seealso{
 \code{\link{get.param}} which creates Dendro.split, a list vector containing time-series dataframes for every tree, year, band.
 }

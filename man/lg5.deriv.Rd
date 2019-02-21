@@ -23,6 +23,3 @@ This function takes the numerical derivative.
 Default values return a single day of growth. Using the 'growth'
 argument, the derivative can be returned, scaled by annual growth.
 }
-\examples{
-none
-}

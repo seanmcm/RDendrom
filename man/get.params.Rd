@@ -14,9 +14,6 @@ Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer), a
 Returns a numeric vector of parameters
 }
 \description{
-This is the core fitting algorithm, which uses base \emph{optim()} (with a series of different methods) to
-estimate the parameters of the logistic function. This follows McMahon and Parker 2015.
-}
-\examples{
-none
+This is the core fitting algorithm, which uses base \emph{optim()} (with two sequential methods) to
+estimate the parameters of the logistic function. This follows McMahon and Parker 2014.
 }
