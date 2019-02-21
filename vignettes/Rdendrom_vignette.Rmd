@@ -71,10 +71,39 @@ An R package for analysis, diagnostics, and presentation of intra-annual tree gr
 `RDendrom` is a suite of functions designed to handle time series data from 'manual' dendrometer band measurements conducted intensively through the growing season. The data enter in a set 'long' form with such as in the following header file.
 
 [instert header of a data.frame]
+```{r, eval=TRUE, echo=TRUE}
+data(INPUTdata)
+head(INPUT.data)
+```
+Here we see the basic structure necessary to use the Rdendrom package. The basic variables deal with sites and tags and bands, etc. What *must* be included is the 'TREE_ID', 'BAND_NO', 'YEAR', 'ORG_DBH', 'GAP_WIDTH', and the four STATUS columns, which will be detailed later. The status columns should be set by default at all zeros (they should only accept integer ones or zeros), and can be ignored. However, I developed them to be able to handle some of the common adjustments that need to be made to dendrometer band data, some of which have useful applications within 'Rdendrom' functions.
 
-The general workflow for these data includes processing, analyzing, vetting, and presenting individual annual tree growth. There are also functions to aggregate results, which are more generally in 'beta' (they have been used for particular analyses, but not formalized or generalized for use in the package yet, and so need a bit of attention).
+Once imported, the first script that needs to be run is the *get.optimized.dendro()* function. This takes in the INPUT.data loaded above first estimates diameter at breast height (DBH) based on the baseline DBH (measured from diameter tape)('DBH_ORG'). 'DBH_ORG' **must** have a value for the first observation of a 'TREE_ID', but can be empty (or repeat taht value) after. It does not matter.  The function then builds the 'DBH' column from the 'GAP_WIDTH' measurements. 
 
-## Processing
+Note that errors in measurements enter from the 'GAP_WIDTH' column, and not the 'DBH' column. 'DBH' is a transformation of gap width into diameter, so any vetting of the raw data due to problem measurements need to address the 'GAP_WIDTH' value. 
+
+The function then *corrects* the 'DBH' value by estimating the true DBH (appropriately labeled 'TRUE_DBH') from the gap width and dbh values using an optimization algorithm written by KC Kushman at Brown University. This corrects for the fact that gaps are not arcs in the circumference but chords, yet we treat them as arcs. The correction is miniscule in most cases, but for small stems with large 'GAP_WIDTH' values, it may lead to biases over time. Regardless of its scientific value, the new values in the column 'DBH_TRUE' are very important because every single analytical, diagnostic, and plotting funcitonin 'Rdendrom' uses this column, and not 'DBH'. If there is public outcry, we could change 'DBH_TRUE' to 'DBH', and change 'DBH' to 'DBH_chord' or something nerdy like that. Cheers!
+
+Having populated the 'DBH_TRUE' column, the function shifts into curve fitting. This involves fitting the LG5 General Addative Model detailed below. If users want to ignore the curve fitting, whether to do it themselves or because they hate curves, let me know, but note: I've spent a ton of time trying different approaches, including Bayesian methods in *stan*, and a million other ways--this works! But it would be trivial to separate the 'DBH_TRUE' workflow from the fitting.
+
+For fitting, the data must first be filtered. The curve fitting algorithm may not work well with small sample sizes in a year, poor data, extremely small growth, dead trees, shrinking trees, etc. Because this package is designed to be applied to *large* datasets with many fits, and do this objectively(-ish) and repeatedly, precisely, efficiently, and other adverbs, we filter out certain cases. The cases follow in pseudo-code from the *get.optimized.dendro()* function.
+
+```
+	IF value of '1' for the 'REMOVE' variable
+		remove observation
+    IF value of '1' for the 'IGNORE' column 
+    	**'skip'** time series
+    IF number of measurements in a year < *cutoff* (default = 9) 
+    	**'skip'** time series
+    RUN *lm()* with an intercept, slope, and polynomial term on the time series and get the parameter values
+    	IF lm slope parameter is negative 
+    		set "IGNORE" to **1**
+    		**skip**
+```
+    
+We then fit the time series data using *get.params()*. See help files (or code) for details.
+  
+
+## Function fitting details
 
 The primary approach to 'processing' data is through fitting a three-part general additive model (GAM) to the data. This generally follows McMahon and Parker 2014, Ecology and Evolution. The core of the procedure is the fitting of a 5-parameter logistic function to the growth time series. The two other parts of the GAM are the starting diameter and ending diameter which essentially estimates the leaf-off dormant diameter at breast height (DBH) from the winter before and after the growing season. The LG5 function relates *dbh*, or the diameter measurements at a given day of the year.  for a designated series of days.
 
@@ -83,9 +112,7 @@ dbh = \frac{L + (K - L)} { 1 + 1/ \theta * exp(-r (doy - doy_{ip})/ \theta) ^{\t
   %L + M_{0} * (K - L) / ((M_{0} ^ (1/ \theta)  + ((K - L) ^ (1/ \theta) - M_{0}^{(1/ \theta)} ) * exp(-(r / \theta) * doy)))^{\theta}.
 $$
 
-The LG5 comes from a family of functions, known collectively
-as Richards models, that can produce good candidate parameterizations for intra-
-annual tree growth data [Oswald:2012]. We found the effort to fit so many parameters worthwhile
+The LG5 comes from a family of functions, known collectively as Richards models, that can produce good candidate parameterizations for intra-annual tree growth data [Oswald:2012]. We found the effort to fit so many parameters worthwhile
 because the parameter number is important for precise fits, necessary to
 discover small fluctuations in growth during the year.  Four of the parameters
 have straightforward interpretation: two parameters define the lower and upper
