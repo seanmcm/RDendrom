@@ -1,4 +1,4 @@
-#' Sample Dendrometer banddataset
+#' Sample Dendrometer band dataset
 #'
 #' Dendrometer band time series for trees across years at SERC (a  sample)
 #'
@@ -9,4 +9,4 @@
 #'   ...
 #' }
 #'
-"INPUT.data"
+"INPUT.dendro"
