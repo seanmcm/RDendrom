@@ -35,7 +35,7 @@ Here we see the basic structure necessary to use the Rdendrom package. The basic
 
 Once imported, the first script that needs to be run is the *get.optimized.dendro()* function.
 
-```{r eval=TRUE, echo=TRUE}
+```{r eval=FALSE, echo=TRUE}
 get.optimized.dendro(INPUT.dendro,
   no.neg.growth = TRUE, cutoff = 9,
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),
@@ -83,7 +83,7 @@ There are four files from the output. Three are list objects that contain the sa
 
 So to get advanced metrics, we **reload** the output files from the fitting and run the *get.extra.metrics()* function.
 
-```{r eval=TRUE, echo=TRUE}
+```{r eval=FALSE, echo=TRUE}
 param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$DATA_SET[1])
 Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$DATA_SET[1])
 Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$DATA_SET[1])
