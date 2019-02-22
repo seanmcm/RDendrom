@@ -83,7 +83,7 @@ plot.dendro.ts <- function(ts.data, params = NULL, day = seq(365), outlier = TRU
 #' Plotting Multiple Dendrometer Band Time Series
 #'
 #' @param Dendro.tree  A dataframe of a time series of a single tree over multiple years and bands.
-#' Must have column variables \emph{DBH_TURE} (numeric), \emph{DOY} (integer), and \emph{YEAR} (integer).
+#' Must have column variables \emph{DBH_TRUE} (numeric), \emph{DOY} (integer), and \emph{YEAR} (integer).
 #' @param params dataframe vector
 #' @param day integer vector
 #' @param outlier logical
@@ -94,7 +94,7 @@ plot.dendro.ts <- function(ts.data, params = NULL, day = seq(365), outlier = TRU
 #' fits, outliers, band position movements, slippage corrections, etc. Can be used for presentation
 #' of single trees, or for diagnostics and fit assessments.
 #' @export
-plot.dendro.multiple <- function(Dendro.tree, params = NULL,
+plot.dendro.tree <- function(Dendro.tree, params = NULL,
     par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a"),
     par.dim = c(3, 1), print.pdf = FALSE, out.file = "FIGURES/TEST_PLOTS.pdf",
     day = seq(365)) {

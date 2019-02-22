@@ -13,7 +13,7 @@ get.extra.metrics(param.table, Dendro.split, par.names = c("L", "K",
   Quantile.hull.name = "Quantile.hull.Rdata")
 }
 \arguments{
-\item{param.table}{The output data.frame from the optimization @seealso get.optimized.dendro}
+\item{param.table}{The output data.frame from the optimization *seealso* get.optimized.dendro}
 
 \item{Dendro.split}{A list vector where every entry is a separate time series of a band on a stem in a year.}
 

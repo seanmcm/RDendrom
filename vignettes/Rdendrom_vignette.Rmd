@@ -7,6 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Using Rdendrom for the analysis of intra-annual tree growth time series}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+
 ---
 
 ```{r setup, include = FALSE}
@@ -16,70 +17,32 @@ knitr::opts_chunk$set(
 )
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
-
-##################################################################
 # RDendrom
 An R package for analysis, diagnostics, and presentation of intra-annual tree growth time series.
 
 `RDendrom` is a suite of functions designed to handle time series data from 'manual' dendrometer band measurements conducted intensively through the growing season. The data enter in a set 'long' form with such as in the following header file.
 
-[instert header of a data.frame]
-```{r, eval=TRUE, echo=TRUE}
-data(INPUTdata)
-head(INPUT.data)
+```{r echo=TRUE, eval=TRUE}
+library(Rdendrom)
+data(INPUT_data)
 ```
-Here we see the basic structure necessary to use the Rdendrom package. The basic variables deal with sites and tags and bands, etc. What *must* be included is the 'TREE_ID', 'BAND_NO', 'YEAR', 'ORG_DBH', 'GAP_WIDTH', and the four STATUS columns, which will be detailed later. The status columns should be set by default at all zeros (they should only accept integer ones or zeros), and can be ignored. However, I developed them to be able to handle some of the common adjustments that need to be made to dendrometer band data, some of which have useful applications within 'Rdendrom' functions.
+Here we see the basic structure necessary to use the Rdendrom package. The basic variables deal with sites and tags and bands, etc. What *must* be included is the 'TREE_ID', 'BAND_NO', 'YEAR', 'ORG_DBH', 'GAP_WIDTH', and the four STATUS columns, which will be detailed later. The status columns should be set by default at all zeros (they should only accept integer ones or zeros), and can be ignored. However, I developed them to be able to handle some of the common adjustments that need to be made to dendrometer band data, some of which have useful applications within 'Rdendrom' functions. 'UNIQUE_ID' is important for some subfunctions that split the data according to the 'SITE', 'TREE_ID', and 'BAND_NO', or any other combination that uniquely identifies a specific time-series.
 
-Once imported, the first script that needs to be run is the *get.optimized.dendro()* function. This takes in the INPUT.data loaded above first estimates diameter at breast height (DBH) based on the baseline DBH (measured from diameter tape)('DBH_ORG'). 'DBH_ORG' **must** have a value for the first observation of a 'TREE_ID', but can be empty (or repeat taht value) after. It does not matter.  The function then builds the 'DBH' column from the 'GAP_WIDTH' measurements. 
+Once imported, the first script that needs to be run is the *get.optimized.dendro()* function.
 
-Note that errors in measurements enter from the 'GAP_WIDTH' column, and not the 'DBH' column. 'DBH' is a transformation of gap width into diameter, so any vetting of the raw data due to problem measurements need to address the 'GAP_WIDTH' value. 
+```{r eval=TRUE, echo=TRUE}
+get.optimized.dendro(INPUT.dendro,
+  no.neg.growth = TRUE, cutoff = 9,
+  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),
+  OUTPUT.folder = "./OUTPUT",
+  param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$DATA_SET[1]),
+  Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$DATA_SET[1]),
+  Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$DATA_SET[1]))
+```
+
+This takes in the INPUT.data loaded above first estimates diameter at breast height (DBH) based on the baseline DBH (measured from diameter tape)('DBH_ORG'). 'DBH_ORG' **must** have a value for the first observation of a 'TREE_ID', but can be empty (or repeat taht value) after. It does not matter.  The function then builds the 'DBH' column from the 'GAP_WIDTH' measurements.
+
+Note that errors in measurements enter from the 'GAP_WIDTH' column, and not the 'DBH' column. 'DBH' is a transformation of gap width into diameter, so any vetting of the raw data due to problem measurements need to address the 'GAP_WIDTH' value.
 
 The function then *corrects* the 'DBH' value by estimating the true DBH (appropriately labeled 'TRUE_DBH') from the gap width and dbh values using an optimization algorithm written by KC Kushman at Brown University. This corrects for the fact that gaps are not arcs in the circumference but chords, yet we treat them as arcs. The correction is miniscule in most cases, but for small stems with large 'GAP_WIDTH' values, it may lead to biases over time. Regardless of its scientific value, the new values in the column 'DBH_TRUE' are very important because every single analytical, diagnostic, and plotting funcitonin 'Rdendrom' uses this column, and not 'DBH'. If there is public outcry, we could change 'DBH_TRUE' to 'DBH', and change 'DBH' to 'DBH_chord' or something nerdy like that. Cheers!
 
@@ -90,18 +53,52 @@ For fitting, the data must first be filtered. The curve fitting algorithm may no
 ```
 	IF value of '1' for the 'REMOVE' variable
 		remove observation
-    IF value of '1' for the 'IGNORE' column 
+    IF value of '1' for the 'IGNORE' column
     	**'skip'** time series
-    IF number of measurements in a year < *cutoff* (default = 9) 
+    IF number of measurements in a year < *cutoff* (default = 9)
     	**'skip'** time series
     RUN *lm()* with an intercept, slope, and polynomial term on the time series and get the parameter values
-    	IF lm slope parameter is negative 
+    	IF lm slope parameter is negative
     		set "IGNORE" to **1**
     		**skip**
 ```
-    
+
 We then fit the time series data using *get.params()*. See help files (or code) for details.
-  
+
+## OUTPUT from the fitting function and extra metrics
+
+It is important to **NOTE** that the output of the fitting functions are **files** and not objects. The default folder is the present working directory, but I recommend making an "OUTPUT" directory to hold the sequenc of these files. The output files from the first fitting function are input to the second. The output from the second *ammend the first* but do not overwrite them. I'd be glad to adjust this as folks see fit.
+
+There are four files from the output. Three are list objects that contain the same information, but are in different structures, and the fourth is a csv file, param.table, of parameters and extra metrics. The list files are all of the time series data either
+  - combined,  *Dendro.complete*
+  - split by tree id, *Dendro.tree*
+  - split by tree id, year, and band (i.e., the minimal designation of a time series of diameters), *Dendro.split*.
+
+
+
+So to get advanced metrics, we **reload** the output files from the fitting and run the *get.extra.metrics()* function.
+
+```{r eval=TRUE, echo=TRUE}
+param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$DATA_SET[1])
+Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$DATA_SET[1])
+Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$DATA_SET[1])
+OUTPUT.folder <- c("./OUTPUT")
+param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
+load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete
+load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split
+load(file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/")) #loads Dendro.tree
+
+get.extra.metrics(
+  param.table,
+  Dendro.split,
+  OUTPUT.folder      = "OUTPUT",
+  param.table.name = sprintf("Param_table_complete_%s.csv", INPUT.dendro$DATA_SET[1]),
+  Dendro.data.name = sprintf("Dendro_data_complete_%s.Rdata", INPUT.dendro$DATA_SET[1]),
+  Dendro.split.name = sprintf("Dendro_data_split_complete_%s.Rdata", INPUT.dendro$DATA_SET[1]),
+  Quantile.hull.name = "Quantile.hull.Rdata")
+```
+Output from this function is similar to the ouptput of the first fitting function,except for an extra list object file, with the name *Quantile.hull.name*. This is a list object of length n.time.series where each element is the the fitting information from QH.list.
+
 
 ## Function fitting details
 
@@ -122,9 +119,9 @@ when the inflection of the curve is predicted to occur, and the rate parameter
 parameter, *&theta;* allows asymmetrical fits by changing the approach of to
 the upper asymptote. This is a critical parameter as when *&theta; = 1*, the
 curve is symmetrical. But growth forms are rarely symmetrical,  so its
-inclusion merits the increased efforts in fitting a 5-parameter model.  
+inclusion merits the increased efforts in fitting a 5-parameter model.
 
-This fit is estimated using two passes through the *optim()* function.  The resulting curve (which is fit without constraining *L* or *K* to starting and stopping diamters) is then combined with estimates of these diameters of growth initiation and cessation (*a* and *b* respectively). The horizontal lines at *a* and *b* are then combined with the LG5 curve to produce the GAM that best fits the annual time series data. These three pieces of the GAM are combined in order to allow optimal fits to the growth curve while capturing the sometimes abrupt beginning of bole growth and smoother asymptote of ending of growth. 
+This fit is estimated using two passes through the *optim()* function.  The resulting curve (which is fit without constraining *L* or *K* to starting and stopping diamters) is then combined with estimates of these diameters of growth initiation and cessation (*a* and *b* respectively). The horizontal lines at *a* and *b* are then combined with the LG5 curve to produce the GAM that best fits the annual time series data. These three pieces of the GAM are combined in order to allow optimal fits to the growth curve while capturing the sometimes abrupt beginning of bole growth and smoother asymptote of ending of growth.
 
 ## Analyzing
 
@@ -132,7 +129,7 @@ After the initial fits are conducted, additional metrics can be estimated. The p
 
 ## Vetting
 
-The two vetting functions, *id.outliers()* and *find.outliers()*, allow either manual or automatic designation of problem measurements respectively. *id.outliers()* allows interactive (point and click) identification of outliers that are flagged, re-incorporated into the data, and then ignored during re-runs of parameter estimation. *find.outliers()* uses residuals from the fit curves to flag values outside of a designated numer of standard deviations from zero (default = 3). 
+The two vetting functions, *id.outliers()* and *find.outliers()*, allow either manual or automatic designation of problem measurements respectively. *id.outliers()* allows interactive (point and click) identification of outliers that are flagged, re-incorporated into the data, and then ignored during re-runs of parameter estimation. *find.outliers()* uses residuals from the fit curves to flag values outside of a designated numer of standard deviations from zero (default = 3).
 
 It is worth noting that within the *get.optimized.dendro()* function there are several filters that also serve to vet data. Insufficient sample size (default = 9 values) results in skipping the fitting function. That function also fits a linear model to the data and if the slope is negative (representing a dead or shrinking stem), then fitting is skipped. The fits also produce *R<sup>2</sup>* values for every fit that is implemented, so that further vetting and subsetting of data for specific analyses can take into account how well the curves fit the data.
 
