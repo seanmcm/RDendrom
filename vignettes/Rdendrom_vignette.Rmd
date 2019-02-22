@@ -23,7 +23,11 @@ An R package for analysis, diagnostics, and presentation of intra-annual tree gr
 `RDendrom` is a suite of functions designed to handle time series data from 'manual' dendrometer band measurements conducted intensively through the growing season. The data enter in a set 'long' form with such as in the following header file.
 
 ```{r echo=TRUE, eval=TRUE}
-library(Rdendrom)
+devtools::install_github("seanmcm/RDendrom")
+```
+
+```{r echo=TRUE, eval=TRUE}
+library(RDendrom)
 data(INPUT_data)
 ```
 Here we see the basic structure necessary to use the Rdendrom package. The basic variables deal with sites and tags and bands, etc. What *must* be included is the 'TREE_ID', 'BAND_NO', 'YEAR', 'ORG_DBH', 'GAP_WIDTH', and the four STATUS columns, which will be detailed later. The status columns should be set by default at all zeros (they should only accept integer ones or zeros), and can be ignored. However, I developed them to be able to handle some of the common adjustments that need to be made to dendrometer band data, some of which have useful applications within 'Rdendrom' functions. 'UNIQUE_ID' is important for some subfunctions that split the data according to the 'SITE', 'TREE_ID', and 'BAND_NO', or any other combination that uniquely identifies a specific time-series.

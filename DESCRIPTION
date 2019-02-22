@@ -1,4 +1,4 @@
-Package: Rdendrom
+Package: RDendrom
 Type: Package
 Title: Plots and fits logistic function to dendrometer band time series.
 Version: 0.1.0
