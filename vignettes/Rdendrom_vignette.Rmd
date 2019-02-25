@@ -31,6 +31,7 @@ library(RDendrom)
 data(INPUT_dendro)
 head(INPUT.dendro)
 ```
+
 Here we see the basic structure necessary to use the Rdendrom package. The basic variables deal with sites and tags and bands, etc. What *must* be included is the 'TREE_ID', 'BAND_NO', 'YEAR', 'ORG_DBH', 'GAP_WIDTH', and the four STATUS columns, which will be detailed later. The status columns should be set by default at all zeros (they should only accept integer ones or zeros), and can be ignored. However, I developed them to be able to handle some of the common adjustments that need to be made to dendrometer band data, some of which have useful applications within 'Rdendrom' functions. 'UNIQUE_ID' is important for some subfunctions that split the data according to the 'SITE', 'TREE_ID', and 'BAND_NO', or any other combination that uniquely identifies a specific time-series.
 
 Once imported, the first script that needs to be run is the *get.optimized.dendro()* function.
@@ -39,11 +40,14 @@ Once imported, the first script that needs to be run is the *get.optimized.dendr
 get.optimized.dendro(INPUT.dendro,
   no.neg.growth = TRUE, cutoff = 9,
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),
-  OUTPUT.folder = "./OUTPUT",
+  OUTPUT.folder = ".",
   param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$DATA_SET[1]),
   Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$DATA_SET[1]),
   Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$DATA_SET[1]))
+
 ```
+
+
 
 This takes in the INPUT.data loaded above first estimates diameter at breast height (DBH) based on the baseline DBH (measured from diameter tape)('DBH_ORG'). 'DBH_ORG' **must** have a value for the first observation of a 'TREE_ID', but can be empty (or repeat taht value) after. It does not matter.  The function then builds the 'DBH' column from the 'GAP_WIDTH' measurements.
 

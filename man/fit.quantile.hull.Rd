@@ -13,9 +13,9 @@ fit.quantile.hull(dbh, doy, params, quant = 0.8, resid.sd = 0.02)
 
 \item{params}{Data.frame (vector with names) containing parameters.}
 
-\item{quant}{Numeric scaler denoting the quantile threshold above which the hull will be estimated.}
+\item{quant}{Numeric scalar denoting the quantile threshold above which the hull will be estimated.}
 
-\item{resid.sd}{Numeric scaler that constrains the optimization algorithm in \emph{optim()}.}
+\item{resid.sd}{Numeric scalar that constrains the optimization algorithm in \emph{optim()}.}
 }
 \value{
 List with output from the optim function and other metrics.

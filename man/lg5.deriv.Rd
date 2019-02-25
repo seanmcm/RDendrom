@@ -13,7 +13,7 @@ lg5.deriv(paras, doy, growth = 1, shift = 0.5)
 
 \item{growth}{Unclear.}
 
-\item{shift}{Numeric scaler that gives half the size of the window the derivitive is taken over (in days).}
+\item{shift}{Numeric scalar that gives half the size of the window the derivitive is taken over (in days).}
 }
 \value{
 returns numeric vectore of derivatives

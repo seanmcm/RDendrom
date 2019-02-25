@@ -220,7 +220,7 @@ get.params <- function(ts.data) {
   winner[1] <- NA
   winner[winner.int] <- "*"
   params <- optim.output[winner.int[1], c(1:5) ]
-  ab <- optim(par = c(min(dbh), max(dbh)), fn = lg5.ML.a, resid.sd = resid.sd,
+  ab <- optim(par = c(min(dbh), max(dbh)), fn = .lg5.ML.a, resid.sd = resid.sd,
     method = "Nelder-Mead", hessian = TRUE, control = list(trace = 0),
     doy = doy, dbh = dbh, params = params)$par
   ab[2] <- ifelse(ab[2] > params[2], params[2], ab[2])
@@ -327,7 +327,7 @@ get.extra.metrics <- function(
     }
 
     # Other summary stats
-    ts.data$resids.vec <- get.lg5.resids(params.numeric, doy, dbh)
+    ts.data$resids.vec <- .get.lg5.resids(params.numeric, doy, dbh)
     ts.data$sd.resids <- scale(ts.data$resids.vec)
     RGR[i] <- as.numeric(log(params$b) - log(params$a))
     GR[i] <- as.numeric(params$b - params$a)
@@ -379,8 +379,8 @@ get.extra.metrics <- function(
 #' @param dbh Numeric vector of "TRUE_DBH" values
 #' @param doy Integer vector of days of the year dbh values collected.
 #' @param params Data.frame (vector with names) containing parameters.
-#' @param quant Numeric scaler denoting the quantile threshold above which the hull will be estimated.
-#' @param resid.sd Numeric scaler that constrains the optimization algorithm in \emph{optim()}.
+#' @param quant Numeric scalar denoting the quantile threshold above which the hull will be estimated.
+#' @param resid.sd Numeric scalar that constrains the optimization algorithm in \emph{optim()}.
 #'
 #' @return List with output from the optim function and other metrics.
 #' @export
@@ -443,6 +443,13 @@ fit.quantile.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
 ##############################
 ## Auxiliary functions
 ##############################
+#' Gets the day of the year for any dbh and paramater combination
+#'
+#' @param dbh Numeric scalar for diameter at breast height (translated from the GAP_WIDTH)
+#' @param params Numeric vector of the parameter values of the LG5
+#'
+#' @return Returns day of the year for the input dbh and params.
+#' @export
 get_dcrit <- function(dbh,  params) {
   L <- params[1] # min(dbh, na.rm = T)
   K <- params[2]
@@ -455,6 +462,12 @@ get_dcrit <- function(dbh,  params) {
   return(dcrit)
 }
 
+#' Gets the starting diameter from the year before
+#'
+#' @param param.tab data.frame of parameter values for every year for a particular TREE_ID
+#'
+#' @return Numeric vector of diameter values (or codes).
+#' @export
 get.alt.a <- function(param.tab) {
   TREE.ID.F <- factor(param.tab$UNIQUE_ID, levels = unique(param.tab$UNIQUE_ID))
   param.split <- split(param.tab, f = TREE.ID.F, drop = TRUE)
@@ -470,10 +483,15 @@ get.alt.a <- function(param.tab) {
 }
 
 
-## Window differences are not differences in arcs but chords -----------
-# Using KC's code as correction formulas -------------
-# INPUT: initial window measurement (c1),
-# final window measurement (c2), initial diameter measurement (d1)
+
+#' Corrects for the chord
+#'
+#' @param gw1 Numeric gap width at time 1
+#' @param gw2 Numeric gap width at time 2
+#' @param dbh1 DBH at time 1
+#'
+#' @return Numeric scalar for the corrected DBH
+#' @export
 gettruedbh <- function(gw1, gw2, dbh1) {
   rhs  <- dbh1 * (pi - asin(gw1 / dbh1))
   #rhs is the length of the dendrometer band at time 1
@@ -488,6 +506,13 @@ gettruedbh <- function(gw1, gw2, dbh1) {
 }
 
 ##---------------------------------------------------------------
+#' Gets dbh from gap width given org.dbh.
+#'
+#' @param gap.width Numeric vector of gap width measurements
+#' @param org.dbh Numeric scalar of the original dbh of the tree (when bands were installed)
+#'
+#' @return Numeric vector of DBH_TRUE values
+#' @export
 gap2dbh <- function(gap.width, org.dbh) {
   # computes a vector of dbh values given gap width
   # and starting dbh.
@@ -510,6 +535,13 @@ gap2dbh <- function(gap.width, org.dbh) {
 ###################################################
 # These functions do many things related to the LG5 function (see vignette)
 
+#' Predicts the dbh from doy and a parameter set
+#'
+#' @param params Numeric vector of parameter values
+#' @param doy Integer vector of days of the year
+#'
+#' @return Numeric scalar or vector of dbh values
+#' @export
 lg5.pred <- function(params, doy) {
   paras <- names(params) %in% c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")
 	L <- params[1] # min(dbh, na.rm = T)
@@ -522,25 +554,33 @@ lg5.pred <- function(params, doy) {
 	return(dbh)
 }
 
-get.lg5.ML <- function(params, doy, dbh, resid.sd) {
+.get.lg5.ML <- function(params, doy, dbh, resid.sd) {
 	pred.dbh <- lg5.pred(params, doy)
 	pred.ML <-  -sum(dnorm(dbh, pred.dbh, resid.sd, log = T))
 	return(pred.ML)
 }
 
-get.lg5.ML.wt <- function(params, doy, dbh, resid.sd) {
+.get.lg5.ML.wt <- function(params, doy, dbh, resid.sd) {
 	wts <- 1 / dnorm(abs(seq(-2, 2, length = length(doy))), 0, 1)
 	pred.dbh <- lg5.pred(params, doy)
 	pred.ML <- -sum((wts * dnorm(dbh, pred.dbh, resid.sd, log = T)))
 	return(pred.ML)
 }
 
-get.lg5.resids <- function(params, doy, dbh) {
+.get.lg5.resids <- function(params, doy, dbh) {
   para <- as.numeric(params)
 	lg5.resid <- dbh - lg5.pred(para, doy)
 	return(lg5.resid)
 }
 
+#' Predicts the day of the year given a diameter and parameter values
+#'
+#' @param params Numeric vector of parameter values.
+#' @param a Numeric scalar of diameter for which a doy is wanted
+#' @param diam.given Not sure
+#'
+#' @return returns day of year
+#' @export
 pred.doy <- function(params, a, diam.given = 0) {
 	params <- as.numeric(params)
 	L <- params[1] # min(dbh, na.rm = T)
@@ -557,6 +597,15 @@ pred.doy <- function(params, a, diam.given = 0) {
 	return(dcrit)
 }
 
+#' Returns starting and stopping diameter values for a year for a tree
+#'
+#' @param a Numeric scalar or vector of 2 elements with starting and stopping values
+#' @param params Numeric vector of parameters
+#' @param doy Integer (or numeric) vector of days of the year for which the curve was fit.
+#' @param asymptote which side to get value for (should be removed).
+#'
+#' @return Numeric scalar (or vector of 2 scalars) for starting and stoping sizes
+#' @export
 lg5.pred.a <- function (a, params, doy, asymptote = "both") {
 	asymptote <- ifelse(length(a) > 1, "both", asymptote)
 	L <- params[1] # min(dbh, na.rm = T)
@@ -590,38 +639,28 @@ lg5.pred.a <- function (a, params, doy, asymptote = "both") {
 	return(diam)
 }
 
-lg5.ML.a <- function(a, params, doy, dbh, resid.sd, asymptote = "both") {
+.lg5.ML.a <- function(a, params, doy, dbh, resid.sd, asymptote = "both") {
 	pred.dbh <- lg5.pred.a(a, params, doy)
 	pred.ML <- -sum(dnorm(dbh, pred.dbh, resid.sd, log = T))
 }
 
-make.seq <- function(param, params, deviation = 0.1, len.seq = 50, CI = c(0, 0), asymptote = "lower", min.val = NULL, max.val = NULL) {
-	if(asymptote == "lower") {
-		if(CI[1] > 0) {
-			lower.lim <- max(min.val, CI[1] * (1 - deviation), na.rm = T)
-			par.seq <- seq(lower.lim, (CI[2] * (1 + deviation)), length = len.seq)
-		}else{
-			par.seq <- seq(min.val, (param + deviation * param), length = len.seq)
 
-		}
-	}else{
-		if(CI[1] > 0) {
-			upper.lim <- min(max.val, CI[2] * (1 + deviation), na.rm = T)
-			par.seq <- seq((CI[1] * (1 - deviation)), upper.lim, length = len.seq)
-		}else{
-			par.seq <- seq((param - deviation * param), max.val, length = len.seq)
-		}
-	}
-	return(par.seq)
-}
-
-lg5.QH <- function(paras, doyCP, dbhCP) {
+.lg5.QH <- function(paras, doyCP, dbhCP) {
 	pred.dbh <- lg5.pred(paras, doyCP)
 	pred.ND <-  sum(pred.dbh - dbhCP) # for "Negative Difference"
 	return(pred.ND)
 }
 
-get.QH.resid <- function(rate, params, doy, dbh, log.rate = FALSE) {
+#' Get quantile hull 'residuals'
+#'
+#' @param params Numeric vector of parameters.
+#' @param doy Day of the Year
+#' @param dbh Sequence of DBH values
+#' @param log.rate Logical whether rates are logged
+#'
+#' @return Numeric vector of residuals
+#' @export
+get.QH.resid <- function(params, doy, dbh, log.rate = FALSE) {
 	lg5.pred <- lg5.pred(params, doy)
 	rates <- lg5.deriv(params, doy)
 	if(log.rate) {
@@ -637,7 +676,7 @@ get.QH.resid <- function(rate, params, doy, dbh, log.rate = FALSE) {
 #' @param paras Numeric vector of parameters for the lg5 function
 #' @param doy Integer vector of days of the year dbh values collected.
 #' @param growth Unclear.
-#' @param shift Numeric scaler that gives half the size of the window the derivitive is taken over (in days).
+#' @param shift Numeric scalar that gives half the size of the window the derivitive is taken over (in days).
 #' @description This function takes the numerical derivative.
 #' Default values return a single day of growth. Using the 'growth'
 #' argument, the derivative can be returned, scaled by annual growth.
@@ -651,6 +690,12 @@ lg5.deriv <- function(paras, doy, growth = 1, shift = 0.5) {
 	return(deriv.lg5 / growth)
 }
 
+#' Find day of the year of maximum growth
+#'
+#' @param params Numeric vector of parameters.
+#'
+#' @return Numeric scalar of the fastest day.
+#' @export
 max.growth.day <- function(params) {
   paras <- as.numeric(params)
 	days <- seq(365)
@@ -660,6 +705,12 @@ max.growth.day <- function(params) {
 	return(fastest.day)
 }
 
+#' Find rate of maximum growth
+#'
+#' @param params Numeric vector of parameters.
+#'
+#' @return Numeric scalar of the fastest growth rate
+#' @export
 max.growth.rate <- function(params) {
   paras <- as.numeric(params)
 	days <- seq(round(pred.doy(params, params$a)), 365)
