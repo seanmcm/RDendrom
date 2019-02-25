@@ -83,11 +83,11 @@ There are four files from the output. Three are list objects that contain the sa
 
 So to get advanced metrics, we **reload** the output files from the fitting and run the *get.extra.metrics()* function.
 
-```{r eval=FALSE, echo=TRUE}
+```{r eval=TRUE, echo=FALSE}
 param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$DATA_SET[1])
 Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$DATA_SET[1])
 Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$DATA_SET[1])
-OUTPUT.folder <- c("./OUTPUT")
+OUTPUT.folder <- c(".")
 param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
 load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete
 load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split
@@ -101,6 +101,15 @@ get.extra.metrics(
   Dendro.data.name = sprintf("Dendro_data_complete_%s.Rdata", INPUT.dendro$DATA_SET[1]),
   Dendro.split.name = sprintf("Dendro_data_split_complete_%s.Rdata", INPUT.dendro$DATA_SET[1]),
   Quantile.hull.name = "Quantile.hull.Rdata")
+
+```
+
+```{r eval=TRUE, echo=TRUE}
+param.table.name = sprintf("Param_table_complete_%s.csv", INPUT.dendro$DATA_SET[1])
+OUTPUT.folder <- c(".")
+param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
+head(param.table)
+
 ```
 Output from this function is similar to the ouptput of the first fitting function,except for an extra list object file, with the name *Quantile.hull.name*. This is a list object of length n.time.series where each element is the the fitting information from QH.list.
 
@@ -131,6 +140,40 @@ This fit is estimated using two passes through the *optim()* function.  The resu
 ## Analyzing
 
 After the initial fits are conducted, additional metrics can be estimated. The primary function for this is the *get.extra.metrics()* function. See the vignette for examples and the help file for details.
+<!--
+```{r}
+
+################################################
+### QUICK TEST OF R-SQUARES AND FITS         ###
+###  WITH OPTIONS TO PLOT AND FIND OUTLIERS. ###
+################################################
+param.table.name = sprintf("Param_table_complete_%s.csv", INPUT.dendro$DATA_SET[1])
+Dendro.data.name = sprintf("Dendro_data_complete_%s.Rdata", INPUT.dendro$DATA_SET[1])
+Dendro.split.name = sprintf("Dendro_data_split_complete_%s.Rdata", INPUT.dendro$DATA_SET[1])
+OUTPUT.folder <- c("./OUTPUT")
+param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
+load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete
+load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split
+load(file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/")) #loads Dendro.tree
+
+summary(subset(param.table, r.squared > 0.75))
+boxplot(param.table$r.squared ~ param.table$SP)
+boxplot(param.table$ts.sd ~ param.table$SP)
+# r2 <- param.table$r.squared
+
+# plot(r2, log(param.table$ts.sd))
+# plot(hist(r2, 50))
+# low.r2 <- which(param.table$r.squared < 0.75 & !is.na(param.table$r) &
+#    param.table$flag == 0)
+# param.low.r2 <- param.table[low.r2, ]
+# Dendro.data.low.r2 <- Dendro.split[low.r2]
+
+########################
+source('CODE/DENDRO_PLOT_FUNCTIONS.R')
+ts.data <- Dendro.split[[3]]
+params <- param.table[3, ]
+``` -->
+
 
 ## Vetting
 
@@ -139,5 +182,30 @@ The two vetting functions, *id.outliers()* and *find.outliers()*, allow either m
 It is worth noting that within the *get.optimized.dendro()* function there are several filters that also serve to vet data. Insufficient sample size (default = 9 values) results in skipping the fitting function. That function also fits a linear model to the data and if the slope is negative (representing a dead or shrinking stem), then fitting is skipped. The fits also produce *R<sup>2</sup>* values for every fit that is implemented, so that further vetting and subsetting of data for specific analyses can take into account how well the curves fit the data.
 
 ## Presenting
+
+```{r}
+
+
+# Make a pdf of selected datasets
+plot.dendro(ts.data, params = params, r.square = NULL,
+  main.title = "", day = seq(365))
+
+  # This takes multiple years (and bands) from the same tree
+plot.dendro.multiple(Dendro.data.ls, par.dim = c(3, 2), print.pdf = FALSE, out.file = "FIGURES/TEST_PLOTS.pdf",
+  param.tab = param.low.r2, day = seq(365))
+
+#This plots individual time series, such as bands in years for individuals
+plot.dendro.ts(ts.data = Dendro.split[[3]], params = param.table[3, ],
+  day = seq(365))
+
+# find outliers to re-insert into optimization.
+which.outlier <- find.outliers(ts.data, sd.lim = 3)
+
+new.outlier.df <- id.outliers(Dendro.data.low.r2,
+  param.tab = param.low.r2)
+
+INPUT.dendro.2 <- integrate.outlier.id(Dendro.complete, new.outlier.df)
+
+```
 
 There are several plotting functions that present the data directly, with fits, with hulls, over years, and aggregated. Help files explain these different plotting possibilities.
