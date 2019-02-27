@@ -10,7 +10,7 @@
 }
 \arguments{
 \item{ts.data}{A dataframe of a time series of a single tree in a year.
-Must have column variables \emph{DBH_TURE} (numeric) and \emph{DOY} (integer).}
+Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer).}
 
 \item{params}{dataframe vector}
 

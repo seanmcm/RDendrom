@@ -23,7 +23,7 @@
 #' @return Objects Saves four files to the OUTPUT folder as named above and collected stems.
 #' @export
 get.optimized.dendro <- function(INPUT.dendro,
-  no.neg.growth = TRUE, cutoff = 9,
+  no.neg.growth = TRUE, cutoff = 9, units = "cm",
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),
   OUTPUT.folder = "OUTPUT",
   param.table.name = "Param_table.csv",
@@ -49,8 +49,12 @@ get.optimized.dendro <- function(INPUT.dendro,
     ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
     OD <- which(!is.na(ind.data$ORG_DBH))
     ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[OD[1]], length(ind.data$ORG_DBH))
-    ind.data$DBH <- gap2dbh(ind.data$GAP_WIDTH, ind.data$ORG_DBH[1])
-    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
+    ind.data$DBH <- gap2dbh(ind.data$GAP_WIDTH, ind.data$ORG_DBH[1], units = "mm")
+    if(units == "cm") {
+      ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
+    } else {
+      ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1] / 10
+    }
     for(v in 2:length(ind.data$DBH)){
       ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],
         gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1])
@@ -513,7 +517,7 @@ gettruedbh <- function(gw1, gw2, dbh1) {
 #'
 #' @return Numeric vector of DBH_TRUE values
 #' @export
-gap2dbh <- function(gap.width, org.dbh) {
+gap2dbh <- function(gap.width, org.dbh, units = "cm") {
   # computes a vector of dbh values given gap width
   # and starting dbh.
   #
@@ -525,8 +529,11 @@ gap2dbh <- function(gap.width, org.dbh) {
   #   a vector of dbh values
   # TODO: treat gap as a chord and not an arc and translate
   #       to dbh that way
-
-  dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))
+  if(units == "cm") {
+      dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))
+  } else {
+      dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 1 / pi))
+  }
   return(dbh.vec)
 }
 

@@ -4,7 +4,7 @@
 \alias{gap2dbh}
 \title{Gets dbh from gap width given org.dbh.}
 \usage{
-gap2dbh(gap.width, org.dbh)
+gap2dbh(gap.width, org.dbh, units = "cm")
 }
 \arguments{
 \item{gap.width}{Numeric vector of gap width measurements}

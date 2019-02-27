@@ -5,8 +5,8 @@
 \title{Fit the LG5 function}
 \usage{
 get.optimized.dendro(INPUT.dendro, no.neg.growth = TRUE, cutoff = 9,
-  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared",
-  "ts.sd"), OUTPUT.folder = "OUTPUT",
+  units = "cm", par.names = c("L", "K", "doyip", "r", "theta", "a",
+  "b", "r.squared", "ts.sd"), OUTPUT.folder = "OUTPUT",
   param.table.name = "Param_table.csv",
   Dendro.data.name = "Dendro_data.Rdata",
   Dendro.split.name = "Dendro_data_split.Rdata")
