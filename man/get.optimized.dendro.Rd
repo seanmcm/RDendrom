@@ -18,6 +18,8 @@ get.optimized.dendro(INPUT.dendro, no.neg.growth = TRUE, cutoff = 9,
 
 \item{cutoff}{Integer denoting the minimum sample size required to perform the optimization call.}
 
+\item{units}{Character string denoting the units that the dbh is in. Defaults to "cm".}
+
 \item{par.names}{A character vector of the column names of the \emph{params} vector argument.
 This is used to pull out actual parameters from other information.}
 

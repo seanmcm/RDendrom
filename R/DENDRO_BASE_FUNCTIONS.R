@@ -10,6 +10,7 @@
 #' @param INPUT.dendro A data.frame of a specific form (see @details)
 #' @param no.neg.growth logical denoting whether to skip any time series with negative trends (from a call to \emph{lm()})
 #' @param cutoff Integer denoting the minimum sample size required to perform the optimization call.
+#' @param units Character string denoting the units that the dbh is in. Defaults to "cm".
 #' @param par.names  A character vector of the column names of the \emph{params} vector argument.
 #' This is used to pull out actual parameters from other information.
 #' @param OUTPUT.folder Character string for the target output folder.
@@ -514,7 +515,7 @@ gettruedbh <- function(gw1, gw2, dbh1) {
 #'
 #' @param gap.width Numeric vector of gap width measurements
 #' @param org.dbh Numeric scalar of the original dbh of the tree (when bands were installed)
-#'
+#' @param units Character string denoting the units that the dbh is in. Defaults to "cm".
 #' @return Numeric vector of DBH_TRUE values
 #' @export
 gap2dbh <- function(gap.width, org.dbh, units = "cm") {

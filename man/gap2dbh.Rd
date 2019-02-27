@@ -10,6 +10,8 @@ gap2dbh(gap.width, org.dbh, units = "cm")
 \item{gap.width}{Numeric vector of gap width measurements}
 
 \item{org.dbh}{Numeric scalar of the original dbh of the tree (when bands were installed)}
+
+\item{units}{Character string denoting the units that the dbh is in. Defaults to "cm".}
 }
 \value{
 Numeric vector of DBH_TRUE values
