@@ -187,21 +187,21 @@ get.params <- function(ts.data) {
   # weighted values have false ML estimates, so the estimate is re-assessed based on the optimized parameters in an unweighted call
 
   lg5.output.LB <- optim(par = params, doy = doy, dbh = dbh,
-    resid.sd = resid.sd, fn = get.lg5.ML, method = "L-BFGS-B",
+    resid.sd = resid.sd, fn = .get.lg5.ML, method = "L-BFGS-B",
     lower = optim.min, upper = optim.max,
     hessian = FALSE, control = list(trace = 0))
   params <- lg5.output.LB$par
 
   lg5.output.LB.wt <- optim(par = params, doy = doy, dbh = dbh,
-    resid.sd = resid.sd, fn = get.lg5.ML.wt, method = "L-BFGS-B",
+    resid.sd = resid.sd, fn = .get.lg5.ML.wt, method = "L-BFGS-B",
     lower = optim.min, upper = optim.max, hessian = TRUE,
     control = list(trace = 0))
-  lg5.output.LB.wt$value <- get.lg5.ML(params = lg5.output.LB.wt$par, doy, dbh,
+  lg5.output.LB.wt$value <- .get.lg5.ML(params = lg5.output.LB.wt$par, doy, dbh,
     resid.sd = resid.sd)
-  lg5.output.NM.wt <- optim(par = params, fn = get.lg5.ML.wt, resid.sd = resid.sd,
+  lg5.output.NM.wt <- optim(par = params, fn = .get.lg5.ML.wt, resid.sd = resid.sd,
     method = "Nelder-Mead", hessian = TRUE, control = list(trace = 0),
     doy = doy, dbh = dbh)
-  lg5.output.NM.wt$value <- get.lg5.ML(lg5.output.NM.wt$par, doy, dbh,
+  lg5.output.NM.wt$value <- .get.lg5.ML(lg5.output.NM.wt$par, doy, dbh,
     resid.sd = resid.sd)
 
   ## CONSOLIDATE THE RESULTS  ##
