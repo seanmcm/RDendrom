@@ -427,7 +427,7 @@ fit.quantile.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
   optim.max <- as.numeric(c(min(dbhP2, na.rm = TRUE), max(dbhP2, na.rm = TRUE),
     350, 0.1, 15))
 
-  OH.fit <- optim(par = paras, fn = get.get.lg5.ML, resid.sd = resid.sd,
+  OH.fit <- optim(par = paras, fn = .get.lg5.ML, resid.sd = resid.sd,
     method = "L-BFGS-B", lower = optim.min, upper = optim.max,
     hessian = FALSE, control = list(trace = 0), doy = doyP2, dbh = dbhP2)
   deriv.list <- lg5.deriv(OH.fit$par, doyP, growth = (log(b) - log(a)),
