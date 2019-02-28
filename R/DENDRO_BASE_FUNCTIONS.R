@@ -26,7 +26,7 @@
 get.optimized.dendro <- function(INPUT.dendro,
   no.neg.growth = TRUE, cutoff = 9, units = "cm",
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),
-  OUTPUT.folder = "OUTPUT",
+  OUTPUT.folder = ".",
   param.table.name = "Param_table.csv",
   Dendro.data.name = "Dendro_data.Rdata",
   Dendro.split.name = "Dendro_data_split.Rdata") {
@@ -68,12 +68,14 @@ get.optimized.dendro <- function(INPUT.dendro,
     params <- rep(NA, 7)
     r.squared <- 0
     param.mat <- matrix(NA, length(ind.year), length(par.names))
-
+    years <- vector("integer", length(ind.year))
     for(t in 1:length(ind.year)) {
 
       ts.data.tmp <- ind.year[[t]]
       ts.data <- subset(ts.data.tmp, REMOVE == 0)
       ts.sd <- sd(ts.data$DBH_TRUE, na.rm = TRUE)
+      years[t] <- ts.data$YEAR[1]
+
       if (sum(!is.na(ts.data$DBH_TRUE)) < cutoff) {
         param.mat[t, ] <- c(params, r.squared, ts.sd)
         ct <- ct + 1
@@ -98,7 +100,7 @@ get.optimized.dendro <- function(INPUT.dendro,
     }
 
     param.tab.tmp <- data.frame(SITE = ts.data$SITE[1],
-      YEAR = ts.data$YEAR[1], TREE_ID = ts.data$TREE_ID[1],
+      YEAR = years, TREE_ID = ts.data$TREE_ID[1],
       BAND_NUM = ts.data$BAND_NUM[1], UNIQUE_ID = ts.data$UNIQUE_ID[1],
       SP = ts.data$SP[1], param.mat)
     param.table <- rbind(param.table, param.tab.tmp)

@@ -6,7 +6,7 @@
 \usage{
 get.optimized.dendro(INPUT.dendro, no.neg.growth = TRUE, cutoff = 9,
   units = "cm", par.names = c("L", "K", "doyip", "r", "theta", "a",
-  "b", "r.squared", "ts.sd"), OUTPUT.folder = "OUTPUT",
+  "b", "r.squared", "ts.sd"), OUTPUT.folder = ".",
   param.table.name = "Param_table.csv",
   Dendro.data.name = "Dendro_data.Rdata",
   Dendro.split.name = "Dendro_data_split.Rdata")

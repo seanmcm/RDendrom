@@ -32,6 +32,7 @@ data(INPUT_dendro)
 head(INPUT.dendro)
 ```
 
+
 Here we see the basic structure necessary to use the Rdendrom package. The basic variables deal with sites and tags and bands, etc. What *must* be included is the 'TREE_ID', 'SITE', 'BAND_NUM', 'YEAR', 'ORG_DBH', 'GAP_WIDTH', and the four 'STATUS' columns, which will be detailed later. The status columns should be set by default at all zeros (they should only accept integer ones or zeros), and can be ignored. However, I developed them to be able to handle some of the common adjustments that need to be made to dendrometer band data, some of which have useful applications within 'Rdendrom' functions. 'UNIQUE_ID' is important for some subfunctions that split the data according to the 'SITE', 'TREE_ID', and 'BAND_NUM', or any other combination that uniquely identifies a specific time-series.
 
 Once imported, the first script that needs to be run is the *get.optimized.dendro()* function.
@@ -106,8 +107,9 @@ get.extra.metrics(
   Dendro.data.name = sprintf("Dendro_data_complete.Rdata"),
   Dendro.split.name = sprintf("Dendro_data_split_complete.Rdata"),
   Quantile.hull.name = "Quantile.hull.Rdata")
-
 ```
+
+
 
 ```{r eval=TRUE, echo=TRUE}
 param.table.name = sprintf("Param_table_complete.csv")
@@ -145,39 +147,6 @@ This fit is estimated using two passes through the *optim()* function.  The resu
 ## Analyzing
 
 After the initial fits are conducted, additional metrics can be estimated. The primary function for this is the *get.extra.metrics()* function. See the vignette for examples and the help file for details.
-<!--
-```{r}
-
-################################################
-### QUICK TEST OF R-SQUARES AND FITS         ###
-###  WITH OPTIONS TO PLOT AND FIND OUTLIERS. ###
-################################################
-param.table.name = sprintf("Param_table_complete.csv")
-Dendro.data.name = sprintf("Dendro_data_complete.Rdata")
-Dendro.split.name = sprintf("Dendro_data_split_complete.Rdata")
-OUTPUT.folder <- c("./OUTPUT")
-param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
-load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete
-load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split
-load(file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/")) #loads Dendro.tree
-
-summary(subset(param.table, r.squared > 0.75))
-boxplot(param.table$r.squared ~ param.table$SP)
-boxplot(param.table$ts.sd ~ param.table$SP)
-# r2 <- param.table$r.squared
-
-# plot(r2, log(param.table$ts.sd))
-# plot(hist(r2, 50))
-# low.r2 <- which(param.table$r.squared < 0.75 & !is.na(param.table$r) &
-#    param.table$flag == 0)
-# param.low.r2 <- param.table[low.r2, ]
-# Dendro.data.low.r2 <- Dendro.split[low.r2]
-
-########################
-source('CODE/DENDRO_PLOT_FUNCTIONS.R')
-ts.data <- Dendro.split[[3]]
-params <- param.table[3, ]
-``` -->
 
 
 ## Vetting
