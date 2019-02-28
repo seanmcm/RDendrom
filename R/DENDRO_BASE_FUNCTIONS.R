@@ -61,44 +61,6 @@ get.optimized.dendro <- function(INPUT.dendro,
         gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1])
     }
 
-    # Here we fix the new band, slipped band problems (these will be separated)
-    # if(any(ind.data$NEW_BAND == 1 | ind.data$ADJUST == 1, na.rm = TRUE)) {
-    #   which.NB.tot <- which(ind.data$NEW_BAND == 1 | ind.data$ADJUST == 1)
-    #   if(length(which.NB.tot) == 1) {
-    #     which.NB <- which.NB.tot
-    #     NB.ind <- c(which.NB:dim(ind.data)[1])
-
-    #     NB.date <- as.Date(ind.data$DATE[which.NB], format = "%m/%d/%y")
-    #     pre.NB.date <- as.Date(ind.data$DATE[1:(which.NB - 1)], format = "%m/%d/%y")
-    #     start.date.dbh <- ind.data$DBH_TRUE[max(which(pre.NB.date <= NB.date))]
-    #     NB.data <- ind.data$DBH_TRUE[NB.ind]
-    #     NB.data.new <- NB.data - NB.data[1] + start.date.dbh
-    #     ind.data$DBH_TRUE[NB.ind] <- NB.data.new
-    #     } else {
-    #       which.NB.tot <- c(which.NB.tot, length(ind.data$FLAG))
-    #       for(j in 1:(length(which.NB.tot) - 1)) {
-    #         which.NB <- which.NB.tot[j]
-    #         NB.ind   <- c(which.NB:which.NB.tot[j + 1])
-
-    #         NB.date        <- as.Date(ind.data$DATE[which.NB], format = "%m/%d/%y")
-    #         pre.NB.date    <- as.Date(ind.data$DATE[1:(which.NB - 1)], format = "%m/%d/%y")
-    #         start.date.dbh <- ind.data$DBH_TRUE[max(which(pre.NB.date <= NB.date))]
-    #         NB.data        <- ind.data$DBH_TRUE[NB.ind]
-    #         NB.data.new    <- NB.data - NB.data[1] + start.date.dbh
-    #         ind.data$DBH_TRUE[NB.ind] <- NB.data.new
-
-    #       }
-
-    #     }
-
-    #   }
-      # if(any(ind.data$is.B.band != "0")) {
-      #   org.B.band <- ind.data$DBH_TRUE[min(which(ind.data$is.B.band != 0)) - 1]
-      #   band.split <- split(ind.data, ind.data$is.B.band)
-      #   band.split[[2]]$DBH_TRUE <- gap2dbh(band.split[[2]]$GAP_WIDTH, org.B.band)
-      #   ind.data <- unsplit(band.split, f = ind.data$is.B.band)
-      # }
-
     Dendro.tree[[i]] <- ind.data
     ind.year <- split(ind.data,
       f = list(YEAR = ind.data$YEAR, BAND_NUM = ind.data$BAND_NUM), drop = TRUE)
@@ -519,17 +481,6 @@ gettruedbh <- function(gw1, gw2, dbh1) {
 #' @return Numeric vector of DBH_TRUE values
 #' @export
 gap2dbh <- function(gap.width, org.dbh, units = "cm") {
-  # computes a vector of dbh values given gap width
-  # and starting dbh.
-  #
-  # Args:
-  #   gap.width
-  #   org.dbh
-  #
-  # Returns:
-  #   a vector of dbh values
-  # TODO: treat gap as a chord and not an arc and translate
-  #       to dbh that way
   if(units == "cm") {
       dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))
   } else {
