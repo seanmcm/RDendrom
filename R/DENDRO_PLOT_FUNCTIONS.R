@@ -1,43 +1,7 @@
 
-plot.dendro <- function(ts.data, params, r.square = NULL,
-  main.title = "", day = seq(365)) {
-  params <- as.numeric(params)
-
-  plot(ts.data$DOY, ts.data$DBH_TRUE, pch = 19, cex = 0.7, main = main.title,
-    cex.main = 0.9, ylab = "DBH (cm)", xlab = "Day of year", xlim = c(0, 365),
-    col = "gray")
-  lines(day, lg5.pred(params = params,
-     doy = day), col = "red", lty = 3)
-
-  # lines(day, lg5.pred(params = params, day), col = "red", lty = 2)
-  segments(0, params[6], pred.doy(params, params[6]), params[6], col = "black")
-  segments(pred.doy(params, params[7]), params[7], 365, params[7], col = "black")
-
-  if(!is.null(r.square)) mtext(sprintf("R-2: %.2f",
-    r.square), 3, line = -2, adj = 0.2, cex = 0.7)
-}
 
 
 
-# plot.dendro.fit <- function(ts.data, p.means, params.opt,
-#   l_p = NULL, params.ab = NULL, main.title = "", day = seq(365)) {
-
-#   n.p.means <- dim(p.means)[2]
-#   cols <- c(brewer.pal((n.p.means - 1), "Dark2"), "red", "black")
-
-#   plot(ts.data$DOY, ts.data$DBH_TRUE, pch = 19, cex = 0.7, main = main.title,
-#     cex.main = 0.9, ylab = "DBH (cm)", xlab = "Day of year", xlim = c(0, 365),
-#     col = "gray")
-#   for(i in 1:(n.p.means - 1)) {
-#     lines(day, lg5.pred(params = params,
-#      doy = day), col = cols[2], lty = 3)
-#     lp <- p.means[7, i]
-#   }
-#   lines(day, lg5.pred(params = params, day), col = "red", lty = 2)
-#   abline(h = ab)
-#     col = cols,
-#     lty = c(rep(3, n.p.means - 1), 1, 1), cex = 0.6, lwd = 2)
-# }
 
 #' Plotting Dendrometer Band Time Series
 #'
@@ -80,46 +44,135 @@ plot.dendro.ts <- function(ts.data, params = NULL, day = seq(365), outlier = TRU
   }
 }
 
-#' Plotting Multiple Dendrometer Band Time Series
+.sum.doy <- function(x, doy.diff) {
+  return(rep(doy.diff, each = length(x)))
+}
+
+
+#' Plotting dendrometer Band Time Series for a single tree over years
 #'
 #' @param Dendro.tree  A dataframe of a time series of a single tree over multiple years and bands.
 #' Must have column variables \emph{DBH_TRUE} (numeric), \emph{DOY} (integer), and \emph{YEAR} (integer).
-#' @param params dataframe vector
-#' @param day integer vector
-#' @param outlier logical
-#' @param par.names  A character vector of the column names of the params vector. This is used to pull out actual parameters from other information.
-#' @return A plot of the dbh and doy of a single band in a year, with, optionally, a fitted line from the optimize output and outlier denotion in red.
+#' @param param.tab dataframe of fit parameters
 #'
 #' @description Plots an extended time series of dendrometer band measurements (translated into DBH) with
 #' fits, outliers, band position movements, slippage corrections, etc. Can be used for presentation
 #' of single trees, or for diagnostics and fit assessments.
 #' @export
-plot.dendro.tree <- function(Dendro.tree, params = NULL,
-    par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a"),
-    par.dim = c(3, 1), print.pdf = FALSE, out.file = "FIGURES/TEST_PLOTS.pdf",
-    day = seq(365)) {
-  param.col <- names(params) %in% par.names[1:7]
+plot.dendro.tree <- function(Dendro.tree, param.tab) {
 
-  if(print.pdf == TRUE) pdf(file = out.file)
-  par(mfrow = par.dim)
+  get.years      <- unique(Dendro.tree$YEAR) #Just the years
+  start.date     <- paste(get.years[1], "-01-01", sep = "")
+  end.date       <- paste(get.years[length(get.years)], "-12-31", sep = "")
+  date.seq       <- format(seq(as.Date(start.date), as.Date(end.date),
+                    by = "1 day")) # vector of dates y-m-d
+  doy.seq        <- seq_along(date.seq) # sequence length of dates (for x axis)
+  year.index     <- droplevels(cut(as.Date(date.seq), breaks = "year",
+        right = FALSE, drop = TRUE))
+  ln.year.ind    <- length(levels(year.index))
+  year.split.seq <- split(doy.seq, year.index) # splits dates into years
+  year.dates     <- split(date.seq, year.index) # splits dates into years
+  year.doy.seq   <- lapply(year.dates, function(x) seq(length(x)))
 
-  for(i in 1:length(Dendro.data.ls)) {
-    ts.data <- Dendro.data.ls[[i]]
-    plot.dendro(ts.data,
-      params = as.numeric(params[i, param.col]),
-      r.square = as.numeric(params$r.square[i]),
-      main.title = sprintf("SITE: %s | TREE_ID: %s | YEAR: %s",
-        ts.data$SITE[1],
-        ts.data$TREE_ID[1],
-        ts.data$YEAR[1]))
+  doy.shift <- cumsum(sapply(year.doy.seq, length)) - length(year.doy.seq[[1]])
 
-    flag.0 <- subset(ts.data, Outlier == "O")
-    points(flag.0$DOY, flag.0$DBH_TRUE, col = "red")
+  if (length(get.years) != ln.year.ind) return(NULL)
+  # SETTING UP PLOTTING
+
+  doy.ls <- split(Dendro.tree$DOY, Dendro.tree$YEAR)
+  doy.new.tmp <- vector("list", length(doy.ls))
+  for(i in 1:length(doy.ls)) {
+    doy.new.tmp[[i]] <- doy.ls[[i]] + .sum.doy(doy.ls[[i]], doy.shift[i])
   }
-  if(print.pdf == TRUE) dev.off()
+  doy.4.plotting <- as.integer(unlist(doy.new.tmp))
+
+  # GETTING AXES AND MARKERS TOGETHER
+  axis.date.at <- as.integer(which(unlist(year.doy.seq) == 180))
+  year.at <- as.integer(which(unlist(year.doy.seq) == 1))
+  axis.dates <- date.seq[axis.date.at]
+
+  # Need to put any par() adjustments or meta-plot info
+  cols <- ifelse(Dendro.tree$ADJUST != 0, "gold", "black")
+  # Plot the data and establish the axes
+  plot(doy.4.plotting, Dendro.tree$DBH_TRUE, col = cols, pch = 18, cex = 0.5,
+    main = sprintf(" %s | %s | %s", Dendro.tree$SITE[1], Dendro.tree$TREE_ID[1],
+      Dendro.tree$SP[1]),
+    ylab = "DBH (cm)", xlab = "Date", axes = FALSE)
+  axis(2)
+  axis(1, labels = get.years, at = axis.date.at, tick = FALSE)
+  box()
+  abline(v = year.at, col = "gray", lty = 3)
+
+  ##################################################
+  # Plot functional fits to the data
+  # with a and b from fits
+  cols <- c("steelblue", "tomato")
+  p.years <- param.tab$YEAR
+  fit.ls <- vector("list", length(p.years))
+  pred.dbh <- vector("list", dim(param.tab)[1])
+  pred.dbh2 <- vector("list", dim(param.tab)[1])
+  ##################################################
+  # Plot new band data
+
+  ##################################################
+  # Plot extensions of last year's b to next year's a
+  #DONE AS PART OF alt.
+  par.base <- c("L", "K", "doyip", "r", "theta")
+  par.ab <- c("a", "b")
+  param.base.col <- names(param.tab) %in% par.base
+  param.ab.col <- names(param.tab) %in% par.ab
+  param.cc <- complete.cases(param.tab[, param.base.col])
+
+  for(y in 1:dim(param.tab)[1]) {
+    if(param.cc[y] == FALSE) next
+    param.y <- as.numeric(param.tab[y, param.base.col])
+    param.ab <- as.numeric(param.tab[y, param.ab.col])
+    param.ab.alt <- c(param.tab$alt.a[y], param.ab[2]) #as.numeric(param.tab[y, c(11:12)])
+    pred.dbh[[y]] <- lg5.pred.a(a = param.ab, params = param.y,
+      doy = year.doy.seq[[y]])
+    pred.dbh2[[y]] <- lg5.pred.a(a = param.ab.alt, params = param.y,
+      doy = year.doy.seq[[y]])
+    lines(year.split.seq[[y]] , pred.dbh2[[y]], col = cols[2], lty = 2)
+    lines(year.split.seq[[y]] , pred.dbh[[y]], col = cols[1])
+  }
+
+  # param.tab.final <- param.tab
+
+  # if (is.b.band) {
+  #   b.band.yrs <- b.band.param.tab$Year
+  #   slot.year <- match(b.band.yrs, get.years)
+  #   for(y in 1:length(slot.year)) {
+  #     param.y <- as.numeric(b.band.param.tab[y, c(6:10)])
+  #     param.ab <- as.numeric(b.band.param.tab[y, 11:12]) #as.numeric(param.tab[y, c(11:12)])
+  #     pred.dbh[[y]] <- lg5.pred.a(a = param.ab, params = param.y,
+  #       doy = year.doy.seq[[slot.year[y]]])
+  #     lines(year.split.seq[[slot.year[y]]] , pred.dbh[[y]], col = cols[1])
+  #   }
+  #   param.y <- as.numeric(b.band.param.tab[y, c(6:10)])
+  #   param.ab <- param.y[1:2] #as.numeric(param.tab[y, c(11:12)])
+  #   pred.dbh[[y]] <- lg5.pred.a(a = param.ab, params = param.y,
+  #     doy = year.doy.seq[[y]])
+  #   lines(year.split.seq[[y]] , pred.dbh[[y]], col = cols[3])
+  #   b.band.param.tab$alt.a <- param.tab$alt.a[slot.year]
+  #   param.tab.final <- rbind(param.tab, b.band.param.tab)
+  # }
 }
 
 
+#' Automatically identify outliers in dendrometer band time series
+#'
+#' @param ts.data  A dataframe of a time series of a single tree in a year.
+#' Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer),
+#' as well as other designations.
+#' @param params dataframe vector
+#' @param day integer vector
+#' @param par.names  A character vector of the column names of the \emph{params} vector argument.
+#' This is used to pull out actual parameters from other information.
+#'
+#'
+#' @description Identifies outliers that are beyond the determined standard
+#' deviation of the residuals. Assumes residuals are from a fit model.
+#' @export
 find.outliers <- function(ts.data, sd.lim = 3) {
   ol.id <- which(abs(ts.data$sd.resids) > sd.lim)
   ts.data$REMOVE[ol.id] <- 1
@@ -129,17 +182,18 @@ find.outliers <- function(ts.data, sd.lim = 3) {
 #' Identify outliers in dendrometer band time series
 #'
 #' @param ts.data  A dataframe of a time series of a single tree in a year.
-#' Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer), as well as other designations.
+#' Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer),
+#' as well as other designations.
 #' @param params dataframe vector
-#' @param day integer vector
-#' @param par.names  A character vector of the column names of the \emph{params} vector argument.
+#' @param day integer vector, defaults to seq(365)
+#' @param par.names  A character vector of the column names of the \emph{params}
+#' vector argument.
 #' This is used to pull out actual parameters from other information.
 #'
-#' @return none
 #' @export
 #'
-#' @description An interactive figure for the identification and designation of slipped bands, outliers, and problematic bands.
-#' @examples none
+#' @description An interactive figure for the identification and designation of
+#' slipped bands, outliers, and problematic bands.
 id.outliers <- function(ts.data, params, day = seq(365),
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {
 
@@ -185,7 +239,7 @@ id.outliers <- function(ts.data, params, day = seq(365),
     return(do.call(rbind, Dendro.data.ls))
 }
 
-integrate.outlier.id <- function(Dendro.complete, new.outlier.df) {
+.integrate.outlier.id <- function(Dendro.complete, new.outlier.df) {
   TREE.ID.YR <- paste(as.character(Dendro.complete$SITE), as.character(Dendro.complete$TREE_ID),
     as.character(Dendro.complete$YEAR), sep = "_")
   TREE.ID.YR.OL <- paste(as.character(new.outlier.df$SITE), as.character(new.outlier.df$TREE_ID),
@@ -211,7 +265,6 @@ integrate.outlier.id <- function(Dendro.complete, new.outlier.df) {
 #   doyP <- OH.list$doyP
 #   dbhP <- OH.list$dbhP
 #   OH.fit <- OH.list$OH.fit
-# # TODO: figure out start and stop values ...
 #   start.d <- start.diam(params = as.numeric(params), seq.l = seq.l,  doy = doy, dbh, deviation.val = deviation.val, figure = FALSE, resid.sd)
 #   end.d <- end.diam(params = as.numeric(params), seq.l, doy, dbh, deviation.val, figure = FALSE, resid.sd)
 #   asym <- c(start.d[1], end.d[1])

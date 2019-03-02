@@ -2,27 +2,15 @@
 % Please edit documentation in R/DENDRO_PLOT_FUNCTIONS.R
 \name{plot.dendro.tree}
 \alias{plot.dendro.tree}
-\title{Plotting Multiple Dendrometer Band Time Series}
+\title{Plotting dendrometer Band Time Series for a single tree over years}
 \usage{
-\method{plot}{dendro.tree}(Dendro.tree, params = NULL,
-  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a"),
-  par.dim = c(3, 1), print.pdf = FALSE,
-  out.file = "FIGURES/TEST_PLOTS.pdf", day = seq(365))
+\method{plot}{dendro.tree}(Dendro.tree, param.tab)
 }
 \arguments{
 \item{Dendro.tree}{A dataframe of a time series of a single tree over multiple years and bands.
 Must have column variables \emph{DBH_TRUE} (numeric), \emph{DOY} (integer), and \emph{YEAR} (integer).}
 
-\item{params}{dataframe vector}
-
-\item{par.names}{A character vector of the column names of the params vector. This is used to pull out actual parameters from other information.}
-
-\item{day}{integer vector}
-
-\item{outlier}{logical}
-}
-\value{
-A plot of the dbh and doy of a single band in a year, with, optionally, a fitted line from the optimize output and outlier denotion in red.
+\item{param.tab}{dataframe of fit parameters}
 }
 \description{
 Plots an extended time series of dendrometer band measurements (translated into DBH) with

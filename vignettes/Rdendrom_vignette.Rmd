@@ -158,14 +158,8 @@ It is worth noting that within the *get.optimized.dendro()* function there are s
 ## Presenting
 
 ```{r}
-
-
-# Make a pdf of selected datasets
-plot.dendro(ts.data, params = params, r.square = NULL,
-  main.title = "", day = seq(365))
-
   # This takes multiple years (and bands) from the same tree
-plot.dendro.multiple(Dendro.data.ls, par.dim = c(3, 2), print.pdf = FALSE, out.file = "FIGURES/TEST_PLOTS.pdf",
+plot.dendro.tree(Dendro.data.complete, par.dim = c(3, 2), print.pdf = FALSE, out.file = "FIGURES/TEST_PLOTS.pdf",
   param.tab = param.low.r2, day = seq(365))
 
 #This plots individual time series, such as bands in years for individuals
