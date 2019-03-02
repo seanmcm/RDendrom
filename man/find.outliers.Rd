@@ -8,7 +8,8 @@ find.outliers(ts.data, sd.lim = 3)
 }
 \arguments{
 \item{ts.data}{A dataframe of a time series of a single tree in a year.
-Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer), as well as other designations.}
+Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer),
+as well as other designations.}
 
 \item{params}{dataframe vector}
 

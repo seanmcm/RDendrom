@@ -157,22 +157,14 @@ It is worth noting that within the *get.optimized.dendro()* function there are s
 
 ## Presenting
 
-```{r}
-  # This takes multiple years (and bands) from the same tree
-plot.dendro.tree(Dendro.data.complete, par.dim = c(3, 2), print.pdf = FALSE, out.file = "FIGURES/TEST_PLOTS.pdf",
-  param.tab = param.low.r2, day = seq(365))
-
+```{r eval=TRUE, echo=FALSE}
 #This plots individual time series, such as bands in years for individuals
 plot.dendro.ts(ts.data = Dendro.split[[3]], params = param.table[3, ],
   day = seq(365))
 
-# find outliers to re-insert into optimization.
-which.outlier <- find.outliers(ts.data, sd.lim = 3)
+  # This takes multiple years (and bands) from the same tree
+plot.dendro.tree(Dendro.tree[[1]], param.tab = param.table)
 
-new.outlier.df <- id.outliers(Dendro.data.low.r2,
-  param.tab = param.low.r2)
-
-INPUT.dendro.2 <- integrate.outlier.id(Dendro.complete, new.outlier.df)
 
 ```
 

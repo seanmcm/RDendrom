@@ -1,18 +1,17 @@
-
-
-
-
+###################################################
+###  functions for Intensive dendrometer plotting
+###################################################
 
 #' Plotting Dendrometer Band Time Series
 #'
 #' @param ts.data  A dataframe of a time series of a single tree in a year.
 #' Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer).
-#' @param params dataframe vector
+#' @param params dataframe vector (i.e., there are names associated with the vector elements)
 #' @param day integer vector
 #' @param outlier logical
 #' @param par.names  A character vector of the column names of the params vector. This is used to pull out actual parameters from other information.
 #' @return A plot of the dbh and doy of a single band in a year, with, optionally, a fitted line from the optimize output and outlier denotion in red.
-#' @seealso \code{\link{get.param}} which creates Dendro.split, a list vector containing time-series dataframes for every tree, year, band.
+#' @seealso \code{\link{get.params}}, which creates Dendro.split, a list vector containing time-series dataframes for every tree, year, band.
 #' @export
 plot.dendro.ts <- function(ts.data, params = NULL, day = seq(365), outlier = TRUE,
                            par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {

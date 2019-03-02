@@ -1,5 +1,5 @@
 ###################################################
-###  functions for Intensive dendrometer workflow -- OPTIM
+###  functions for Intensive dendrometer workflow
 ###################################################
 
 #############################

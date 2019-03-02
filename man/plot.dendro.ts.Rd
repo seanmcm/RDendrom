@@ -12,7 +12,7 @@
 \item{ts.data}{A dataframe of a time series of a single tree in a year.
 Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer).}
 
-\item{params}{dataframe vector}
+\item{params}{dataframe vector (i.e., there are names associated with the vector elements)}
 
 \item{day}{integer vector}
 
@@ -27,5 +27,5 @@ A plot of the dbh and doy of a single band in a year, with, optionally, a fitted
 Plotting Dendrometer Band Time Series
 }
 \seealso{
-\code{\link{get.param}} which creates Dendro.split, a list vector containing time-series dataframes for every tree, year, band.
+\code{\link{get.params}}, which creates Dendro.split, a list vector containing time-series dataframes for every tree, year, band.
 }

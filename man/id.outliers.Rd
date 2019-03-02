@@ -9,15 +9,18 @@ id.outliers(ts.data, params, day = seq(365), par.names = c("L", "K",
 }
 \arguments{
 \item{ts.data}{A dataframe of a time series of a single tree in a year.
-Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer), as well as other designations.}
+Must have column variables \emph{DBH_TRUE} (numeric) and \emph{DOY} (integer),
+as well as other designations.}
 
 \item{params}{dataframe vector}
 
 \item{day}{integer vector, defaults to seq(365)}
 
-\item{par.names}{A character vector of the column names of the \emph{params} vector argument.
+\item{par.names}{A character vector of the column names of the \emph{params}
+vector argument.
 This is used to pull out actual parameters from other information.}
 }
 \description{
-An interactive figure for the identification and designation of slipped bands, outliers, and problematic bands.
+An interactive figure for the identification and designation of
+slipped bands, outliers, and problematic bands.
 }
