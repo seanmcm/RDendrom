@@ -4,10 +4,10 @@
 \alias{make.dendro.plot.tree}
 \title{Plotting dendrometer Band Time Series for a single tree over years}
 \usage{
-make.dendro.plot.tree(Dendro.tree, param.tab)
+make.dendro.plot.tree(Dendro.ind, param.tab)
 }
 \arguments{
-\item{Dendro.tree}{A dataframe of a time series of a single tree over multiple years and bands.
+\item{Dendro.ind}{A dataframe of a time series of a single tree over multiple years and bands.
 Must have column variables \emph{DBH_TRUE} (numeric), \emph{DOY} (integer), and \emph{YEAR} (integer).}
 
 \item{param.tab}{dataframe of fit parameters}

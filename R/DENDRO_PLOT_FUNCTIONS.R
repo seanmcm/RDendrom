@@ -50,7 +50,7 @@ make.dendro.plot.ts <- function(ts.data, params = NULL, day = seq(365), outlier 
 
 #' Plotting dendrometer Band Time Series for a single tree over years
 #'
-#' @param Dendro.tree  A dataframe of a time series of a single tree over multiple years and bands.
+#' @param Dendro.ind  A dataframe of a time series of a single tree over multiple years and bands.
 #' Must have column variables \emph{DBH_TRUE} (numeric), \emph{DOY} (integer), and \emph{YEAR} (integer).
 #' @param param.tab dataframe of fit parameters
 #'
@@ -58,9 +58,9 @@ make.dendro.plot.ts <- function(ts.data, params = NULL, day = seq(365), outlier 
 #' fits, outliers, band position movements, slippage corrections, etc. Can be used for presentation
 #' of single trees, or for diagnostics and fit assessments.
 #' @export
-make.dendro.plot.tree <- function(Dendro.tree, param.tab) {
+make.dendro.plot.tree <- function(Dendro.ind, param.tab) {
 
-  get.years      <- unique(Dendro.tree$YEAR) #Just the years
+  get.years      <- unique(Dendro.ind$YEAR) #Just the years
   start.date     <- paste(get.years[1], "-01-01", sep = "")
   end.date       <- paste(get.years[length(get.years)], "-12-31", sep = "")
   date.seq       <- format(seq(as.Date(start.date), as.Date(end.date),
@@ -78,7 +78,7 @@ make.dendro.plot.tree <- function(Dendro.tree, param.tab) {
   if (length(get.years) != ln.year.ind) return(NULL)
   # SETTING UP PLOTTING
 
-  doy.ls <- split(Dendro.tree$DOY, Dendro.tree$YEAR)
+  doy.ls <- split(Dendro.ind$DOY, Dendro.ind$YEAR)
   doy.new.tmp <- vector("list", length(doy.ls))
   for(i in 1:length(doy.ls)) {
     doy.new.tmp[[i]] <- doy.ls[[i]] + .sum.doy(doy.ls[[i]], doy.shift[i])
@@ -91,11 +91,11 @@ make.dendro.plot.tree <- function(Dendro.tree, param.tab) {
   axis.dates <- date.seq[axis.date.at]
 
   # Need to put any par() adjustments or meta-plot info
-  cols <- ifelse(Dendro.tree$ADJUST != 0, "gold", "black")
+  cols <- ifelse(Dendro.ind$ADJUST != 0, "gold", "black")
   # Plot the data and establish the axes
-  plot(doy.4.plotting, Dendro.tree$DBH_TRUE, col = cols, pch = 18, cex = 0.5,
-    main = sprintf(" %s | %s | %s", Dendro.tree$SITE[1], Dendro.tree$TREE_ID[1],
-      Dendro.tree$SP[1]),
+  plot(doy.4.plotting, Dendro.ind$DBH_TRUE, col = cols, pch = 18, cex = 0.5,
+    main = sprintf(" %s | %s | %s", Dendro.ind$SITE[1], Dendro.ind$TREE_ID[1],
+      Dendro.ind$SP[1]),
     ylab = "DBH (cm)", xlab = "Date", axes = FALSE)
   axis(2)
   axis(1, labels = get.years, at = axis.date.at, tick = FALSE)

@@ -27,7 +27,7 @@ devtools::install_github("seanmcm/RDendrom")
 ```
 
 ```{r echo=TRUE, eval=TRUE}
-
+library(RDendrom)
 data(INPUT_dendro)
 head(INPUT.dendro)
 ```
@@ -80,7 +80,7 @@ We then fit the time series data using *get.params()*. See help files (or code) 
 
 It is important to **NOTE** that the output of the fitting functions are **files** and not objects. The default folder is the present working directory, but I recommend making an "OUTPUT" directory to hold the sequence of these files. The output files from the first fitting function are input to the second. The output from the second *ammend the first* but do not overwrite them. I'd be glad to adjust this as folks see fit.
 
-OBJECTS are generally referred to with dot '.' separators, whereas file names use underscores "_" for the same separation. So for example, the Dendro.split object is stored in the Dendro_split.Rdata file (by default).
+OBJECTS are generally referred to with dot '.' separators, whereas file names use underscores "\_" for the same separation. So for example, the Dendro.split object is stored in the Dendro_split.Rdata file (by default).
 
 There are four files from the output. Three are list objects that contain the same information, but are in different structures, and the fourth is a csv file, param.table, of parameters and extra metrics. The list files are all of the time series data either
   - combined, the object *Dendro.complete* is in the 'Dendro_data...' Rdata file (name default designated in the argument)
