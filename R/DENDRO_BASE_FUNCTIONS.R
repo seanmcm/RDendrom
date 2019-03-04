@@ -32,12 +32,10 @@ get.optimized.dendro <- function(INPUT.dendro,
   Dendro.split.name = "Dendro_data_split.Rdata") {
 
   options(warn = -1)
-  TREE.ID <- paste(INPUT.dendro$SITE, INPUT.dendro$TREE_ID,
-    INPUT.dendro$BAND_NUM, sep = "_")
   TREE.ID.YR <- paste(as.character(INPUT.dendro$SITE), as.character(INPUT.dendro$TREE_ID),
     as.character(INPUT.dendro$YEAR), sep = "_")
   Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))
-  ind.dendro <- split(INPUT.dendro, f = TREE.ID)
+  ind.dendro <- split(INPUT.dendro, f = INPUT.dendro$TREE_ID)
 
   n.obs <- length(ind.dendro)
 
@@ -48,9 +46,7 @@ get.optimized.dendro <- function(INPUT.dendro,
   for(i in 1:n.obs) {
     setTxtProgressBar(pb, i / n.obs, title = NULL, label = NULL)
     ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
-    OD <- which(!is.na(ind.data$ORG_DBH))
-    ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[OD[1]], length(ind.data$ORG_DBH))
-    ind.data$DBH <- gap2dbh(ind.data$GAP_WIDTH, ind.data$ORG_DBH[1], units = "mm")
+    ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[1], nrow(ind.data))
     if(units == "cm") {
       ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
     } else {
@@ -59,6 +55,24 @@ get.optimized.dendro <- function(INPUT.dendro,
     for(v in 2:length(ind.data$DBH)){
       ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],
         gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1])
+    }
+
+    if(max(ind.data$BAND_NUM) > 1) {
+      # FIX NEW BAND ISSUE
+      nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]
+      for(b in 1:length(nb.index)) {
+        ind.data$ORG_DBH[nb.index[b]:length(ind.data$ORG_DBH)] <- ind.data$DBH_TRUE[(nb.index[b] - 1)]
+        if(units == "cm") {
+          ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
+        } else {
+          ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1] / 10
+        }
+        for(v in 2:length(ind.data$DBH)){
+          ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],
+            gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1])
+        }
+
+      }
     }
 
     Dendro.tree[[i]] <- ind.data

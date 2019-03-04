@@ -1,0 +1,895 @@
+curve(cdf_fn.fast, thresh, xlim[2], n=1000,
+col = cols[3],
+add = TRUE)
+xlim[2]
+x.2
+curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,
+col = cols[3],
+add = TRUE)
+cdf_fn.fast <- cdf(fn.2, thresh, xlim[2])
+curve(cdf_fn.slow, min(x.1), thresh, n=1000,
+main="CDF from Spline Interpolation Function", col = cols[1],
+xlim = range(grow.vec),
+ylim = c(0, 1.1))
+curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,
+col = cols[3],
+add = TRUE)
+?integrate
+cdf <- function(fn, min_x, max_x){#
+   # Returns a cumulative distribution function for a non-negative function over a given range.#
+   f <- function(x){#
+      y <- rep(NA, length(x))#
+      total_area_under_curve <- integrate(fn, min_x, max_x, stop.on.error = FALSE)$value#
+      apply_fn <- function(xval){integrate(fn, min_x, min(xval, max_x), stop.on.error = FALSE)$value}#
+      y[min_x <= x & x <= max_x] <- sapply(x[min_x <= x & x <= max_x], FUN=apply_fn) / total_area_under_curve#
+      y[x < min_x] <- 0#
+      y[x > max_x] <- 1#
+      return(y)#
+   }#
+   return(f)#
+}
+cdf_fn.slow <- cdf(fn.1, min(x.1), thresh)#
+cdf_fn.fast <- cdf(fn.2, thresh, xlim[2])
+curve(cdf_fn.slow, min(x.1), thresh, n=1000,#
+  main="CDF from Spline Interpolation Function", col = cols[1],#
+  xlim = range(grow.vec),#
+  ylim = c(0, 1.1))#
+curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,#
+  col = cols[3],#
+  add = TRUE)
+traceback()
+cdf_inv.hi <- inverse(cdf_fn.fast, min(x.1), thresh)
+cdf_inv.low <- inverse(cdf_fn.slow, min(x.1), thresh)
+random_points <- cdf_inv.low(runif(n_random_points))
+n_random_points <- 100
+cdf_inv.low <- inverse(cdf_fn.slow, min(x.1), thresh)
+cdf_inv.hi <- inverse(cdf_fn.fast, min(x.1), thresh)
+random_points <- cdf_inv.low(runif(n_random_points))
+runif(n_random_points)
+cdf_inv.low
+fn.1
+fn.2
+attr(fn.1)
+str(fn.1)
+cols <- brewer.pal(3, "Dark2")#
+gam.pars <- c(1, 10, 0.5, 1)#
+grow.vec <- seq(0.001, 25, length = 100)#
+xlim <- c(0, 15)#
+thresh <- 4.8#
+thresh.slow <- dgamma(thresh, gam.pars[1], gam.pars[3])#
+  thresh.fast <- dgamma(thresh, gam.pars[2], gam.pars[4])#
+  thresh.prob <- thresh.slow + thresh.fast#
+tot.prob <- mix.gamma(grow.vec, gam.pars)#
+  seq.lo <- which(grow.vec < thresh)#
+  seq.hi <- which(grow.vec > thresh)#
+# par(mfrow = c(2, 1))#
+# plot(grow.vec, slow.prob, type = "l", col = cols[1], axes = FALSE,#
+#   xlab = "Growth (mm)", ylab = "P(grow)")#
+# box()#
+# axis(1)#
+#
+# lines(grow.vec, fast.prob, type = "l", col = cols[3])#
+op <- par(mfrow=c(4, 1))#
+#
+plot(grow.vec, tot.prob, type = "l", col = cols[2], axes = FALSE,#
+  xlab = "Growth (mm)", ylab = "P(grow)")#
+box()#
+axis(1)#
+segments(thresh, 0, thresh, thresh.prob, lty = 3)#
+#
+polygon(c(grow.vec[seq.lo], rev(grow.vec[seq.lo])),#
+  c(tot.prob[seq.lo], rep(0, length(seq.lo))), col = cols[1])#
+polygon(c(grow.vec[seq.hi], rev(grow.vec[seq.hi])),#
+  c(tot.prob[seq.hi], rep(0, length(seq.hi))), col = cols[3])
+x.1 <- grow.vec[seq.lo]#
+y.1 <- mix.gamma(x.1, gam.pars)#
+#
+x.2 <- grow.vec[seq.hi]#
+y.2 <- mix.gamma(x.2, gam.pars)#
+xlim <- c(min(grow.vec), max(grow.vec))#
+fn.1 <- spline_function(x.1, y.1)#
+fn.2 <- spline_function(x.2, y.2)#
+curve(fn.1, xlim[1], thresh, n=1000, main="Spline Interpolation Function",#
+  pch = 18, xlim = range(grow.vec),#
+  ylim = c(0, .5))#
+curve(fn.2, thresh, xlim[2], n=1000, pch = 18, add = TRUE)#
+#
+points(x.1, y.1, pch = 18, col = cols[1])#
+points(x.2, y.2, pch = 18, col = cols[3])#
+#
+# Turn the spline function into a cumulative distribution function and graph it.#
+cdf_fn.slow <- cdf(fn.1, min(x.1), thresh)#
+cdf_fn.fast <- cdf(fn.2, thresh, x.lim[2])#
+curve(cdf_fn.slow, min(x.1), thresh, n=1000,#
+  main="CDF from Spline Interpolation Function", col = cols[1],#
+  xlim = range(grow.vec),#
+  ylim = c(0, 1.1))#
+curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,#
+  col = cols[3],#
+  add = TRUE)
+curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,#
+  col = cols[3],#
+  add = TRUE)
+cdf_fn.fast <- cdf(fn.2, thresh, xlim[2])
+curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,#
+  col = cols[3],#
+  add = TRUE)
+curve(cdf_fn.slow, min(x.1), thresh, n=1000,#
+  main="CDF from Spline Interpolation Function", col = cols[1],#
+  xlim = range(grow.vec),#
+  ylim = c(0, 1.1))#
+curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,#
+  col = cols[3],#
+  add = TRUE)
+min(x.2)
+xlim[2]
+for(i in 1:length(grow.vec)) {#
+  print(integrate(fn.2, grow.vec[i], grow.vec[length(grow.vec)]))#
+}
+i
+x <- grow.vec#
+y <- mix.gamma(x, gam.pars)#
+xlim <- c(min(x), max(x))
+for(i in 1:length(grow.vec)) {#
+  print(integrate(fn, grow.vec[i], grow.vec[length(grow.vec)]))#
+}
+fn <- spline_function(x, y)
+for(i in 1:length(grow.vec)) {#
+  print(integrate(fn, grow.vec[i], grow.vec[length(grow.vec)]))
+}
+for(i in 1:length(x.1)) {#
+  print(integrate(fn.1, x.1[i], x.1[length(x.1)]))#
+}
+for(i in 1:length(x.2)) {#
+  print(integrate(fn.2, x.2[i], x.2[length(x.2)]))#
+}
+x.2
+cdf_fn.fast <- cdf(fn.2, x.2[1], x.2[length(x.2)])
+curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,#
+  col = cols[3],#
+  add = TRUE)
+grow.vec
+grow.vec <- seq(0, 25, length = 100)#
+xlim <- c(0, 15)#
+thresh <- 4.8#
+thresh.slow <- dgamma(thresh, gam.pars[1], gam.pars[3])#
+  thresh.fast <- dgamma(thresh, gam.pars[2], gam.pars[4])#
+  thresh.prob <- thresh.slow + thresh.fast#
+tot.prob <- mix.gamma(grow.vec, gam.pars)#
+  seq.lo <- which(grow.vec < thresh)#
+  seq.hi <- which(grow.vec > thresh)
+tot.prob
+grow.vec
+mix.gamma(grow.vec, gam.pars)
+dgamma(0, shape = 1, rate = 0.5)
+dgamma(-0.001, shape = 1, rate = 0.5)
+cols <- brewer.pal(3, "Dark2")#
+gam.pars <- c(1, 10, 0.5, 1)#
+grow.vec <- seq(0, 40, length = 100)#
+xlim <- c(0, 40)#
+thresh <- 4.8#
+thresh.slow <- dgamma(thresh, gam.pars[1], gam.pars[3])#
+  thresh.fast <- dgamma(thresh, gam.pars[2], gam.pars[4])#
+  thresh.prob <- thresh.slow + thresh.fast#
+tot.prob <- mix.gamma(grow.vec, gam.pars)#
+seq.lo <- seq(0, thresh, length = 100)#
+seq.hi <- seq(thresh, 40, length = 100)
+tot.prob.1 <- mix.gamma(seq.lo, gam.pars)#
+tot.prob.2 <- mix.gamma(seq.hi, gam.pars)#
+#
+# par(mfrow = c(2, 1))#
+# plot(grow.vec, slow.prob, type = "l", col = cols[1], axes = FALSE,#
+#   xlab = "Growth (mm)", ylab = "P(grow)")#
+# box()#
+# axis(1)#
+#
+# lines(grow.vec, fast.prob, type = "l", col = cols[3])#
+op <- par(mfrow=c(4, 1))#
+#
+plot(grow.vec, tot.prob, type = "l", col = cols[2], axes = FALSE,#
+  xlab = "Growth (mm)", ylab = "P(grow)")#
+box()#
+axis(1)#
+segments(thresh, 0, thresh, thresh.prob, lty = 3)#
+#
+polygon(c(seq.lo, rev(seq.lo)),#
+  c(tot.prob.1, rep(0, length(seq.lo))), col = cols[1])#
+polygon(c(seq.hi, rev(seq.hi)),#
+  c(tot.prob.1, rep(0, length(seq.hi))), col = cols[3])
+mix.gamma <- function(x, gam.pars) {#
+  slow.prob <- dgamma(x, gam.pars[1], gam.pars[3])#
+  fast.prob <- dgamma(x, gam.pars[2], gam.pars[4])#
+  return(tot.prob <- 0.95 * slow.prob + 0.05 * fast.prob)#
+}
+# The points to interpolate between.#
+cols <- brewer.pal(3, "Dark2")#
+gam.pars <- c(1, 10, 0.5, 1)#
+grow.vec <- seq(0, 25, length = 100)#
+xlim <- c(0, 15)#
+thresh <- 4.8#
+thresh.slow <- dgamma(thresh, gam.pars[1], gam.pars[3])#
+  thresh.fast <- dgamma(thresh, gam.pars[2], gam.pars[4])#
+  thresh.prob <- thresh.slow + thresh.fast#
+tot.prob <- mix.gamma(grow.vec, gam.pars)#
+  seq.lo <- which(grow.vec < thresh)#
+  seq.hi <- which(grow.vec > thresh)#
+# par(mfrow = c(2, 1))#
+# plot(grow.vec, slow.prob, type = "l", col = cols[1], axes = FALSE,#
+#   xlab = "Growth (mm)", ylab = "P(grow)")#
+# box()#
+# axis(1)#
+#
+# lines(grow.vec, fast.prob, type = "l", col = cols[3])#
+op <- par(mfrow=c(4, 1))#
+#
+plot(grow.vec, tot.prob, type = "l", col = cols[2], axes = FALSE,#
+  xlab = "Growth (mm)", ylab = "P(grow)")#
+box()#
+axis(1)#
+segments(thresh, 0, thresh, thresh.prob, lty = 3)#
+#
+polygon(c(grow.vec[seq.lo], rev(grow.vec[seq.lo])),#
+  c(tot.prob[seq.lo], rep(0, length(seq.lo))), col = cols[1])#
+polygon(c(grow.vec[seq.hi], rev(grow.vec[seq.hi])),#
+  c(tot.prob[seq.hi], rep(0, length(seq.hi))), col = cols[3])
+seq.lo <- seq(0, thresh, length = 100)#
+seq.hi <- seq(thresh, 40, length = 100)#
+tot.prob.1 <- mix.gamma(seq.lo, gam.pars)#
+tot.prob.2 <- mix.gamma(seq.hi, gam.pars)#
+#
+# par(mfrow = c(2, 1))#
+# plot(grow.vec, slow.prob, type = "l", col = cols[1], axes = FALSE,#
+#   xlab = "Growth (mm)", ylab = "P(grow)")#
+# box()#
+# axis(1)#
+#
+# lines(grow.vec, fast.prob, type = "l", col = cols[3])#
+op <- par(mfrow=c(4, 1))#
+#
+plot(grow.vec, tot.prob, type = "l", col = cols[2], axes = FALSE,#
+  xlab = "Growth (mm)", ylab = "P(grow)")#
+box()#
+axis(1)#
+segments(thresh, 0, thresh, thresh.prob, lty = 3)#
+#
+polygon(c(seq.lo, rev(seq.lo)),#
+  c(tot.prob.1, rep(0, length(seq.lo))), col = cols[1])#
+polygon(c(seq.hi, rev(seq.hi)),#
+  c(tot.prob.1, rep(0, length(seq.hi))), col = cols[3])#
+#
+x <- grow.vec#
+y <- mix.gamma(x, gam.pars)#
+xlim <- c(min(x), max(x))
+x.1 <- seq.lo#
+y.1 <- mix.gamma(x.1, gam.pars)
+x.2 <- seq.hi#
+y.2 <- mix.gamma(x.2, gam.pars)
+xlim <- c(min(seq.lo), max(seq.hi))
+fn.1 <- spline_function(x.1, y.1)
+fn.2 <- spline_function(x.2, y.2)
+curve(fn.1, xlim[1], thresh, n=1000, main="Spline Interpolation Function",#
+  pch = 18, xlim = range(c(x.1, x.2)),#
+  ylim = c(0, .5))#
+curve(fn.2, thresh, xlim[2], n=1000, pch = 18, add = TRUE)
+points(x.1, y.1, pch = 18, col = cols[1])#
+points(x.2, y.2, pch = 18, col = cols[3])
+cdf_fn.slow <- cdf(fn.1, x.1[1], thresh)#
+cdf_fn.fast <- cdf(fn.2, thresh, x.2[length(x.2)])
+curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,#
+  col = cols[3],#
+  add = TRUE)
+for(i in 1:length(grow.vec)) {#
+  print(integrate(fn, grow.vec[i], grow.vec[length(grow.vec)]))#
+}#
+for(i in 1:length(x.1)) {#
+  print(integrate(fn.1, x.1[i], x.1[length(x.1)]))#
+}#
+for(i in 1:length(x.2)) {#
+  print(integrate(fn.2, x.2[i], x.2[length(x.2)]))#
+}
+n_random_points <- 100#
+cdf_inv.low <- inverse(cdf_fn.slow, min(x.1), thresh)#
+cdf_inv.hi <- inverse(cdf_fn.fast, min(x.1), thresh)#
+random_points <- cdf_inv.low(runif(n_random_points))
+hist(random_points[random_points < thresh], xlim=xlim, breaks=grow.vec,#
+  main="Random Points from Spline Interpolation Function", col = cols[1],#
+  border = FALSE)
+hist(random_points[random_points >= thresh], xlim=xlim, breaks=grow.vec,#
+  col = cols[3], add = TRUE, border = FALSE)
+random_points <- cdf_inv.hi(runif(n_random_points))
+cdf_inv.hi <- inverse(cdf_fn.fast, min(x.1), thresh)#
+random_points.1 <- cdf_inv.low(runif(n_random_points))#
+random_points.2 <- cdf_inv.hi(runif(n_random_points))
+cdf_inv.hi <- inverse(cdf_fn.fast, thresh, max(x.2)
+random_points.1 <- cdf_inv.low(runif(n_random_points))
+random_points.2 <- cdf_inv.hi(runif(n_random_points))
+cdf_fn.slow <- cdf(fn.1, x.1[1], thresh)#
+cdf_fn.fast <- cdf(fn.2, thresh, x.2[length(x.2)])#
+curve(cdf_fn.slow, xlim[1], thresh, n=1000,#
+  main="CDF from Spline Interpolation Function", col = cols[1],#
+  xlim = range(grow.vec),#
+  ylim = c(0, 1.1))#
+curve(cdf_fn.fast, thresh, xlim[2], n=1000,#
+  col = cols[3],#
+  add = TRUE)
+n_random_points <- 100#
+cdf_inv.low <- inverse(cdf_fn.slow, min(x.1), thresh)#
+cdf_inv.hi <- inverse(cdf_fn.fast, thresh, max(x.2)#
+random_points.1 <- cdf_inv.low(runif(n_random_points))#
+random_points.2 <- cdf_inv.hi(runif(n_random_points))
+cdf_inv.hi <- inverse(cdf_fn.fast, thresh, max(x.2))
+random_points.1 <- cdf_inv.low(runif(n_random_points))
+random_points.2 <- cdf_inv.hi(runif(n_random_points))
+hist(random_points.1, xlim = xlim,
+main="Random Points from Spline Interpolation Function", col = cols[1],
+border = FALSE)
+hist(random_points.2,
+col = cols[3], add = TRUE, border = FALSE)
+n_random_points <- 10000#
+cdf_inv.low <- inverse(cdf_fn.slow, min(x.1), thresh)#
+cdf_inv.hi <- inverse(cdf_fn.fast, thresh, max(x.2))#
+random_points.1 <- cdf_inv.low(runif(n_random_points))#
+random_points.2 <- cdf_inv.hi(runif(n_random_points))#
+#
+# Use a histogram to check that the distribution of the random points is similar to#
+# that of the spline function created from the supplied data.#
+hist(random_points.1, xlim = xlim,#
+  main="Random Points from Spline Interpolation Function", col = cols[1],#
+  border = FALSE)#
+hist(random_points.2,#
+  col = cols[3], add = TRUE, border = FALSE)#
+#
+# Reset the parameters
+cdf_inv.low(0.5)
+cdf_inv.hi(0.5)
+abline(v = cdf_inv.low(0.5))#
+abline(v = cdf_inv.hi(0.5))
+library(RColorBrewer)#
+library(knitr)#
+library(IPMpack)#
+library(truncnorm)#
+cols <- brewer.pal(3, "Dark2")#
+#
+## ----image_plot, eval=TRUE, echo=FALSE, width=5, height=6----------------#
+#
+cohort.hit <- function(perc, time, start.no = 1) {#
+  return(perc ^ time * start.no)#
+}#
+#
+lo <- 100#
+perc.mort <- seq(0.9, 0.99, length.out = lo)#
+time.incr <- seq(1, 50, length.out = lo)#
+mort.mat <- expand.grid(perc.mort, time.incr)#
+out.val <- matrix(cohort.hit(mort.mat[, 1], mort.mat[, 2]), nrow = lo, byrow = FALSE)
+lo <- 100#
+perc.mort <- seq(0.1, 0.01, length.out = lo)#
+time.incr <- seq(1, 50, length.out = lo)#
+mort.mat <- expand.grid((1 - perc.mort), time.incr)#
+out.val <- matrix(cohort.hit(mort.mat[, 1], mort.mat[, 2]), nrow = lo, byrow = FALSE)#
+#
+xx <- rep(perc.mort, times = lo)#
+yy <- rep(time.incr, each = lo)#
+image(perc.mort, time.incr, out.val, col = rev(terrain.colors(100)),#
+  xlab = "% Mortality", ylab = "Years", main = "", breaks = seq(0, 1, by = 0.01))#
+contour(perc.mort, time.incr, out.val, add = TRUE, labcex = 0.9)
+library(RColorBrewer)#
+library(knitr)#
+library(IPMpack)#
+library(truncnorm)#
+cols <- brewer.pal(3, "Dark2")#
+#
+## ----image_plot, eval=TRUE, echo=FALSE, width=5, height=6----------------#
+#
+cohort.hit <- function(perc, time, start.no = 1) {#
+  return(perc ^ time * start.no)#
+}#
+#
+lo <- 100#
+perc.mort <- seq(0.1, 0.01, length.out = lo)#
+time.incr <- seq(1, 50, length.out = lo)#
+mort.mat <- expand.grid((1 - perc.mort), time.incr)#
+out.val <- matrix(cohort.hit(mort.mat[, 1], mort.mat[, 2]), nrow = lo, byrow = FALSE)#
+#
+xx <- rep(perc.mort, times = lo)#
+yy <- rep(time.incr, each = lo)#
+image(perc.mort, time.incr, out.val, col = rev(terrain.colors(100)),#
+  xlab = "% Mortality", ylab = "Years", main = "", breaks = seq(0, 1, by = 0.01))#
+contour(perc.mort, time.incr, out.val, add = TRUE, labcex = 0.9)
+mort.mat
+perc.mort
+image(1 - perc.mort, time.incr, out.val, col = rev(terrain.colors(100)),#
+  xlab = "% Mortality", ylab = "Years", main = "", breaks = seq(0, 1, by = 0.01))
+contour(perc.mort, time.incr, out.val, add = TRUE, labcex = 0.9)
+contour(1 - perc.mort, time.incr, out.val, add = TRUE, labcex = 0.9)
+image(1 - perc.mort, time.incr, out.val, col = rev(terrain.colors(100)),#
+  xlab = "% Mortality", ylab = "Years", main = "", breaks = seq(0, 1, by = 0.01), #
+  axes = FALSE)
+axis(1, ticks = perc.mort, at = 1 - perc.mort)
+?axis
+perc.mort
+mort.lab <- seq(0.1, 0.01, by = 0.1)
+?seq
+seq(0.1, 0.01, by = 0.1)
+mort.lab <- seq(0.1, 0.01, by = 1)
+seq(1, 9, by = 2)     # matches 'end'
+mort.lab <- seq(0.1, 0.01, by = 0.01)
+mort.lab <- seq(0.1, 0.01
+)
+mort.lab
+seq(0.1, 0.01, by = 0.01)
+seq(0.1, 0.01, by = -0.01)
+mort.lab <- seq(0.1, 0.01, by = -0.01)
+axis(1, labels = more.lab, at = 1 - mort.lab)
+image(1 - perc.mort, time.incr, out.val, col = rev(terrain.colors(100)),#
+  xlab = "% Mortality", ylab = "Years", main = "", breaks = seq(0, 1, by = 0.01), #
+  axes = FALSE)#
+contour(1 - perc.mort, time.incr, out.val, add = TRUE, labcex = 0.9)#
+axis(1, labels = mort.lab, at = 1 - mort.lab)
+axis(2)
+box()
+yr.ln <- 300#
+years <- seq(yr.ln)#
+years.2 <- seq(yr.ln * 1.25)#
+bio.max <- 1#
+#
+mp <- 50#
+year.bio <- bio.max * (years / (years + mp))#
+year.bio2 <- bio.max * (years.2 / (years.2 + mp))#
+plot(years, year.bio, "l", cex.axis = 0.8, ylab = "% Total biomass",#
+  cex.lab = 0.85, xlab = "Years", col = "white")#
+polygon(c(years.2, rev(years.2)), c(year.bio2, rep(0, length(year.bio2))),#
+  col = "lightgray", border = NA)#
+#
+LE.98 <- meanLifeExpect(matrix(0.98, 1, 1))#
+LE.96 <- meanLifeExpect(matrix(0.96, 1, 1))#
+#
+segments(LE.98, 0, LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98], LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+#
+segments(LE.96, 0, LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96], LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+#
+segments(LE.98.95, 0, LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98.95], LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+#
+segments(LE.96.95, 0, LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96.95], LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+#
+# polygon(c(LE.96, LE.98, LE.98, LE.96), c(0, 0, year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+# polygon(c(0, LE.96, LE.96, 0), c(year.bio[LE.96], year.bio[LE.96],#
+#   year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+polygon(c(LE.96.95, LE.98.95, LE.98.95, LE.96.95), c(0, 0, year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+#
+polygon(c(0, LE.96.95, LE.96.95, 0), c(year.bio[LE.96.95], year.bio[LE.96.95],#
+  year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+legend("bottomright", c("2% mortality", "4% mortality"), col = c("black", "red"),#
+  lty = 1, cex = 0.8, bty = "n")#
+text(0, year.bio[LE.98.95] - 0.05, labels = "Longest lived 5%", pos = 4, offset = 0.5,#
+  cex = 0.6)#
+#
+# text(0, year.bio[LE.98] - 0.05, labels = "Mean", pos = 4, offset = 0.5,#
+#   cex = 0.6)#
+# mtext("b)", side = 3, line = 0.5, adj = 0)#
+#
+year.bio[LE.98] - year.bio[LE.96]#
+year.bio[LE.98.95] - year.bio[LE.96.95]
+yr.ln <- 300#
+years <- seq(yr.ln)#
+years.2 <- seq(yr.ln * 1.25)#
+bio.max <- 1#
+#
+mp <- 50#
+year.bio <- bio.max * (years / (years + mp))#
+year.bio2 <- bio.max * (years.2 / (years.2 + mp))#
+plot(years, year.bio, "l", cex.axis = 0.8, ylab = "% Total biomass",#
+  cex.lab = 0.85, xlab = "Years", col = "white")#
+polygon(c(years.2, rev(years.2)), c(year.bio2, rep(0, length(year.bio2))),#
+  col = "lightgray", border = NA)#
+#
+LE.98 <- meanLifeExpect(matrix(0.98, 1, 1))#
+LE.96 <- meanLifeExpect(matrix(0.96, 1, 1))
+segments(LE.98, 0, LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98], LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+#
+segments(LE.96, 0, LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96], LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+#
+segments(LE.98.95, 0, LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98.95], LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+#
+segments(LE.96.95, 0, LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96.95], LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+#
+# polygon(c(LE.96, LE.98, LE.98, LE.96)
+yr.ln <- 300#
+years <- seq(yr.ln)#
+surv1 <- 0.98#
+surv2 <- 0.96#
+pop <- 100000#
+LE <- function(x) {#
+    LE.samp <- length(x[!is.na(x)])#
+  return(LE.samp)#
+}#
+#
+pop.mat1 <- matrix(NA, pop, yr.ln)#
+pop.mat1[, 1] <- 1#
+pop.mat2 <- matrix(NA, pop, yr.ln)#
+pop.mat2[, 1] <- 1#
+#
+for(i in 2:yr.ln) {#
+  surv.pop1 <- which(!is.na(pop.mat1[, i - 1]))#
+  surv.out1 <- rbinom(length(surv.pop1), 1, prob = surv1)#
+  pop.mat1[surv.pop1, i] <- ifelse(surv.out1 == 1, 1, NA)#
+#
+  surv.pop2 <- which(!is.na(pop.mat2[, i - 1]))#
+  surv.out2 <- rbinom(length(surv.pop2), 1, prob = surv2)#
+  pop.mat2[surv.pop2, i] <- ifelse(surv.out2 == 1, 1, NA)#
+}#
+#
+LE.1 <- apply(pop.mat1, MAR = 1, LE)#
+dens.1 <- density(LE.1, from = 0)#
+#
+LE.98 <- mean(LE.1)#
+LE.98.95 <- quantile(LE.1, 0.95, na.rm = TRUE)#
+#
+LE.2 <- apply(pop.mat2, MAR = 1, LE)#
+dens.2 <- density(LE.2, from = 0)#
+LE.96 <- mean(LE.2)#
+LE.96.95 <- quantile(LE.2, 0.95, na.rm = TRUE)#
+#
+par(mfrow = c(2, 1), mar = c(4, 4, 2, 2))#
+#
+plot(dens.1$x, dens.1$y / max(dens.1$y), "l", axes = TRUE,#
+  ylab = "Relative frequency", xlab = "Age at death",  cex.lab = 0.85)#
+axis(1)#
+box()#
+lines(dens.2$x, dens.2$y / max(dens.2$y, na.rm = TRUE), col = "red", lty = 1,#
+  lwd = 2)#
+legend("topright", c("2% mortality", "4% mortality"), col = c("black", "red"),#
+  lty = 1, cex = 0.8)#
+mtext("a)", side = 3, line = 0.5, adj = 0)#
+#
+## ----Biomass, eval=TRUE, echo=FALSE, width=6, height=4-------------------#
+#
+yr.ln <- 300#
+years <- seq(yr.ln)#
+years.2 <- seq(yr.ln * 1.25)#
+bio.max <- 1#
+#
+mp <- 50#
+year.bio <- bio.max * (years / (years + mp))#
+year.bio2 <- bio.max * (years.2 / (years.2 + mp))#
+plot(years, year.bio, "l", cex.axis = 0.8, ylab = "% Total biomass",#
+  cex.lab = 0.85, xlab = "Years", col = "white")#
+polygon(c(years.2, rev(years.2)), c(year.bio2, rep(0, length(year.bio2))),#
+  col = "lightgray", border = NA)#
+#
+LE.98 <- meanLifeExpect(matrix(0.98, 1, 1))#
+LE.96 <- meanLifeExpect(matrix(0.96, 1, 1))#
+#
+segments(LE.98, 0, LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98], LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+#
+segments(LE.96, 0, LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96], LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+#
+segments(LE.98.95, 0, LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98.95], LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+#
+segments(LE.96.95, 0, LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96.95], LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+#
+# polygon(c(LE.96, LE.98, LE.98, LE.96), c(0, 0, year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+# polygon(c(0, LE.96, LE.96, 0), c(year.bio[LE.96], year.bio[LE.96],#
+#   year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+polygon(c(LE.96.95, LE.98.95, LE.98.95, LE.96.95), c(0, 0, year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+#
+polygon(c(0, LE.96.95, LE.96.95, 0), c(year.bio[LE.96.95], year.bio[LE.96.95],#
+  year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+legend("bottomright", c("2% mortality", "4% mortality"), col = c("black", "red"),#
+  lty = 1, cex = 0.8, bty = "n")#
+text(0, year.bio[LE.98.95] - 0.05, labels = "Longest lived 5%", pos = 4, offset = 0.5,#
+  cex = 0.6)#
+#
+# text(0, year.bio[LE.98] - 0.05, labels = "Mean", pos = 4, offset = 0.5,#
+#   cex = 0.6)#
+# mtext("b)", side = 3, line = 0.5, adj = 0)#
+#
+year.bio[LE.98] - year.bio[LE.96]#
+year.bio[LE.98.95] - year.bio[LE.96.95]
+yr.ln <- 300#
+years <- seq(yr.ln)#
+surv1 <- 0.98#
+surv2 <- 0.96#
+pop <- 100000#
+LE <- function(x) {#
+    LE.samp <- length(x[!is.na(x)])#
+  return(LE.samp)#
+}#
+#
+pop.mat1 <- matrix(NA, pop, yr.ln)#
+pop.mat1[, 1] <- 1#
+pop.mat2 <- matrix(NA, pop, yr.ln)#
+pop.mat2[, 1] <- 1#
+#
+for(i in 2:yr.ln) {#
+  surv.pop1 <- which(!is.na(pop.mat1[, i - 1]))#
+  surv.out1 <- rbinom(length(surv.pop1), 1, prob = surv1)#
+  pop.mat1[surv.pop1, i] <- ifelse(surv.out1 == 1, 1, NA)#
+#
+  surv.pop2 <- which(!is.na(pop.mat2[, i - 1]))#
+  surv.out2 <- rbinom(length(surv.pop2), 1, prob = surv2)#
+  pop.mat2[surv.pop2, i] <- ifelse(surv.out2 == 1, 1, NA)#
+}#
+#
+LE.1 <- apply(pop.mat1, MAR = 1, LE)#
+dens.1 <- density(LE.1, from = 0)#
+#
+LE.98 <- mean(LE.1)#
+LE.98.95 <- quantile(LE.1, 0.95, na.rm = TRUE)#
+#
+LE.2 <- apply(pop.mat2, MAR = 1, LE)#
+dens.2 <- density(LE.2, from = 0)#
+LE.96 <- mean(LE.2)#
+LE.96.95 <- quantile(LE.2, 0.95, na.rm = TRUE)#
+#
+par(mfrow = c(2, 1), mar = c(4, 4, 2, 2))#
+#
+plot(dens.1$x, dens.1$y / max(dens.1$y), "l", axes = TRUE,#
+  ylab = "Relative frequency", xlab = "Age at death",  cex.lab = 0.85)#
+axis(1)#
+box()#
+lines(dens.2$x, dens.2$y / max(dens.2$y, na.rm = TRUE), col = "red", lty = 1,#
+  lwd = 2)#
+legend("topright", c("2% mortality", "4% mortality"), col = c("black", "red"),#
+  lty = 1, cex = 0.8)#
+mtext("a)", side = 3, line = 0.5, adj = 0)#
+#
+## ----Biomass, eval=TRUE, echo=FALSE, width=6, height=4-------------------#
+#
+yr.ln <- 300#
+years <- seq(yr.ln)#
+years.2 <- seq(yr.ln * 1.25)#
+bio.max <- 1#
+#
+mp <- 50#
+year.bio <- bio.max * (years / (years + mp))#
+year.bio2 <- bio.max * (years.2 / (years.2 + mp))#
+plot(years, year.bio, "l", cex.axis = 0.8, ylab = "% Total biomass",#
+  cex.lab = 0.85, xlab = "Years", col = "white")#
+polygon(c(years.2, rev(years.2)), c(year.bio2, rep(0, length(year.bio2))),#
+  col = "lightgray", border = NA)#
+#
+LE.98 <- meanLifeExpect(matrix(0.98, 1, 1))#
+LE.96 <- meanLifeExpect(matrix(0.96, 1, 1))#
+#
+# segments(LE.98, 0, LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+# segments(0, year.bio[LE.98], LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+#
+# segments(LE.96, 0, LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+# segments(0, year.bio[LE.96], LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+#
+segments(LE.98.95, 0, LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98.95], LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+#
+segments(LE.96.95, 0, LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96.95], LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+#
+# polygon(c(LE.96, LE.98, LE.98, LE.96), c(0, 0, year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+# polygon(c(0, LE.96, LE.96, 0), c(year.bio[LE.96], year.bio[LE.96],#
+#   year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+polygon(c(LE.96.95, LE.98.95, LE.98.95, LE.96.95), c(0, 0, year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+#
+polygon(c(0, LE.96.95, LE.96.95, 0), c(year.bio[LE.96.95], year.bio[LE.96.95],#
+  year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+legend("bottomright", c("2% mortality", "4% mortality"), col = c("black", "red"),#
+  lty = 1, cex = 0.8, bty = "n")#
+text(0, year.bio[LE.98.95] - 0.05, labels = "Longest lived 5%", pos = 4, offset = 0.5,#
+  cex = 0.6)#
+#
+# text(0, year.bio[LE.98] - 0.05, labels = "Mean", pos = 4, offset = 0.5,#
+#   cex = 0.6)#
+# mtext("b)", side = 3, line = 0.5, adj = 0)#
+#
+year.bio[LE.98] - year.bio[LE.96]#
+year.bio[LE.98.95] - year.bio[LE.96.95]
+300*.15
+?png
+?posix
+?posixct
+?date
+?kmeans
+load('~/Downloads/PCA_global.RData')
+objects
+objects()
+head(res)
+class(res)
+str(res)
+coor <- res$ind$coord
+head(coor)
+kmeans(head(coord))
+kmeans(head(coor))
+?kmeans
+kmeans(head(coor), centers = 8)
+kmeans(head(coor, 100), centers = 8)
+kmeans(head(coor, 100), centers = 8) -> km
+table(km)
+str(km)
+table(km$cluster)
+km <- kmeans(head(coor, 100), centers = 8)
+km <- kmeans(head(coor, 100), centers = 8, trace = 1)
+dim(coor)
+km <- kmeans(head(coor, 1000), centers = 8, trace = 1)
+km <- kmeans(head(coor), centers = 8, trace = 1)
+km <- kmeans(coor, centers = 8, trace = 1)
+table(km$cluster)
+km <- kmeans(coor, centers = 8, trace = 1) #
+km2 <- kmeans(coor, centers = 8, trace = 1)
+km2 <- kmeans(coor, centers = 8, trace = 1)
+table(km$cluster)#
+#
+table(km2$cluster)
+km <- kmeans(coor, centers = 8, trace = 1)
+km <- kmeans(coor, centers = 8, trace = 1, max.iter = 20)
+km <- kmeans(coor, centers = 8, trace = 1, iter.max = 20)
+km <- kmeans(coor, centers = 8, trace = 1, iter.max = 20, nstart = 20)
+km2 <- kmeans(coor, centers = 8, trace = 1, nstart = 20)
+table(km$cluster)#
+#
+table(km2$cluster)
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+km <- kmeans(coor, centers = 8, trace = 1, iter.max = 20, nstart = 1) #
+km2 <- kmeans(coor, centers = 8, trace = 1, nstart = 1) #
+#
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+km <- kmeans(coor, centers = 8, trace = 0, iter.max = 20, nstart = 10) #
+km2 <- kmeans(coor, centers = 8, trace = 0, nstart = 10) #
+#
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+km <- kmeans(coor, centers = 8, trace = 0, iter.max = 20, nstart = 100) #
+km2 <- kmeans(coor, centers = 8, trace = 0, nstart = 100)
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+km <- kmeans(coor, centers = 8, trace = 0, iter.max = 20, nstart = 50) #
+km2 <- kmeans(coor, centers = 8, trace = 0, nstart = 50) #
+#
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+km <- kmeans(coor, centers = 8, trace = 0, iter.max = 20, nstart = 30) #
+km2 <- kmeans(coor, centers = 8, trace = 0, nstart = 30) #
+#
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+install.packages('rgl')
+480/60
+8*582
+4656/60
+77.6/20
+load('~/Dropbox/GIT_REPOSITORIES/stan_model/output/Growth_Fit_366_socrex_medium.Rdata')
+objects()
+summary(growth.fit)
+summary(growth.fit[[1]])
+str(growth.fit)
+library(stanarm)
+install.packages(rstan)
+library(rstan)
+?extract
+extract(growth.fit)
+library(shinystan)
+shinystan(growth.fit)
+?shiny
+??shiny
+launch_shinystan(growth.fit)
+devtools::install_github("seanmcm/RDendrom")
+library(RDendrom)
+INPUT.dendro <- read.csv("~/Dropbox (Personal)/GIT_REPOSITORIES/RDendrom/data/INPUT_dendro.csv")
+save(INPUT.dendro, file = "data/INPUT_dendro.RData")
+no.neg.growth = TRUE
+cutoff = 9
+units = "cm"
+par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd")
+OUTPUT.folder = "."
+param.table.name = "Param_table.csv"
+Dendro.data.name = "Dendro_data.Rdata"
+Dendro.split.name = "Dendro_data_split.Rdata"
+options(warn = -1)#
+  TREE.ID <- paste(INPUT.dendro$SITE, INPUT.dendro$TREE_ID,#
+    INPUT.dendro$BAND_NUM, sep = "_")#
+  TREE.ID.YR <- paste(as.character(INPUT.dendro$SITE), as.character(INPUT.dendro$TREE_ID),#
+    as.character(INPUT.dendro$YEAR), sep = "_")#
+  Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))#
+  ind.dendro <- split(INPUT.dendro, f = TREE.ID)#
+#
+  n.obs <- length(ind.dendro)#
+#
+  param.table <-c()#
+  pb <- txtProgressBar(style = 3)#
+  Dendro.tree <- vector("list", length(ind.dendro))#
+  ct <- 1
+i <- 1
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
+ind.data
+OD <- which(!is.na(ind.data$ORG_DBH))[1]
+OD <- which(!is.na(ind.data$ORG_DBH))[1]
+if(units == "cm") {#
+      ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    } else {#
+      ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1] / 10#
+    }
+for(v in 2:length(ind.data$DBH)){#
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],#
+        gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1])#
+    }
+ind.data$DBH_TRUE
+ind.dendro <- split(INPUT.dendro, f = TREE.ID)
+length(ind.dendro)
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
+ind.data
+ind.dendro <- split(INPUT.dendro, f = INPUT.dendro$TREE_ID)
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
+ind.data
+OD <- which(!is.na(ind.data$ORG_DBH))[1]#
+    ind.data$ORG_DBH <- rep(OD, nrow(ind.data))#
+    if(units == "cm") {#
+      ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    } else {#
+      ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1] / 10#
+    }#
+    for(v in 2:length(ind.data$DBH)){#
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],#
+        gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1])#
+    }
+max(ind.data$BAND_NUM > 1)
+max(ind.data$BAND_NUM) > 1
+which(!duplicated(xx$BAND_NUM))
+which(!duplicated(ind.data$BAND_NUM))
+b <- 1
+nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]
+ind.data$ORG_DBH[nb.index[b]:length(ind.data$ORG_DBH)] <- ind.data$ORG_DBH[(nb.index[b] - 1)]
+ind.data$ORG_DBH
+(nb.index[b] - 1)
+ind.data$ORG_DBH[(nb.index[b] - 1)]
+ind.data$ORG_DBH
+OD <- which(!is.na(ind.data$ORG_DBH))[1]#
+    ind.data$ORG_DBH <- rep(OD, nrow(ind.data))
+ind.data
+ind.data$ORG_DBH
+ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[1], nrow(ind.data))
+ind.data$ORG_DBH
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
+ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[1], nrow(ind.data))
+ind.data$ORG_DBH
+if(units == "cm") {#
+      ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    } else {#
+      ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1] / 10#
+    }#
+    for(v in 2:length(ind.data$DBH)){#
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],#
+        gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1])#
+    }
+ind.data$ORG_DBH[nb.index[b]:length(ind.data$ORG_DBH)] <- ind.data$ORG_DBH[(nb.index[b] - 1)]
+ind.data$ORG_DBH
+ind.data$ORG_DBH[nb.index[b]:length(ind.data$ORG_DBH)] <- ind.data$DBH_TRUE[(nb.index[b] - 1)]
+ind.data$ORG_DBH

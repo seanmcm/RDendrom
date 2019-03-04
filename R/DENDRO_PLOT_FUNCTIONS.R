@@ -13,7 +13,7 @@
 #' @return A plot of the dbh and doy of a single band in a year, with, optionally, a fitted line from the optimize output and outlier denotion in red.
 #' @seealso \code{\link{get.params}}, which creates Dendro.split, a list vector containing time-series dataframes for every tree, year, band.
 #' @export
-plot.dendro.ts <- function(ts.data, params = NULL, day = seq(365), outlier = TRUE,
+make.dendro.plot.ts <- function(ts.data, params = NULL, day = seq(365), outlier = TRUE,
                            par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {
 
   plot(ts.data$DOY, ts.data$DBH_TRUE, pch = 19, cex = 0.7,
@@ -58,7 +58,7 @@ plot.dendro.ts <- function(ts.data, params = NULL, day = seq(365), outlier = TRU
 #' fits, outliers, band position movements, slippage corrections, etc. Can be used for presentation
 #' of single trees, or for diagnostics and fit assessments.
 #' @export
-plot.dendro.tree <- function(Dendro.tree, param.tab) {
+make.dendro.plot.tree <- function(Dendro.tree, param.tab) {
 
   get.years      <- unique(Dendro.tree$YEAR) #Just the years
   start.date     <- paste(get.years[1], "-01-01", sep = "")
@@ -200,7 +200,7 @@ id.outliers <- function(ts.data, params, day = seq(365),
 
   for(i in 1:dim(params)[1]) {
     ts.data <- Dendro.data.ls[[i]]
-    plot.dendro(ts.data,
+    make.dendro.plot(ts.data,
       params = as.numeric(params[i, param.col]),
       r.square = NULL,
       main.title = sprintf("SITE: %s | TREE_ID: %s | YEAR: %s",
