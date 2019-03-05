@@ -31,9 +31,6 @@ library(RDendrom)
 data(INPUT_dendro)
 head(INPUT.dendro)
 ```
-
-
-
 Here we see the basic structure necessary to use the Rdendrom package. The basic variables deal with sites and tags and bands, etc. What *must* be included is the 'TREE_ID', 'SITE', 'BAND_NUM', 'YEAR', 'ORG_DBH', 'GAP_WIDTH', and the four 'STATUS' columns, which will be detailed later. The status columns should be set by default at all zeros (they should only accept integer ones or zeros), and can be ignored. However, I developed them to be able to handle some of the common adjustments that need to be made to dendrometer band data, some of which have useful applications within 'Rdendrom' functions. 'UNIQUE_ID' is important for some subfunctions that split the data according to the 'SITE', 'TREE_ID', and 'BAND_NUM', or any other combination that uniquely identifies a specific time-series.
 
 Once imported, the first script that needs to be run is the *get.optimized.dendro()* function.
@@ -167,7 +164,7 @@ make.dendro.plot.ts(ts.data = Dendro.split[[3]], params = param.table[3, ],
   day = seq(365))
 
   # This takes multiple years (and bands) from the same tree
-make.dendro.plot.tree(Dendro.tree[[1]], param.tab = param.table)
+make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = param.table)
 
 
 ```

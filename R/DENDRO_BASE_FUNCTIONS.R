@@ -47,31 +47,26 @@ get.optimized.dendro <- function(INPUT.dendro,
     setTxtProgressBar(pb, i / n.obs, title = NULL, label = NULL)
     ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
     ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[1], nrow(ind.data))
-    if(units == "cm") {
-      ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
-    } else {
-      ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1] / 10
-    }
-    for(v in 2:length(ind.data$DBH)){
+    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
+    for(v in 2:length(ind.data$DBH)) {
       ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],
-        gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1])
+        gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)
     }
+    ind.data$DBH_TRUE[1] <- ifelse(units == "cm", ind.data$ORG_DBH, ind.data$ORG_DBH[1] / 10)
+
 
     if(max(ind.data$BAND_NUM) > 1) {
       # FIX NEW BAND ISSUE
       nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]
       for(b in 1:length(nb.index)) {
-        ind.data$ORG_DBH[nb.index[b]:length(ind.data$ORG_DBH)] <- ind.data$DBH_TRUE[(nb.index[b] - 1)]
-        if(units == "cm") {
-          ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
-        } else {
-          ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1] / 10
-        }
-        for(v in 2:length(ind.data$DBH)){
+        ind.data$ORG_DBH[nb.index[b]:length(ind.data$ORG_DBH)] <-
+        ind.data$DBH_TRUE[(nb.index[b] - 1)]
+        ind.data$DBH_TRUE[nb.index[b]] <- ind.data$ORG_DBH[nb.index[b]]
+        for(v in (nb.index[b] + 1):length(nb.index)){
           ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],
-            gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1])
+            gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1],
+            units = units)
         }
-
       }
     }
 
@@ -147,24 +142,24 @@ get.params <- function(ts.data) {
   dbh      <- ts.data$DBH_TRUE
   doy      <- as.integer(ts.data$DOY)
     # date     <- Dates(ts.data$DATE, "%m/%d/%y") # need to fix this for plots
-    doy[doy < 75] <- NA
-    complete <- complete.cases(dbh, doy)
-    dbh      <- as.numeric(dbh[complete])
-    doy      <- as.numeric(doy[complete])
+  doy[doy < 75] <- NA
+  complete <- complete.cases(dbh, doy)
+  dbh      <- as.numeric(dbh[complete])
+  doy      <- as.numeric(doy[complete])
 
-    doy.ip.hat <- doy[(which(dbh > mean(dbh)))[1]]
+  doy.ip.hat <- doy[(which(dbh > mean(dbh)))[1]]
 
-    optim.min <- c((min(dbh, na.rm = TRUE) * 0.99),
-      quantile(dbh, 0.5, na.rm = TRUE), -50, 0, 0.01)
+  optim.min <- c((min(dbh, na.rm = TRUE) * 0.99),
+    quantile(dbh, 0.5, na.rm = TRUE), -50, 0, 0.01)
 
-    optim.max <- c(min(dbh, na.rm = TRUE), max(dbh, na.rm = TRUE),
-      350, 0.1, 15)
-    resid.sd <- 0.02
+  optim.max <- c(min(dbh, na.rm = TRUE), max(dbh, na.rm = TRUE),
+    350, 0.1, 15)
+  resid.sd <- 0.02
 
-    par.list <- list(L = min(dbh, na.rm = TRUE), K = max(dbh, na.rm = TRUE),
-      doy.ip = doy.ip.hat, r = .08, theta = 1)
-    params.start <- as.numeric(unlist(par.list))
-    params <- params.start
+  par.list <- list(L = min(dbh, na.rm = TRUE), K = max(dbh, na.rm = TRUE),
+    doy.ip = doy.ip.hat, r = .08, theta = 1)
+  params.start <- as.numeric(unlist(par.list))
+  params <- params.start
 
   ##  THESE ARE THE CALLS TO OPTIM  ##
   # weighted values have false ML estimates, so the estimate is re-assessed based on the optimized parameters in an unweighted call
@@ -230,7 +225,7 @@ get.extra.metrics <- function(
   param.table,
   Dendro.split,
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared",
-  "ts.sd", "alt.a"),
+    "ts.sd", "alt.a"),
   OUTPUT.folder      = "OUTPUT",
   param.table.name   = "Param_table_complete.csv",
   Dendro.split.name  = "Dendro_split.Rdata",
@@ -475,7 +470,9 @@ get.alt.a <- function(param.tab) {
 #'
 #' @return Numeric scalar for the corrected DBH
 #' @export
-gettruedbh <- function(gw1, gw2, dbh1) {
+gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {
+  gw1 <- ifelse(units == "cm", gw1, gw1 * 0.1)
+  gw2 <- ifelse(units == "cm", gw1, gw1 * 0.1)
   rhs  <- dbh1 * (pi - asin(gw1 / dbh1))
   #rhs is the length of the dendrometer band at time 1
   dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),
@@ -498,9 +495,9 @@ gettruedbh <- function(gw1, gw2, dbh1) {
 #' @export
 gap2dbh <- function(gap.width, org.dbh, units = "cm") {
   if(units == "cm") {
-      dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))
+    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))
   } else {
-      dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 1 / pi))
+    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 1 / pi))
   }
   return(dbh.vec)
 }
@@ -519,14 +516,14 @@ gap2dbh <- function(gap.width, org.dbh, units = "cm") {
 #' @export
 lg5.pred <- function(params, doy) {
   paras <- names(params) %in% c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")
-	L <- params[1] # min(dbh, na.rm = T)
-	K <- params[2]
-	doy.ip <- params[3]
-	r <- params[4]
-	theta <- params[5]
-	dbh <- vector(length = length(doy))
-	dbh <- L + ((K - L) / (1 + 1/theta * exp(-(r * (doy - doy.ip) / theta)) ^ theta))
-	return(dbh)
+  L <- params[1] # min(dbh, na.rm = T)
+  K <- params[2]
+  doy.ip <- params[3]
+  r <- params[4]
+  theta <- params[5]
+  dbh <- vector(length = length(doy))
+  dbh <- L + ((K - L) / (1 + 1/theta * exp(-(r * (doy - doy.ip) / theta)) ^ theta))
+  return(dbh)
 }
 
 .get.lg5.ML <- function(params, doy, dbh, resid.sd) {
@@ -544,8 +541,8 @@ lg5.pred <- function(params, doy) {
 
 .get.lg5.resids <- function(params, doy, dbh) {
   para <- as.numeric(params)
-	lg5.resid <- dbh - lg5.pred(para, doy)
-	return(lg5.resid)
+  lg5.resid <- dbh - lg5.pred(para, doy)
+  return(lg5.resid)
 }
 
 #' Predicts the day of the year given a diameter and parameter values
@@ -659,10 +656,10 @@ get.QH.resid <- function(params, doy, dbh, log.rate = FALSE) {
 #' @export
 lg5.deriv <- function(paras, doy, growth = 1, shift = 0.5) {
   paras = as.numeric(paras)
-	.loVal <- lg5.pred(paras, (doy - shift))
-	.hiVal <- lg5.pred(paras, (doy + shift))
-	deriv.lg5 <- (.hiVal - .loVal) / (2 * shift)
-	return(deriv.lg5 / growth)
+  .loVal <- lg5.pred(paras, (doy - shift))
+  .hiVal <- lg5.pred(paras, (doy + shift))
+  deriv.lg5 <- (.hiVal - .loVal) / (2 * shift)
+  return(deriv.lg5 / growth)
 }
 
 #' Find day of the year of maximum growth
@@ -673,11 +670,11 @@ lg5.deriv <- function(paras, doy, growth = 1, shift = 0.5) {
 #' @export
 max.growth.day <- function(params) {
   paras <- as.numeric(params)
-	days <- seq(365)
-	.deriv <- lg5.deriv(paras, days)
-	fastest.day <- max(days[which( .deriv == max(.deriv))],
+  days <- seq(365)
+  .deriv <- lg5.deriv(paras, days)
+  fastest.day <- max(days[which( .deriv == max(.deriv))],
     start.day, na.rm = TRUE)
-	return(fastest.day)
+  return(fastest.day)
 }
 
 #' Find rate of maximum growth
@@ -688,9 +685,9 @@ max.growth.day <- function(params) {
 #' @export
 max.growth.rate <- function(params) {
   paras <- as.numeric(params)
-	days <- seq(round(pred.doy(params, params$a)), 365)
-	.deriv <- lg5.deriv(paras, days)
-	growth.rate <- max(.deriv, na.rm = TRUE)
-	return(growth.rate)
+  days <- seq(round(pred.doy(params, params$a)), 365)
+  .deriv <- lg5.deriv(paras, days)
+  growth.rate <- max(.deriv, na.rm = TRUE)
+  return(growth.rate)
 }
 
