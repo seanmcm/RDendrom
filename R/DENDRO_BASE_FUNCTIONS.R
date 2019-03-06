@@ -317,8 +317,8 @@ get.extra.metrics <- function(
     ts.data$sd.resids <- scale(ts.data$resids.vec)
     RGR[i] <- as.numeric(log(params$b) - log(params$a))
     GR[i] <- as.numeric(params$b - params$a)
-    max.growth.day[i] <- as.numeric(params)
-    max.growth.rate[i] <- as.numeric(params)
+    max.growth.day[i] <- max.growth.day(as.numeric(params))
+    max.growth.rate[i] <- max.growth.rate(params)
     Size[i] <- params$a
     Size.alt[i] <- params$alt.a
     start.doy[i] <- round(pred.doy(params, params$a))
@@ -680,8 +680,7 @@ max.growth.day <- function(params) {
   paras <- as.numeric(params)
   days <- seq(365)
   .deriv <- lg5.deriv(paras, days)
-  fastest.day <- max(days[which( .deriv == max(.deriv))],
-    start.day, na.rm = TRUE)
+  fastest.day <- max(days[which( .deriv == max(.deriv))], na.rm = TRUE)
   return(fastest.day)
 }
 

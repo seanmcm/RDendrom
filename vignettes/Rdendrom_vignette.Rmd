@@ -22,11 +22,11 @@ An R package for analysis, diagnostics, and presentation of intra-annual tree gr
 
 `RDendrom` is a suite of functions designed to handle time series data from 'manual' dendrometer band measurements conducted intensively through the growing season. The data enter in a set 'long' form with such as in the following header file.
 
-```{r echo=TRUE, eval=TRUE}
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, results="hide"}
 devtools::install_github("seanmcm/RDendrom")
 ```
 
-```{r echo=TRUE, eval=TRUE}
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, results="hide"}
 library(RDendrom)
 data(INPUT_data)
 head(INPUT.data)
@@ -36,7 +36,7 @@ Here we see the basic structure necessary to use the Rdendrom package. The basic
 
 Once imported, the first script that needs to be run is the *get.optimized.dendro()* function.
 
-```{r eval=FALSE, echo=TRUE}
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, results="hide"}
 get.optimized.dendro(INPUT.data,
   no.neg.growth = TRUE, cutoff = 9,
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),
@@ -88,7 +88,7 @@ There are four files from the output. Three are list objects that contain the sa
 
 So to get advanced metrics, we **reload** the output files from the fitting and run the *get.extra.metrics()* function.
 
-```{r eval=TRUE, echo=FALSE}
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, results="hide"}
 param.table.name = sprintf("Param_table.csv")
 Dendro.data.name = sprintf("Dendro_data.Rdata")
 Dendro.split.name = sprintf("Dendro_data_split.Rdata")
@@ -113,11 +113,11 @@ get.extra.metrics(
 
 
 
-```{r eval=TRUE, echo=TRUE}
+```{r eval=TRUE, echo=3:4, tidy=TRUE, results="markup"}
 param.table.name = sprintf("Param_table_complete.csv")
 OUTPUT.folder <- c(".")
-param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
-head(param.table)
+param.table.extended <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
+head(param.table.extended)
 
 ```
 Output from this function is similar to the ouptput of the first fitting function,except for an extra list object file, with the name *Quantile.hull.name*. This is a list object of length n.time.series where each element is the the fitting information from QH.list.
@@ -155,19 +155,20 @@ After the initial fits are conducted, additional metrics can be estimated. The p
 
 The two vetting functions, *id.outliers()* and *find.outliers()*, allow either manual or automatic designation of problem measurements respectively. *id.outliers()* allows interactive (point and click) identification of outliers that are flagged, re-incorporated into the data, and then ignored during re-runs of parameter estimation. *find.outliers()* uses residuals from the fit curves to flag values outside of a designated numer of standard deviations from zero (default = 3).
 
-It is worth noting that within the *get.optimized.dendro()* function there are several filters that also serve to vet data. Insufficient sample size (default = 9 values) results in skipping the fitting function. That function also fits a linear model to the data and if the slope is negative (representing a dead or shrinking stem), then fitting is skipped. The fits also produce *R<sup>2</sup>* values for every fit that is implemented, so that further vetting and subsetting of data for specific analyses can take into account how well the curves fit the data.
+It is worth noting that within the *get.optimized.dendro()* function there are filters that also serve to vet data. Insufficient sample size (default = 9 values) results in skipping the fitting function. That function also fits a linear model to the data and if the slope is negative (representing a dead or shrinking stem), then fitting is skipped. The fits also produce *R<sup>2</sup>* values for every fit that is implemented, so that further vetting and subsetting of data for specific analyses can take into account how well the curves fit the data.
 
 ## Presenting
+There are several plotting functions that present the data directly, with fits, with hulls, over years, and aggregated. Help files explain these different plotting possibilities.
 
-```{r eval=TRUE, echo=FALSE}
-#This plots individual time series, such as bands in years for individuals
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, results="hide", fig.width=5, fig.height=3, fig.cap="Individual time series, such as bands in years for individuals."}
 make.dendro.plot.ts(ts.data = Dendro.split[[3]], params = param.table[3, ],
   day = seq(365))
 
-  # This takes multiple years (and bands) from the same tree
+```
+
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, results="hide", fig.width=7, fig.height=4, fig.cap="Single tree with multiple bands over years."}
 make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = subset(param.table, TREE_ID == Dendro.tree[[1]]$TREE_ID[1]))
 
 
 ```
 
-There are several plotting functions that present the data directly, with fits, with hulls, over years, and aggregated. Help files explain these different plotting possibilities.

@@ -1,48 +1,3 @@
-col = cols[3],
-add = TRUE)
-cdf_fn.fast <- cdf(fn.2, thresh, xlim[2])
-curve(cdf_fn.slow, min(x.1), thresh, n=1000,
-main="CDF from Spline Interpolation Function", col = cols[1],
-xlim = range(grow.vec),
-ylim = c(0, 1.1))
-curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,
-col = cols[3],
-add = TRUE)
-?integrate
-cdf <- function(fn, min_x, max_x){#
-   # Returns a cumulative distribution function for a non-negative function over a given range.#
-   f <- function(x){#
-      y <- rep(NA, length(x))#
-      total_area_under_curve <- integrate(fn, min_x, max_x, stop.on.error = FALSE)$value#
-      apply_fn <- function(xval){integrate(fn, min_x, min(xval, max_x), stop.on.error = FALSE)$value}#
-      y[min_x <= x & x <= max_x] <- sapply(x[min_x <= x & x <= max_x], FUN=apply_fn) / total_area_under_curve#
-      y[x < min_x] <- 0#
-      y[x > max_x] <- 1#
-      return(y)#
-   }#
-   return(f)#
-}
-cdf_fn.slow <- cdf(fn.1, min(x.1), thresh)#
-cdf_fn.fast <- cdf(fn.2, thresh, xlim[2])
-curve(cdf_fn.slow, min(x.1), thresh, n=1000,#
-  main="CDF from Spline Interpolation Function", col = cols[1],#
-  xlim = range(grow.vec),#
-  ylim = c(0, 1.1))#
-curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,#
-  col = cols[3],#
-  add = TRUE)
-traceback()
-cdf_inv.hi <- inverse(cdf_fn.fast, min(x.1), thresh)
-cdf_inv.low <- inverse(cdf_fn.slow, min(x.1), thresh)
-random_points <- cdf_inv.low(runif(n_random_points))
-n_random_points <- 100
-cdf_inv.low <- inverse(cdf_fn.slow, min(x.1), thresh)
-cdf_inv.hi <- inverse(cdf_fn.fast, min(x.1), thresh)
-random_points <- cdf_inv.low(runif(n_random_points))
-runif(n_random_points)
-cdf_inv.low
-fn.1
-fn.2
 attr(fn.1)
 str(fn.1)
 cols <- brewer.pal(3, "Dark2")#
@@ -795,8 +750,7 @@ shinystan(growth.fit)
 ?shiny
 ??shiny
 launch_shinystan(growth.fit)
-getwd()
-list.files()
+devtools::install_github("seanmcm/RDendrom")
 devtools::install_github("seanmcm/RDendrom")
 library(RDendrom)
 data(INPUT_data)
@@ -808,10 +762,6 @@ get.optimized.dendro(INPUT.data,#
   param.table.name = sprintf("Param_table.csv"),#
   Dendro.data.name = sprintf("Dendro_data.Rdata"),#
   Dendro.split.name = sprintf("Dendro_data_split.Rdata"))
-param.table.name = sprintf("Param_table.csv")
-param.table.name = sprintf("Param_table.csv")
-param.table.name = sprintf("Param_table.csv")
-param.table.name = sprintf("Param_table.csv")
 param.table.name = sprintf("Param_table.csv")
 Dendro.data.name = sprintf("Dendro_data.Rdata")
 Dendro.split.name = sprintf("Dendro_data_split.Rdata")
@@ -828,14 +778,19 @@ get.extra.metrics(#
   Dendro.data.name = sprintf("Dendro_data_complete.Rdata"),#
   Dendro.split.name = sprintf("Dendro_data_split_complete.Rdata"),#
   Quantile.hull.name = "Quantile.hull.Rdata")
-param.table.name = sprintf("Param_table_complete.csv")#
-OUTPUT.folder <- c(".")#
-param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))#
+param.table.name = sprintf("Param_table_complete.csv")
+OUTPUT.folder <- c(".")
+param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
 head(param.table)
 make.dendro.plot.ts(ts.data = Dendro.split[[3]], params = param.table[3, ],#
   day = seq(365))
 make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = subset(param.table, TREE_ID == Dendro.tree[[1]]$TREE_ID[1]))
-TREE.ID.YR <- paste(as.character(INPUT.data$SITE), as.character(INPUT.data$TREE_ID),#
+no.neg.growth = TRUE
+cutoff = 9
+units = "cm"
+par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd")
+options(warn = -1)#
+  TREE.ID.YR <- paste(as.character(INPUT.data$SITE), as.character(INPUT.data$TREE_ID),#
     as.character(INPUT.data$YEAR), sep = "_")#
   Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))#
   ind.dendro <- split(INPUT.data, f = INPUT.data$TREE_ID)#
@@ -846,139 +801,113 @@ TREE.ID.YR <- paste(as.character(INPUT.data$SITE), as.character(INPUT.data$TREE_
   pb <- txtProgressBar(style = 3)#
   Dendro.tree <- vector("list", length(ind.dendro))#
   ct <- 1
-gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {#
-  dbh1 <- ifelse(units == "cm", dbh1 * 10, dbh1)#
-  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))#
-  #rhs is the length of the dendrometer band at time 1#
-  dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
-    gw2 = gw2, rhs = rhs)#
-  dbh2.min <- ifelse(units == "cm", dbh2$minimum / 10, dbh2$minimum)#
-  return(dbh2.min)#
-}#
+INPUT.data <- read.csv("data/input_data.csv")
+save(INPUT.data, file = "data/INPUT_data.RData")
+INPUT.data
+,#
+  no.neg.growth = TRUE, cutoff = 9,#
+  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),#
+  OUTPUT.folder = ".",#
+  param.table.name = sprintf("Param_table.csv"),#
+  Dendro.data.name = sprintf("Dendro_data.Rdata"),#
+  Dendro.split.name = sprintf("Dendro_data_split.Rdata"))
+get.optimized.dendro(INPUT.data,#
+  no.neg.growth = TRUE, cutoff = 9,#
+  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),#
+  OUTPUT.folder = ".",#
+  param.table.name = sprintf("Param_table.csv"),#
+  Dendro.data.name = sprintf("Dendro_data.Rdata"),#
+  Dendro.split.name = sprintf("Dendro_data_split.Rdata"))
+param.table.name = sprintf("Param_table.csv")
+Dendro.data.name = sprintf("Dendro_data.Rdata")
+Dendro.split.name = sprintf("Dendro_data_split.Rdata")
+OUTPUT.folder <- c(".")
+param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
+load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete
+load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split
+load(file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/")) #loads Dendro.tree
+get.extra.metrics(#
+  param.table,#
+  Dendro.split,#
+  OUTPUT.folder      = ".",#
+  param.table.name = sprintf("Param_table_complete.csv"),#
+  Dendro.data.name = sprintf("Dendro_data_complete.Rdata"),#
+  Dendro.split.name = sprintf("Dendro_data_split_complete.Rdata"),#
+  Quantile.hull.name = "Quantile.hull.Rdata")
+make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = subset(param.table, TREE_ID == Dendro.tree[[1]]$TREE_ID[1]))
+options(warn = -1)#
+  TREE.ID.YR <- paste(as.character(INPUT.data$SITE), as.character(INPUT.data$TREE_ID),#
+    as.character(INPUT.data$YEAR), sep = "_")#
+  Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))#
+  ind.dendro <- split(INPUT.data, f = INPUT.data$TREE_ID)#
 #
-.difdendro <- function(dbh2, gw2, rhs) {#
-  lhs <- dbh2 * (pi - asin(gw2 / dbh2))#
-  return(abs(lhs - rhs))#
-}
-gap2dbh <- function(gap.width, org.dbh, units = "cm") {#
-  if(units == "cm") {#
-    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / pi))#
-  } else {#
-    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))#
-  }#
-  return(dbh.vec)#
-}
+  n.obs <- length(ind.dendro)#
+#
+  param.table <-c()#
+  pb <- txtProgressBar(style = 3)#
+  Dendro.tree <- vector("list", length(ind.dendro))#
+  ct <- 1
 i <- 1
 ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
     ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
     for(v in 2:length(ind.data$DBH)) {#
       ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
         gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
-    }#
+    }
+nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
 #
-    if(max(ind.data$BAND_NUM) > 1) {#
+      ind.data.band <- split(ind.data, ind.data$BAND_NUM)
+ind.data.band
+b <- 2
+nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
 #
-      # FIX NEW BAND ISSUE#
-      nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
-#
-      ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
-#
-      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
-      for(b in 2:length(ind.data.band)) {#
-        doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1]))#
+      ind.data.band <- split(ind.data, ind.data$BAND_NUM)
+doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1]))#
         ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[doy.band]#
 #
         for(v in 2:nrow(ind.data.band[[b]])){#
           ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
             gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
             units = units)#
-        }#
-#
-      }#
-      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)#
-    }
-units = "cm"
-TREE.ID.YR <- paste(as.character(INPUT.data$SITE), as.character(INPUT.data$TREE_ID),#
-    as.character(INPUT.data$YEAR), sep = "_")#
-  Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))#
-  ind.dendro <- split(INPUT.data, f = INPUT.data$TREE_ID)#
-#
-  n.obs <- length(ind.dendro)#
-#
-  param.table <-c()#
-  pb <- txtProgressBar(style = 3)#
-  Dendro.tree <- vector("list", length(ind.dendro))#
-  ct <- 1
-ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
-    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
-    for(v in 2:length(ind.data$DBH)) {#
-      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
-        gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
-    }#
-#
-    if(max(ind.data$BAND_NUM) > 1) {#
-#
-      # FIX NEW BAND ISSUE#
-      nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
-#
-      ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
-#
-      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
-      for(b in 2:length(ind.data.band)) {#
-        doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1]))#
-        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[doy.band]#
-#
-        for(v in 2:nrow(ind.data.band[[b]])){#
+        }
+b <- 3
+doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1]))
+doy.band
+ind.data.band[[b]]$DOY[1]
+ind.data.band[[b]]$DOY
+ind.data.band[[b]]$YEAR[1]
+old.band.data <- subset(ind.data.band[[b - 1]], YEAR == year.nb)
+year.nb <- ind.data.band[[b]]$YEAR[1]#
+        old.band.data <- subset(ind.data.band[[b - 1]], YEAR == year.nb)
+old.band.data
+ind.data.band[[b]]$DOY[1]
+which(old.band.data$DOY <= ind.data.band[[b]]$DOY[1])
+ind.data.band[[b - 1]]$DBH_TRUE[doy.band]
+ind.data.band[[b - 1]]$DBH_TRUE
+doy.band
+doy.band
+doy.band <- max(which(old.band.data$DOY <= ind.data.band[[b]]$DOY[1]))
+doy.band
+ind.data.band[[b - 1]]$DBH_TRUE[doy.band]
+old.band.lastyear <- subset(ind.data.band[[b - 1]], YEAR == year.nb)
+old.band.data$DBH_TRUE[doy.band]
+ind.data.band[[b]]$DBH_TRUE[1] <- old.band.data$DBH_TRUE[doy.band]
+for(v in 2:nrow(ind.data.band[[b]])){#
           ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
             gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
             units = units)#
-        }#
-#
-      }#
-      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)#
-    }
-ind.data
-INPUT.dendro[630:660]
-INPUT.data[630:660,]
-INPUT.data
-library(RDendrom)
-data(INPUT_data)
-head(INPUT.data)
-write.csv(INPUT.data, file = "data/INPUT_data.csv", quote = FALSE, rownames = FALSE)
-write.csv(INPUT.data, file = "data/INPUT_data.csv", quote = FALSE, row.names = FALSE)
-INPUT.data <- read.csv(file = "data/INPUT_data.csv")
-save(INPUT.data, file = "INPUT_data.RData")
+        }
+par.table
+param.table
 devtools::install_github("seanmcm/RDendrom")
 library(RDendrom)
+library(RDendrom)
+library(RDendrom)
 data(INPUT_data)
 head(INPUT.data)
-get.optimized.dendro(INPUT.data,#
-  no.neg.growth = TRUE, cutoff = 9,#
-  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),#
-  OUTPUT.folder = ".",#
-  param.table.name = sprintf("Param_table.csv"),#
-  Dendro.data.name = sprintf("Dendro_data.Rdata"),#
-  Dendro.split.name = sprintf("Dendro_data_split.Rdata"))
-param.table.name = sprintf("Param_table.csv")
-Dendro.data.name = sprintf("Dendro_data.Rdata")
-Dendro.split.name = sprintf("Dendro_data_split.Rdata")
-OUTPUT.folder <- c(".")
-param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
-load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete
-load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split
-load(file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/")) #loads Dendro.tree
-get.extra.metrics(#
-  param.table,#
-  Dendro.split,#
-  OUTPUT.folder      = ".",#
-  param.table.name = sprintf("Param_table_complete.csv"),#
-  Dendro.data.name = sprintf("Dendro_data_complete.Rdata"),#
-  Dendro.split.name = sprintf("Dendro_data_split_complete.Rdata"),#
-  Quantile.hull.name = "Quantile.hull.Rdata")
-param.table.name = sprintf("Param_table_complete.csv")#
-OUTPUT.folder <- c(".")#
-param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))#
-head(param.table)
-make.dendro.plot.ts(ts.data = Dendro.split[[3]], params = param.table[3, ],#
-  day = seq(365))
-make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = subset(param.table, TREE_ID == Dendro.tree[[1]]$TREE_ID[1]))
+head(INPUT.data)
+data(INPUT_data)
+head(INPUT.data)
+library(RDendrom)
+data(INPUT_data)
+head(INPUT.data)

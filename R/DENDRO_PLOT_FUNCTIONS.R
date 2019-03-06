@@ -105,7 +105,7 @@ make.dendro.plot.tree <- function(Dendro.ind, param.tab) {
   ##################################################
   # Plot functional fits to the data
   # with a and b from fits
-  # cols <- c("steelblue", "tomato")
+  cols <- c("steelblue", "tomato")
   p.years <- param.tab$YEAR
   fit.ls <- vector("list", length(p.years))
   pred.dbh <- vector("list", dim(param.tab)[1])
@@ -132,7 +132,7 @@ make.dendro.plot.tree <- function(Dendro.ind, param.tab) {
       doy = year.doy.seq[[yr.ind]])
     pred.dbh2[[y]] <- lg5.pred.a(a = param.ab.alt, params = param.y,
       doy = year.doy.seq[[yr.ind]])
-    lines(year.split.seq[[yr.ind]] , pred.dbh2[[y]], col = cols[2], lty = 2)
+    lines(year.split.seq[[yr.ind]] , pred.dbh2[[y]], col = "lightgray", lty = 2)
     lines(year.split.seq[[yr.ind]] , pred.dbh[[y]], col = cols[1])
   }
 
