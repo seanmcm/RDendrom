@@ -4,7 +4,7 @@
 \alias{gettruedbh}
 \title{Corrects for the chord}
 \usage{
-gettruedbh(gw1, gw2, dbh1)
+gettruedbh(gw1, gw2, dbh1, units = "cm")
 }
 \arguments{
 \item{gw1}{Numeric gap width at time 1}

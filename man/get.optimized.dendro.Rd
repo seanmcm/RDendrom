@@ -4,7 +4,7 @@
 \alias{get.optimized.dendro}
 \title{Fit the LG5 function}
 \usage{
-get.optimized.dendro(INPUT.dendro, no.neg.growth = TRUE, cutoff = 9,
+get.optimized.dendro(INPUT.data, no.neg.growth = TRUE, cutoff = 9,
   units = "cm", par.names = c("L", "K", "doyip", "r", "theta", "a",
   "b", "r.squared", "ts.sd"), OUTPUT.folder = ".",
   param.table.name = "Param_table.csv",
@@ -12,7 +12,7 @@ get.optimized.dendro(INPUT.dendro, no.neg.growth = TRUE, cutoff = 9,
   Dendro.split.name = "Dendro_data_split.Rdata")
 }
 \arguments{
-\item{INPUT.dendro}{A data.frame of a specific form (see @details)}
+\item{INPUT.data}{A data.frame of a specific form (see @details)}
 
 \item{no.neg.growth}{logical denoting whether to skip any time series with negative trends (from a call to \emph{lm()})}
 

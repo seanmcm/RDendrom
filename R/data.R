@@ -1,12 +1,12 @@
 #' Sample Dendrometer band dataset
 #'
-#' Dendrometer band time series for trees across years at SERC (a  sample)
+#' Dendrometer band time series for three trees over multiple years at SERC
 #'
-#' @format A data frame with  1589 rows and 16 variables:
+#' @format A data frame with 781 rows and 15 variables:
 #' \describe{
 #'   \item{SITE}{Location of observations}
-#'   \item{PROJECT}{charcter string, name of the project for the big database.}
+#'   \item{PROJECT}{character string, name of the project for the big database.}
 #'   ...
 #' }
 #'
-"INPUT.dendro"
+"INPUT.data"

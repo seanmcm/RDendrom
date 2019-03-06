@@ -7,7 +7,7 @@
 
 #' Fit the LG5 function
 #'
-#' @param INPUT.dendro A data.frame of a specific form (see @details)
+#' @param INPUT.data A data.frame of a specific form (see @details)
 #' @param no.neg.growth logical denoting whether to skip any time series with negative trends (from a call to \emph{lm()})
 #' @param cutoff Integer denoting the minimum sample size required to perform the optimization call.
 #' @param units Character string denoting the units that the dbh is in. Defaults to "cm".
@@ -23,7 +23,7 @@
 #' estimate the parameters of the logistic function. This follows McMahon and Parker 2014. This function organizes output, skips removed datasets, fits a linear model to detect negative or non-significant growth, eliminates time series with small sample sizes, and removes identified outliers (see @identify.outliers ).
 #' @return Objects Saves four files to the OUTPUT folder as named above and collected stems.
 #' @export
-get.optimized.dendro <- function(INPUT.dendro,
+get.optimized.dendro <- function(INPUT.data,
   no.neg.growth = TRUE, cutoff = 9, units = "cm",
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),
   OUTPUT.folder = ".",
@@ -32,10 +32,10 @@ get.optimized.dendro <- function(INPUT.dendro,
   Dendro.split.name = "Dendro_data_split.Rdata") {
 
   options(warn = -1)
-  TREE.ID.YR <- paste(as.character(INPUT.dendro$SITE), as.character(INPUT.dendro$TREE_ID),
-    as.character(INPUT.dendro$YEAR), sep = "_")
+  TREE.ID.YR <- paste(as.character(INPUT.data$SITE), as.character(INPUT.data$TREE_ID),
+    as.character(INPUT.data$YEAR), sep = "_")
   Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))
-  ind.dendro <- split(INPUT.dendro, f = INPUT.dendro$TREE_ID)
+  ind.dendro <- split(INPUT.data, f = INPUT.data$TREE_ID)
 
   n.obs <- length(ind.dendro)
 
@@ -46,28 +46,31 @@ get.optimized.dendro <- function(INPUT.dendro,
   for(i in 1:n.obs) {
     setTxtProgressBar(pb, i / n.obs, title = NULL, label = NULL)
     ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
-    ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[1], nrow(ind.data))
     ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
     for(v in 2:length(ind.data$DBH)) {
-      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],
-        gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],
+        gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)
     }
-    ind.data$DBH_TRUE[1] <- ifelse(units == "cm", ind.data$ORG_DBH, ind.data$ORG_DBH[1] / 10)
-
 
     if(max(ind.data$BAND_NUM) > 1) {
+
       # FIX NEW BAND ISSUE
       nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]
-      for(b in 1:length(nb.index)) {
-        ind.data$ORG_DBH[nb.index[b]:length(ind.data$ORG_DBH)] <-
-        ind.data$DBH_TRUE[(nb.index[b] - 1)]
-        ind.data$DBH_TRUE[nb.index[b]] <- ind.data$ORG_DBH[nb.index[b]]
-        for(v in (nb.index[b] + 1):length(nb.index)){
-          ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],
-            gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1],
+
+      ind.data.band <- split(ind.data, ind.data$BAND_NUM)
+
+      # NOW GET ALL OF THE CORRECT "DBHs" for all bands
+      for(b in 2:length(ind.data.band)) {
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
+
+        for(v in 2:nrow(ind.data.band[[b]])){
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],
             units = units)
         }
+
       }
+      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
     }
 
     Dendro.tree[[i]] <- ind.data
@@ -471,13 +474,13 @@ get.alt.a <- function(param.tab) {
 #' @return Numeric scalar for the corrected DBH
 #' @export
 gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {
-  gw1 <- ifelse(units == "cm", gw1, gw1 * 0.1)
-  gw2 <- ifelse(units == "cm", gw1, gw1 * 0.1)
+  dbh1 <- ifelse(units == "cm", dbh1 * 10, dbh1)
   rhs  <- dbh1 * (pi - asin(gw1 / dbh1))
   #rhs is the length of the dendrometer band at time 1
   dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),
     gw2 = gw2, rhs = rhs)
-  return(dbh2$minimum)
+  dbh2.min <- ifelse(units == "cm", dbh2$minimum / 10, dbh2$minimum)
+  return(dbh2.min)
 }
 
 .difdendro <- function(dbh2, gw2, rhs) {
@@ -495,9 +498,9 @@ gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {
 #' @export
 gap2dbh <- function(gap.width, org.dbh, units = "cm") {
   if(units == "cm") {
-    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))
+    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / pi))
   } else {
-    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 1 / pi))
+    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))
   }
   return(dbh.vec)
 }
