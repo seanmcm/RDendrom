@@ -1,3 +1,202 @@
+dgamma(-0.001, shape = 1, rate = 0.5)
+cols <- brewer.pal(3, "Dark2")#
+gam.pars <- c(1, 10, 0.5, 1)#
+grow.vec <- seq(0, 40, length = 100)#
+xlim <- c(0, 40)#
+thresh <- 4.8#
+thresh.slow <- dgamma(thresh, gam.pars[1], gam.pars[3])#
+  thresh.fast <- dgamma(thresh, gam.pars[2], gam.pars[4])#
+  thresh.prob <- thresh.slow + thresh.fast#
+tot.prob <- mix.gamma(grow.vec, gam.pars)#
+seq.lo <- seq(0, thresh, length = 100)#
+seq.hi <- seq(thresh, 40, length = 100)
+tot.prob.1 <- mix.gamma(seq.lo, gam.pars)#
+tot.prob.2 <- mix.gamma(seq.hi, gam.pars)#
+#
+# par(mfrow = c(2, 1))#
+# plot(grow.vec, slow.prob, type = "l", col = cols[1], axes = FALSE,#
+#   xlab = "Growth (mm)", ylab = "P(grow)")#
+# box()#
+# axis(1)#
+#
+# lines(grow.vec, fast.prob, type = "l", col = cols[3])#
+op <- par(mfrow=c(4, 1))#
+#
+plot(grow.vec, tot.prob, type = "l", col = cols[2], axes = FALSE,#
+  xlab = "Growth (mm)", ylab = "P(grow)")#
+box()#
+axis(1)#
+segments(thresh, 0, thresh, thresh.prob, lty = 3)#
+#
+polygon(c(seq.lo, rev(seq.lo)),#
+  c(tot.prob.1, rep(0, length(seq.lo))), col = cols[1])#
+polygon(c(seq.hi, rev(seq.hi)),#
+  c(tot.prob.1, rep(0, length(seq.hi))), col = cols[3])
+mix.gamma <- function(x, gam.pars) {#
+  slow.prob <- dgamma(x, gam.pars[1], gam.pars[3])#
+  fast.prob <- dgamma(x, gam.pars[2], gam.pars[4])#
+  return(tot.prob <- 0.95 * slow.prob + 0.05 * fast.prob)#
+}
+# The points to interpolate between.#
+cols <- brewer.pal(3, "Dark2")#
+gam.pars <- c(1, 10, 0.5, 1)#
+grow.vec <- seq(0, 25, length = 100)#
+xlim <- c(0, 15)#
+thresh <- 4.8#
+thresh.slow <- dgamma(thresh, gam.pars[1], gam.pars[3])#
+  thresh.fast <- dgamma(thresh, gam.pars[2], gam.pars[4])#
+  thresh.prob <- thresh.slow + thresh.fast#
+tot.prob <- mix.gamma(grow.vec, gam.pars)#
+  seq.lo <- which(grow.vec < thresh)#
+  seq.hi <- which(grow.vec > thresh)#
+# par(mfrow = c(2, 1))#
+# plot(grow.vec, slow.prob, type = "l", col = cols[1], axes = FALSE,#
+#   xlab = "Growth (mm)", ylab = "P(grow)")#
+# box()#
+# axis(1)#
+#
+# lines(grow.vec, fast.prob, type = "l", col = cols[3])#
+op <- par(mfrow=c(4, 1))#
+#
+plot(grow.vec, tot.prob, type = "l", col = cols[2], axes = FALSE,#
+  xlab = "Growth (mm)", ylab = "P(grow)")#
+box()#
+axis(1)#
+segments(thresh, 0, thresh, thresh.prob, lty = 3)#
+#
+polygon(c(grow.vec[seq.lo], rev(grow.vec[seq.lo])),#
+  c(tot.prob[seq.lo], rep(0, length(seq.lo))), col = cols[1])#
+polygon(c(grow.vec[seq.hi], rev(grow.vec[seq.hi])),#
+  c(tot.prob[seq.hi], rep(0, length(seq.hi))), col = cols[3])
+seq.lo <- seq(0, thresh, length = 100)#
+seq.hi <- seq(thresh, 40, length = 100)#
+tot.prob.1 <- mix.gamma(seq.lo, gam.pars)#
+tot.prob.2 <- mix.gamma(seq.hi, gam.pars)#
+#
+# par(mfrow = c(2, 1))#
+# plot(grow.vec, slow.prob, type = "l", col = cols[1], axes = FALSE,#
+#   xlab = "Growth (mm)", ylab = "P(grow)")#
+# box()#
+# axis(1)#
+#
+# lines(grow.vec, fast.prob, type = "l", col = cols[3])#
+op <- par(mfrow=c(4, 1))#
+#
+plot(grow.vec, tot.prob, type = "l", col = cols[2], axes = FALSE,#
+  xlab = "Growth (mm)", ylab = "P(grow)")#
+box()#
+axis(1)#
+segments(thresh, 0, thresh, thresh.prob, lty = 3)#
+#
+polygon(c(seq.lo, rev(seq.lo)),#
+  c(tot.prob.1, rep(0, length(seq.lo))), col = cols[1])#
+polygon(c(seq.hi, rev(seq.hi)),#
+  c(tot.prob.1, rep(0, length(seq.hi))), col = cols[3])#
+#
+x <- grow.vec#
+y <- mix.gamma(x, gam.pars)#
+xlim <- c(min(x), max(x))
+x.1 <- seq.lo#
+y.1 <- mix.gamma(x.1, gam.pars)
+x.2 <- seq.hi#
+y.2 <- mix.gamma(x.2, gam.pars)
+xlim <- c(min(seq.lo), max(seq.hi))
+fn.1 <- spline_function(x.1, y.1)
+fn.2 <- spline_function(x.2, y.2)
+curve(fn.1, xlim[1], thresh, n=1000, main="Spline Interpolation Function",#
+  pch = 18, xlim = range(c(x.1, x.2)),#
+  ylim = c(0, .5))#
+curve(fn.2, thresh, xlim[2], n=1000, pch = 18, add = TRUE)
+points(x.1, y.1, pch = 18, col = cols[1])#
+points(x.2, y.2, pch = 18, col = cols[3])
+cdf_fn.slow <- cdf(fn.1, x.1[1], thresh)#
+cdf_fn.fast <- cdf(fn.2, thresh, x.2[length(x.2)])
+curve(cdf_fn.fast, min(x.2), xlim[2], n=1000,#
+  col = cols[3],#
+  add = TRUE)
+for(i in 1:length(grow.vec)) {#
+  print(integrate(fn, grow.vec[i], grow.vec[length(grow.vec)]))#
+}#
+for(i in 1:length(x.1)) {#
+  print(integrate(fn.1, x.1[i], x.1[length(x.1)]))#
+}#
+for(i in 1:length(x.2)) {#
+  print(integrate(fn.2, x.2[i], x.2[length(x.2)]))#
+}
+n_random_points <- 100#
+cdf_inv.low <- inverse(cdf_fn.slow, min(x.1), thresh)#
+cdf_inv.hi <- inverse(cdf_fn.fast, min(x.1), thresh)#
+random_points <- cdf_inv.low(runif(n_random_points))
+hist(random_points[random_points < thresh], xlim=xlim, breaks=grow.vec,#
+  main="Random Points from Spline Interpolation Function", col = cols[1],#
+  border = FALSE)
+hist(random_points[random_points >= thresh], xlim=xlim, breaks=grow.vec,#
+  col = cols[3], add = TRUE, border = FALSE)
+random_points <- cdf_inv.hi(runif(n_random_points))
+cdf_inv.hi <- inverse(cdf_fn.fast, min(x.1), thresh)#
+random_points.1 <- cdf_inv.low(runif(n_random_points))#
+random_points.2 <- cdf_inv.hi(runif(n_random_points))
+cdf_inv.hi <- inverse(cdf_fn.fast, thresh, max(x.2)
+random_points.1 <- cdf_inv.low(runif(n_random_points))
+random_points.2 <- cdf_inv.hi(runif(n_random_points))
+cdf_fn.slow <- cdf(fn.1, x.1[1], thresh)#
+cdf_fn.fast <- cdf(fn.2, thresh, x.2[length(x.2)])#
+curve(cdf_fn.slow, xlim[1], thresh, n=1000,#
+  main="CDF from Spline Interpolation Function", col = cols[1],#
+  xlim = range(grow.vec),#
+  ylim = c(0, 1.1))#
+curve(cdf_fn.fast, thresh, xlim[2], n=1000,#
+  col = cols[3],#
+  add = TRUE)
+n_random_points <- 100#
+cdf_inv.low <- inverse(cdf_fn.slow, min(x.1), thresh)#
+cdf_inv.hi <- inverse(cdf_fn.fast, thresh, max(x.2)#
+random_points.1 <- cdf_inv.low(runif(n_random_points))#
+random_points.2 <- cdf_inv.hi(runif(n_random_points))
+cdf_inv.hi <- inverse(cdf_fn.fast, thresh, max(x.2))
+random_points.1 <- cdf_inv.low(runif(n_random_points))
+random_points.2 <- cdf_inv.hi(runif(n_random_points))
+hist(random_points.1, xlim = xlim,
+main="Random Points from Spline Interpolation Function", col = cols[1],
+border = FALSE)
+hist(random_points.2,
+col = cols[3], add = TRUE, border = FALSE)
+n_random_points <- 10000#
+cdf_inv.low <- inverse(cdf_fn.slow, min(x.1), thresh)#
+cdf_inv.hi <- inverse(cdf_fn.fast, thresh, max(x.2))#
+random_points.1 <- cdf_inv.low(runif(n_random_points))#
+random_points.2 <- cdf_inv.hi(runif(n_random_points))#
+#
+# Use a histogram to check that the distribution of the random points is similar to#
+# that of the spline function created from the supplied data.#
+hist(random_points.1, xlim = xlim,#
+  main="Random Points from Spline Interpolation Function", col = cols[1],#
+  border = FALSE)#
+hist(random_points.2,#
+  col = cols[3], add = TRUE, border = FALSE)#
+#
+# Reset the parameters
+cdf_inv.low(0.5)
+cdf_inv.hi(0.5)
+abline(v = cdf_inv.low(0.5))#
+abline(v = cdf_inv.hi(0.5))
+library(RColorBrewer)#
+library(knitr)#
+library(IPMpack)#
+library(truncnorm)#
+cols <- brewer.pal(3, "Dark2")#
+#
+## ----image_plot, eval=TRUE, echo=FALSE, width=5, height=6----------------#
+#
+cohort.hit <- function(perc, time, start.no = 1) {#
+  return(perc ^ time * start.no)#
+}#
+#
+lo <- 100#
+perc.mort <- seq(0.9, 0.99, length.out = lo)#
+time.incr <- seq(1, 50, length.out = lo)#
+mort.mat <- expand.grid(perc.mort, time.incr)#
+out.val <- matrix(cohort.hit(mort.mat[, 1], mort.mat[, 2]), nrow = lo, byrow = FALSE)
 lo <- 100#
 perc.mort <- seq(0.1, 0.01, length.out = lo)#
 time.incr <- seq(1, 50, length.out = lo)#
@@ -438,258 +637,145 @@ shinystan(growth.fit)
 ?shiny
 ??shiny
 launch_shinystan(growth.fit)
-INPUT.data <- read.csv("data/input_data.csv")
-save(INPUT.data, file = "data/INPUT_data.RData")
-gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {#
-  gw1 <- ifelse(units == "cm", gw1, gw1 * 0.1)#
-  gw2 <- ifelse(units == "cm", gw1, gw1 * 0.1)#
-  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))#
-  #rhs is the length of the dendrometer band at time 1#
-  dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
-    gw2 = gw2, rhs = rhs)#
-  return(dbh2$minimum)#
-}#
-#
-.difdendro <- function(dbh2, gw2, rhs) {#
-  lhs <- dbh2 * (pi - asin(gw2 / dbh2))#
-  return(abs(lhs - rhs))#
-}
-gap2dbh <- function(gap.width, org.dbh, units = "cm") {#
-  if(units == "cm") {#
-    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))#
-  } else {#
-    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 1 / pi))#
+devtools::install_github("seanmcm/RDendrom")
+library(RDendrom)
+data(INPUT_data)
+head(INPUT.data)
+get.optimized.dendro(INPUT.data,#
+  no.neg.growth = TRUE, cutoff = 9,#
+  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),#
+  OUTPUT.folder = ".",#
+  param.table.name = sprintf("Param_table.csv"),#
+  Dendro.data.name = sprintf("Dendro_data.Rdata"),#
+  Dendro.split.name = sprintf("Dendro_data_split.Rdata"))
+param.table.name = sprintf("Param_table.csv")
+Dendro.data.name = sprintf("Dendro_data.Rdata")
+Dendro.split.name = sprintf("Dendro_data_split.Rdata")
+OUTPUT.folder <- c(".")
+param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
+load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete
+load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split
+load(file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/")) #loads Dendro.tree
+get.extra.metrics(#
+  param.table,#
+  Dendro.split,#
+  OUTPUT.folder      = ".",#
+  param.table.name = sprintf("Param_table_complete.csv"),#
+  Dendro.data.name = sprintf("Dendro_data_complete.Rdata"),#
+  Dendro.split.name = sprintf("Dendro_data_split_complete.Rdata"),#
+  Quantile.hull.name = "Quantile.hull.Rdata")
+make.dendro.plot.ts(ts.data = Dendro.split[[3]], params = param.table[3, ],#
+  day = seq(365))
+make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = param.table)
+Dendro.ind = Dendro.tree[[1]]
+param.tab = param.table
+get.years      <- unique(Dendro.ind$YEAR) #Just the years#
+  start.date     <- paste(get.years[1], "-01-01", sep = "")#
+  end.date       <- paste(get.years[length(get.years)], "-12-31", sep = "")#
+  date.seq       <- format(seq(as.Date(start.date), as.Date(end.date),#
+                    by = "1 day")) # vector of dates y-m-d#
+  doy.seq        <- seq_along(date.seq) # sequence length of dates (for x axis)#
+  year.index     <- droplevels(cut(as.Date(date.seq), breaks = "year",#
+        right = FALSE, drop = TRUE))#
+  ln.year.ind    <- length(levels(year.index))#
+  year.split.seq <- split(doy.seq, year.index) # splits dates into years#
+  year.dates     <- split(date.seq, year.index) # splits dates into years#
+  year.doy.seq   <- lapply(year.dates, function(x) seq(length(x)))
+doy.shift <- cumsum(sapply(year.doy.seq, length)) - length(year.doy.seq[[1]])
+length(get.years) != ln.year.ind
+doy.ls <- split(Dendro.ind$DOY, Dendro.ind$YEAR)#
+  doy.new.tmp <- vector("list", length(doy.ls))#
+  for(i in 1:length(doy.ls)) {#
+    doy.new.tmp[[i]] <- doy.ls[[i]] + .sum.doy(doy.ls[[i]], doy.shift[i])#
   }#
-  return(dbh.vec)#
+  doy.4.plotting <- as.integer(unlist(doy.new.tmp))#
+#
+  # GETTING AXES AND MARKERS TOGETHER#
+  axis.date.at <- as.integer(which(unlist(year.doy.seq) == 180))#
+  year.at <- as.integer(which(unlist(year.doy.seq) == 1))#
+  axis.dates <- date.seq[axis.date.at]#
+#
+  # Need to put any par() adjustments or meta-plot info#
+  cols <- ifelse(Dendro.ind$ADJUST != 0, "gold", "black")
+.sum.doy <- function(x, doy.diff) {#
+  return(rep(doy.diff, each = length(x)))#
 }
+doy.ls <- split(Dendro.ind$DOY, Dendro.ind$YEAR)#
+  doy.new.tmp <- vector("list", length(doy.ls))#
+  for(i in 1:length(doy.ls)) {#
+    doy.new.tmp[[i]] <- doy.ls[[i]] + .sum.doy(doy.ls[[i]], doy.shift[i])#
+  }#
+  doy.4.plotting <- as.integer(unlist(doy.new.tmp))#
+#
+  # GETTING AXES AND MARKERS TOGETHER#
+  axis.date.at <- as.integer(which(unlist(year.doy.seq) == 180))#
+  year.at <- as.integer(which(unlist(year.doy.seq) == 1))#
+  axis.dates <- date.seq[axis.date.at]#
+#
+  # Need to put any par() adjustments or meta-plot info#
+  cols <- ifelse(Dendro.ind$ADJUST != 0, "gold", "black")
+plot(doy.4.plotting, Dendro.ind$DBH_TRUE, col = cols, pch = 18, cex = 0.5,#
+    main = sprintf(" %s | %s | %s", Dendro.ind$SITE[1], Dendro.ind$TREE_ID[1],#
+      Dendro.ind$SP[1]),#
+    ylab = "DBH (cm)", xlab = "Date", axes = FALSE)
+cols <- c("black", "steelblue", "tomato")
+cols <- c("black", "steelblue", "tomato")#
+  # Plot the data and establish the axes#
+  plot(doy.4.plotting, Dendro.ind$DBH_TRUE, col = cols[Dendro.ind$BAND_NUM], pch = 18, cex = 0.5,#
+    main = sprintf(" %s | %s | %s", Dendro.ind$SITE[1], Dendro.ind$TREE_ID[1],#
+      Dendro.ind$SP[1]),#
+    ylab = "DBH (cm)", xlab = "Date", axes = FALSE)#
+  axis(2)#
+  axis(1, labels = get.years, at = axis.date.at, tick = FALSE)#
+  box()#
+  abline(v = year.at, col = "gray", lty = 3)
+ind.data.band[[b]]$DOY[1]
+p.years <- param.tab$YEAR#
+  fit.ls <- vector("list", length(p.years))#
+  pred.dbh <- vector("list", dim(param.tab)[1])#
+  pred.dbh2 <- vector("list", dim(param.tab)[1])
+par.base <- c("L", "K", "doyip", "r", "theta")#
+  par.ab <- c("a", "b")#
+  param.base.col <- names(param.tab) %in% par.base#
+  param.ab.col <- names(param.tab) %in% par.ab#
+  param.cc <- complete.cases(param.tab[, param.base.col])
+param.tab
+no.neg.growth = TRUE
+cutoff = 9
 units = "cm"
 par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd")
-options(warn = -1)#
-  TREE.ID.YR <- paste(as.character(INPUT.dendro$SITE), as.character(INPUT.dendro$TREE_ID),#
-    as.character(INPUT.dendro$YEAR), sep = "_")#
-  Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))#
-  ind.dendro <- split(INPUT.dendro, f = INPUT.dendro$TREE_ID)#
-#
-  n.obs <- length(ind.dendro)
-dim(INPUT.data)
+head(INPUT.data)
 TREE.ID.YR <- paste(as.character(INPUT.data$SITE), as.character(INPUT.data$TREE_ID),#
     as.character(INPUT.data$YEAR), sep = "_")#
   Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))#
   ind.dendro <- split(INPUT.data, f = INPUT.data$TREE_ID)#
 #
-  n.obs <- length(ind.dendro)
-param.table <-c()#
+  n.obs <- length(ind.dendro)#
+#
+  param.table <-c()#
   pb <- txtProgressBar(style = 3)#
   Dendro.tree <- vector("list", length(ind.dendro))#
-  ct <- 1
-i <- 1
-ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
-    ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[1], nrow(ind.data))#
-    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
-    for(v in 2:length(ind.data$DBH)) {#
-      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],#
-        gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
-    }#
-    ind.data$DBH_TRUE[1] <- ifelse(units == "cm", ind.data$ORG_DBH, ind.data$ORG_DBH[1] / 10)
-max(ind.data$BAND_NUM)
-nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]
-nb.index
-b <- 1
-!duplicated(ind.data$BAND_NUM)
-ind.data$BAND_NUM
-ind.data.band <- split(ind.data, ind.data$BAND_NUM)
-ind.data$ORG_DBH
-ind.data$ORG_DBH[nb.index] <-#
-          ind.data$DBH_TRUE[(nb.index - 1)]
-ind.data
-ind.data$DBH_TRUE
-cols <- RBrewerPal::brewer.pal(3, "Dark2")
-cols <- RColorBrewer::brewer.pal(3, "Dark2")
-cols
-ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
-#
-      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
-      for(b in 1:length(ind.data.band)) {#
-        ind.data.band[[b]]$DBH_TRUE[nb.index[b]] <- ind.data.band[[b]]$ORG_DBH[nb.index[b]]#
-        for(v in 2:length(nb.index)){#
-          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
-            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
-            units = units)#
-        }#
-      }#
-    }#
-      ind.data <- split(ind.data.band, ind.data$BAND_NUM)
-for(b in 1:length(ind.data.band)) {#
-        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b]]$ORG_DBH[1]#
-        for(v in 2:nrow(ind.data.band[[b]])){#
-          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
-            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
-            units = units)#
-        }#
-      }
-ind.data <- split(ind.data.band, ind.data$BAND_NUM)
-ind.data.band
-ind.data <- split(ind.data.band, ind.data$BAND_NUM)
-ind.data$BAND_NUM
-ind.data
-ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
-    ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[1], nrow(ind.data))#
-    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
-    for(v in 2:length(ind.data$DBH)) {#
-      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
-        gw2 =  ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
-    }
-ind.data$DBH_TRUE
-units
-ind.data$DBH_TRUE
-ind.data$GAP_WIDTH
-ind.data$DBH_TRUE[1] <- ifelse(units == "cm", ind.data$ORG_DBH, ind.data$ORG_DBH[1] / 10)
-ind.data$DBH_TRUE
-ind.data$DBH_TRUE[1] <- ifelse(units == "cm", ind.data$ORG_DBH, ind.data$ORG_DBH[1] / 10)
-gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {#
-  gw1 <- ifelse(units == "cm", gw1, gw1 * 0.1)#
-  gw2 <- ifelse(units == "cm", gw1, gw2 * 0.1)#
-  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))#
-  #rhs is the length of the dendrometer band at time 1#
-  dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
-    gw2 = gw2, rhs = rhs)#
-  return(dbh2$minimum)#
-}
-.difdendro <- function(dbh2, gw2, rhs) {#
-  lhs <- dbh2 * (pi - asin(gw2 / dbh2))#
-  return(abs(lhs - rhs))#
-}
-gap2dbh <- function(gap.width, org.dbh, units = "cm") {#
-  if(units == "cm") {#
-    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / pi))#
-  } else {#
-    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))#
-  }#
-  return(dbh.vec)#
-}
-ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
-      # FIX NEW BAND ISSUE#
-    nb.index <- which(!duplicated(ind.data$BAND_NUM))#
-    ind.data$ORG_DBH[nb.index] <-#
-    ind.data$DBH_TRUE[(nb.index - 1)]#
-#
-    ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
-#
-      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
-    for(b in 1:length(ind.data.band)) {#
-      ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b]]$ORG_DBH[1]#
-#
-      for(v in 2:nrow(ind.data.band[[b]])){#
-        ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
-          gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
-          units = units)#
-      }#
-#
-    }
-nb.index
-ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
-    # FIX NEW BAND ISSUE#
-    nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
-    ind.data$ORG_DBH[nb.index] <-#
-        ind.data$DBH_TRUE[(nb.index - 1)]
-ind.data$ORG_DBH
-ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
-ind.data$DBH_TRUE
-ind.data$ORG_DBH
-ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
-    # FIX NEW BAND ISSUE#
-    nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
-    ind.data$ORG_DBH[nb.index] <-#
-        ind.data$DBH_TRUE[(nb.index - 1)]
-ind.data.band <- split(ind.data, ind.data$BAND_NUM)
-ind.data.band
-ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
-    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
-    for(v in 2:length(ind.data$DBH)) {#
-      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
-        gw2 =  ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
-    }
-ind.data$DBH_TRUE
-ind.data$DBH_TRUE
-ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
-ind.data$DBH_TRUE
-ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
-ind.data$DBH_TRUE
-ind.data$GAP_WIDTH
-v <- 2
-gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
-        gw2 =  ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)
-gettruedbh
-gw1 = ind.data$GAP_WIDTH[v - 1]
-gw2 = ind.data$GAP_WIDTH[v]
-dbh1 = ind.data$DBH_TRUE[v - 1]
-units
-gw1 <- ifelse(units == "cm", gw1, gw1 * 0.1)#
-  gw2 <- ifelse(units == "cm", gw1, gw2 * 0.1)
-gw1
-gw2
-ind.data$GAP_WIDTH
-ind.data$GAP_WIDTH[v - 1]
-gw2
-gw2 = ind.data$GAP_WIDTH[v]
-gw2
-dbh1 <- ifelse(units == "cm", dbh1, dbh1 * 0.1)#
-  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))#
-  #rhs is the length of the dendrometer band at time 1#
-  dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
-    gw2 = gw2, rhs = rhs)
-dbh2
-dbh1
-dbh1 <- ifelse(units == "cm", dbh1, dbh1 * 0.1)#
-  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))
-dbh1
-rhs
-gw1
-gw1 / dbh1
-dbh1 <- ifelse(units == "cm", dbh1 * 0.1, dbh1)
-dbh1
-dbh1 <- ifelse(units == "cm", dbh1 * 10, dbh1)
-dbh1 <- ifelse(units == "cm", dbh1 * 10, dbh1)#
-  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))
-rhs
-dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
-    gw2 = gw2, rhs = rhs)
-dbh2
-dbh1
-dbh2.min <- ifelse(units == "cm", dbh2$minimum / 10, dbh2$minimum)
-dbh2.min
-gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {#
-  dbh1 <- ifelse(units == "cm", dbh1 * 10, dbh1)#
-  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))#
-  #rhs is the length of the dendrometer band at time 1#
-  dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
-    gw2 = gw2, rhs = rhs)#
-  dbh2.min <- ifelse(units == "cm", dbh2$minimum / 10, dbh2$minimum)#
-  return(dbh2.min)#
-}
-ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
+  ct <- 1#
+  for(i in 1:n.obs) {#
+    setTxtProgressBar(pb, i / n.obs, title = NULL, label = NULL)#
+    ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
     ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
     for(v in 2:length(ind.data$DBH)) {#
       ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
         gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
-    }
-ind.data$DBH_TRUE
-nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
-      nb.org.dbh <- ind.data$TRUE_DBH[nb.index - 1]
-nb.org.dbh
-ind.data$TRUE_DBH
-nb.org.dbh <- ind.data$DBH_TRUE[nb.index - 1]
-nb.org.dbh
-nrows(ind.data.band[[b - 1]]
-)
-nrow(ind.data.band[[b - 1]])
-nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
+    }#
+#
+    if(max(ind.data$BAND_NUM) > 1) {#
+#
+      # FIX NEW BAND ISSUE#
+      nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
 #
       ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
 #
       # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
-      for(b in 1:length(ind.data.band)) {#
-        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$ORG_DBH[nrow(ind.data.band[[b - 1]])]#
+      for(b in 2:length(ind.data.band)) {#
+        doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1])#
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[doy.band]#
 #
         for(v in 2:nrow(ind.data.band[[b]])){#
           ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
@@ -697,22 +783,14 @@ nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
             units = units)#
         }#
 #
-      }
-ind.data
-split(ind.data, ind.data$BAND_NUM)
-for(b in 2:length(ind.data.band)) {#
-        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$ORG_DBH[nrow(ind.data.band[[b - 1]])]#
-#
-        for(v in 2:nrow(ind.data.band[[b]])){#
-          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
-            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
-            units = units)#
-        }#
-#
-      }
-ind.data <- split(ind.data.band, ind.data$BAND_NUM)
-ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
-ind.data
+      }#
+      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)#
+    }
+ind.data.band[[b]]$DOY[1]
+ind.data.band
+ind.data.band <- split(ind.data, ind.data$BAND_NUM)
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
+i <- 1
 ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
     ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
     for(v in 2:length(ind.data$DBH)) {#
@@ -729,7 +807,8 @@ ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
 #
       # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
       for(b in 2:length(ind.data.band)) {#
-        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$ORG_DBH[nrow(ind.data.band[[b - 1]])]#
+        doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1])#
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[doy.band]#
 #
         for(v in 2:nrow(ind.data.band[[b]])){#
           ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
@@ -741,19 +820,41 @@ ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
       ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)#
     }
 ind.data
-plot(ind.data$DBH_TRUE, col = cols[ind.data$BAND_NUM])
-v <- 2
-b
-ind.data.band[[b]]$DBH_TRUE
-ind.data.band[[b - 1]]$ORG_DBH
-ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
-    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
-    for(v in 2:length(ind.data$DBH)) {#
-      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
-        gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
-    }#
+nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
 #
-    if(max(ind.data$BAND_NUM) > 1) {#
+      ind.data.band <- split(ind.data, ind.data$BAND_NUM)
+ind.data.band
+b
+b ,- 2
+b <- 2
+doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1])
+)
+doy.band
+ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[doy.band]
+for(v in 2:nrow(ind.data.band[[b]])){#
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+            units = units)#
+        }
+nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
+#
+      ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
+#
+      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
+      for(b in 2:length(ind.data.band)) {#
+        doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1]))#
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[doy.band]#
+#
+        for(v in 2:nrow(ind.data.band[[b]])){#
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+            units = units)#
+        }#
+#
+      }#
+      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)#
+    }
+if(max(ind.data$BAND_NUM) > 1) {#
 #
       # FIX NEW BAND ISSUE#
       nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
@@ -762,7 +863,8 @@ ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
 #
       # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
       for(b in 2:length(ind.data.band)) {#
-        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]#
+        doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1]))#
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[doy.band]#
 #
         for(v in 2:nrow(ind.data.band[[b]])){#
           ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
@@ -771,85 +873,162 @@ ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
         }#
 #
       }#
-      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
-}
-plot(ind.data$DBH_TRUE, col = cols[ind.data$BAND_NUM])
-ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
-    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
-    for(v in 2:length(ind.data$DBH)) {#
-      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
-        gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
+      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)#
     }
-nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]
-ind.data.band <- split(ind.data, ind.data$BAND_NUM)
-b
-b <- 2
-v <- 2
-ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
-ind.data.band[[b - 1]]$DBH_TRUE
-ind.data$GAP_WIDTH
-ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
-ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]#
+if(max(ind.data$BAND_NUM) > 1) {#
+#
+      # FIX NEW BAND ISSUE#
+      nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
+#
+      ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
+#
+      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
+      for(b in 2:length(ind.data.band)) {#
+        doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1]))#
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[doy.band]#
 #
         for(v in 2:nrow(ind.data.band[[b]])){#
           ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
             gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
             units = units)#
-        }
-ind.data.band[[b]]$DBH_TRUE
-ind.data.band[[b]]$GAP_WIDTH
-ind.data.band[[b]]
-plot(ind.data$DBH_TRUE, col = cols[ind.data$BAND_NUM], pch = 18, cex = 0.75)
-ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
-plot(ind.data$DBH_TRUE, col = cols[ind.data$BAND_NUM], pch = 18, cex = 0.75)
-b <- 3
-ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
-ind.data.band[[b - 1]]$DBH_TRUE
-ind.data.band[[b]]$DBH_TRUE
-for(v in 2:nrow(ind.data.band[[b]])){#
-          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
-            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
-            units = units)#
-        }
-ind.data.band[[b]]$DBH_TRUE
-ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
-plot(ind.data$DBH_TRUE, col = cols[ind.data$BAND_NUM], pch = 18, cex = 0.75)
+        }#
+#
+      }#
+      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)#
+    }
+ind.data
 Dendro.tree[[i]] <- ind.data#
-    ind.year <- split(ind.data,#
+    ind.year.band <- split(ind.data,#
       f = list(YEAR = ind.data$YEAR, BAND_NUM = ind.data$BAND_NUM), drop = TRUE)#
 #
     params <- rep(NA, 7)#
     r.squared <- 0#
-    param.mat <- matrix(NA, length(ind.year), length(par.names))#
-    years <- vector("integer", length(ind.year))
-for(t in 1:length(ind.year)) {#
+    param.mat <- matrix(NA, length(ind.year.band), length(par.names))#
+    years <- vector("integer", length(ind.year.band))
+length(ind.year.band)
+ind.year.band
+t <- 1
+par.base <- c("L", "K", "doyip", "r", "theta")#
+  par.ab <- c("a", "b")#
+  param.base.col <- names(param.tab) %in% par.base#
+  param.ab.col <- names(param.tab) %in% par.ab#
+  param.cc <- complete.cases(param.tab[, param.base.col])
+param.tab
+pred.dbh[[y]] <- lg5.pred.a(a = param.ab, params = param.y,#
+      doy = year.doy.seq[[y]])
+for(y in 1:dim(param.tab)[1]) {#
+    if(param.cc[y] == FALSE) next#
+    param.y <- as.numeric(param.tab[y, param.base.col])#
+    param.ab <- as.numeric(param.tab[y, param.ab.col])#
+    param.ab.alt <- c(param.tab$alt.a[y], param.ab[2]) #as.numeric(param.tab[y, c(11:12)])#
+    pred.dbh[[y]] <- lg5.pred.a(a = param.ab, params = param.y,#
+      doy = year.doy.seq[[y]])#
+    pred.dbh2[[y]] <- lg5.pred.a(a = param.ab.alt, params = param.y,#
+      doy = year.doy.seq[[y]])#
+    lines(year.split.seq[[y]] , pred.dbh2[[y]], col = cols[2], lty = 2)#
+    lines(year.split.seq[[y]] , pred.dbh[[y]], col = cols[1])#
+  }
+year.split.seq[[y]]
+year.split.seq
+y
+y <_ 1
+y <- 1
+param.cc
+year.split.seq
+year.at
+axis.dates
+doy.4.plotting
+get.years
+year.split.seq[[y]]
+year.index
+axis.date.at
+?year
+?Year
+??year
+Dendro.ind$YEAR
+param.tab$YEAR
+param.tab
+make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = subset(param.table, TREE_ID == Dendro.tree[[1]]$TREE_ID[1])
+make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = subset(param.table, TREE_ID == Dendro.tree[[1]]$TREE_ID[1])
+make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = subset(param.table, TREE_ID == Dendro.tree[[1]]$TREE_ID[1]))
+Dendro.tree[[1]]
+Dendro.tree[[1]]$TREE_ID[1]
+param.table
+param.table
+param.table.name = sprintf("Param_table.csv")#
+Dendro.data.name = sprintf("Dendro_data.Rdata")#
+Dendro.split.name = sprintf("Dendro_data_split.Rdata")#
+OUTPUT.folder <- c(".")#
+param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))#
+load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete#
+load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split#
+load(file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/")) #loads Dendro.tree
+table
+param.table
+subset(param.table, TREE_ID == Dendro.tree[[1]]$TREE_ID[1])
+param.tab = subset(param.table, TREE_ID == Dendro.tree[[1]]$TREE_ID[1])
+year.doy.seq
+year.match <- match(param.tab, get.years)
+year.match
+year.match <- match(param.tab$YEAR, get.years)
+year.match
+dim(param.tab)
+year.split.seq[[y]]
+year.split.seq
+year.match[y]
+year.match
+roxygen2::roxygenize()
+roxygen2::roxygenize()
+year.match <- match(param.tab$YEAR, get.years)#
+  for(y in 1:dim(param.tab)[1]) {#
+    if(param.cc[y] == FALSE) next#
+    yr.ind <- year.match[y]#
+    param.y <- as.numeric(param.tab[y, param.base.col])#
+    param.ab <- as.numeric(param.tab[y, param.ab.col])#
+    param.ab.alt <- c(param.tab$alt.a[y], param.ab[2]) #as.numeric(param.tab[y, c(11:12)])#
+    pred.dbh[[y]] <- lg5.pred.a(a = param.ab, params = param.y,#
+      doy = year.doy.seq[[yr.ind]])#
+    pred.dbh2[[y]] <- lg5.pred.a(a = param.ab.alt, params = param.y,#
+      doy = year.doy.seq[[yr.ind]])#
+    lines(year.split.seq[[yr.ind]] , pred.dbh2[[y]], col = cols[2], lty = 2)#
+    lines(year.split.seq[[yr.ind]] , pred.dbh[[y]], col = cols[1])#
+  }
+cols <- c("black", "steelblue", "tomato", "purple")#
+  # Plot the data and establish the axes#
+  plot(doy.4.plotting, Dendro.ind$DBH_TRUE, col = cols[Dendro.ind$BAND_NUM], pch = 18, cex = 0.5,#
+    main = sprintf(" %s | %s | %s", Dendro.ind$SITE[1], Dendro.ind$TREE_ID[1],#
+      Dendro.ind$SP[1]),#
+    ylab = "DBH (cm)", xlab = "Date", axes = FALSE)#
+  axis(2)#
+  axis(1, labels = get.years, at = axis.date.at, tick = FALSE)#
+  box()#
+  abline(v = year.at, col = "gray", lty = 3)
+p.years <- param.tab$YEAR#
+  fit.ls <- vector("list", length(p.years))#
+  pred.dbh <- vector("list", dim(param.tab)[1])#
+  pred.dbh2 <- vector("list", dim(param.tab)[1])#
+  ###################################################
+  # Plot new band data#
 #
-      ts.data.tmp <- ind.year[[t]]#
-      ts.data <- subset(ts.data.tmp, REMOVE == 0)#
-      ts.sd <- sd(ts.data$DBH_TRUE, na.rm = TRUE)#
-      years[t] <- ts.data$YEAR[1]#
-#
-      if (sum(!is.na(ts.data$DBH_TRUE)) < cutoff) {#
-        param.mat[t, ] <- c(params, r.squared, ts.sd)#
-        ct <- ct + 1#
-        next#
-      }#
-#
-      if (no.neg.growth == TRUE) {#
-        lm.out <- coef(lm(ts.data$DBH_TRUE ~ ts.data$DOY ))#
-        if(as.numeric(lm.out[2]) < 0) {#
-          ts.data$SKIP[1] <- 1#
-          param.mat[t, ] <- c(params, r.squared, ts.sd)#
-          ct <- ct + 1#
-          next#
-        }#
-      }#
-      params <- get.params(ts.data)#
-      r.squared <- summary(lm(ts.data$DBH_TRUE ~ lg5.pred.a(params[6:7],#
-        params, doy = ts.data$DOY)))$r.squared#
-      param.mat[t, ] <- c(params, r.squared, ts.sd)#
-      Dendro.split[[ct]] <- ts.data#
-      ct <- ct + 1#
-    }
-roxygen2::roxygenise
-roxygen2::roxygenise()
+  ###################################################
+  # Plot extensions of last year's b to next year's a#
+  #DONE AS PART OF alt.#
+  par.base <- c("L", "K", "doyip", "r", "theta")#
+  par.ab <- c("a", "b")#
+  param.base.col <- names(param.tab) %in% par.base#
+  param.ab.col <- names(param.tab) %in% par.ab#
+  param.cc <- complete.cases(param.tab[, param.base.col])#
+  year.match <- match(param.tab$YEAR, get.years)#
+  for(y in 1:dim(param.tab)[1]) {#
+    if(param.cc[y] == FALSE) next#
+    yr.ind <- year.match[y]#
+    param.y <- as.numeric(param.tab[y, param.base.col])#
+    param.ab <- as.numeric(param.tab[y, param.ab.col])#
+    param.ab.alt <- c(param.tab$alt.a[y], param.ab[2]) #as.numeric(param.tab[y, c(11:12)])#
+    pred.dbh[[y]] <- lg5.pred.a(a = param.ab, params = param.y,#
+      doy = year.doy.seq[[yr.ind]])#
+    pred.dbh2[[y]] <- lg5.pred.a(a = param.ab.alt, params = param.y,#
+      doy = year.doy.seq[[yr.ind]])#
+    lines(year.split.seq[[yr.ind]] , pred.dbh2[[y]], col = cols[2], lty = 2)#
+    lines(year.split.seq[[yr.ind]] , pred.dbh[[y]], col = cols[1])#
+  }
