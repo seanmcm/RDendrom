@@ -1,543 +1,855 @@
-CStack_info()
-run.mix.gamma(grow.vec, gam.pars)
-curve(fn, grow.vec, n=1000, main="Spline Interpolation Function")
-curve(fn, grow.vec, n=10, main="Spline Interpolation Function")
-mix.gamma(grow.vec, gam.param)
-mix.gamma(grow.vec, gam.params)
-mix.gamma(grow.vec, gam.pars)
-plot(mix.gamma(grow.vec, gam.pars))
-area_under_curve <- integrate(mix.gamma, min_x = min(grow.vec), max(grow.vec))$value
-area_under_curve <- integrate(mix.gamma, min_x = min(grow.vec), max_x = max(grow.vec))$value
-area_under_curve <- integrate(mix.gamma, gam.pars, min_x = min(grow.vec), max_x = max(grow.vec))$value
-gam.pars
-mix.gamma <- function(x, gam.pars) {#
-  slow.prob <- dgamma(x, gam.pars[1], gam.pars[3])#
-  fast.prob <- dgamma(x, gam.pars[2], gam.pars[4])#
-  return(tot.prob <- slow.prob + fast.prob)#
-}
-?integrate
-area_under_curve <- integrate(mix.gamma, #
-  min_x = min(grow.vec), #
-  max_x = max(grow.vec), #
-  gam.pars)$value
-area_under_curve <- integrate(mix.gamma, #
-  lower = min(grow.vec), #
-  upper = max(grow.vec), #
-  gam.pars)$value
-area_under_curve
-apply_fn <- function(xval){integrate(fn, min_x, min(xval, max_x), gam.pars)$value}
-sapply(x[min_x <= x & x <= max_x], FUN = apply_fn)
-min_x <- min(grow.vec)
-max_x <- max(grow.vec)
-apply_fn <- function(xval){integrate(fn, min_x, min(xval, max_x), gam.pars)$value}
-apply_fn
-sapply(grow.vec[min_x <= x & x <= max_x], FUN = apply_fn)
-y[min_x <= x & x <= max_x] <- sapply(grow.vec[min_x <= grow.vec & grow.vec <= max_x], FUN = apply_fn) / total_area_under_curve#
-    y[min_x <= x & x <= max_x] <- sapply(grow.vec[min_x <= grow.vec & grow.vec <= max_x], FUN = apply_fn) / total_area_under_curve
-sapply(grow.vec[min_x <= grow.vec & grow.vec <= max_x], FUN = apply_fn)
-fn
-integrate(mix.gamma, min_x, min(xval, max_x), gam.pars)$value
-xval <- grow.vec
-apply_fn <- function(xval){integrate(mix.gamma, min_x, min(xval, max_x), gam.pars)$value}
-apply_fn
-sapply(grow.vec[min_x <= grow.vec & grow.vec <= max_x], FUN = apply_fn)
-y <- rep(NA, length(grow.vec))
-y[min_x <= x & x <= max_x] <-
-sapply(grow.vec[min_x <= grow.vec & grow.vec <= max_x], FUN = apply_fn) /
-area_under_curve
-y[min_x <= grow.vec & grow.vec <= max_x] <-
-sapply(grow.vec[min_x <= grow.vec & grow.vec <= max_x], FUN = apply_fn) /
-area_under_curve
-y
-y[x < min_x] <- 0#
-    y[x > max_x] <- 1
-plot(y)
-run.mix.gamma <- function(x, gam.pars){#
-   # Returns a spline function (made up of cubic polynomials) that interpolates the#
-   # points given by the x and y vectors. The function has range [min(x), max(x)].#
-   fn <- mix.gamma(x, gam.pars)#
-   min_x <- min(x)#
-   max_x <- max(x)#
-   f <- function(x){#
-      y <- fn(x)#
-      y[x < min_x | max_x < x] <- NA#
-      return(y)#
-   }#
-   return(f)#
-}
-mix.gamma <- function(x, gam.pars) {#
-  slow.prob <- dgamma(x, gam.pars[1], gam.pars[3])#
-  fast.prob <- dgamma(x, gam.pars[2], gam.pars[4])#
-  return(tot.prob <- slow.prob + fast.prob)#
-}
-run.mix.gamma(grow.vec, gam.pars)
-fn <- run.mix.gamma(grow.vec, gam.pars)
-fn
-fn(grow.vec)
-fn(grow.vec, grow.vec)
-cdf <- function(x, fn = mix.gamma) {#
-  min_x <- min(x)#
-  max_x <- max(x)#
-  area_under_curve <- integrate(mix.gamma,#
-    lower = min(x),#
-    upper = max(x),#
-    gam.pars)$value#
-    apply_fn <- function(xval){integrate(mix.gamma, min_x, min(xval, max_x), gam.pars)$value}#
-    y <- rep(NA, length(x))#
-    y[min_x <= x & x <= max_x] <-#
-    sapply(x[min_x <= x & x <= max_x], FUN = apply_fn) /#
-    area_under_curve#
-    y[x < min_x] <- 0#
-    y[x > max_x] <- 1#
-      return(y)#
-}
-cdf
-inverse(cdf)
-cdf.inv <- inverse(cdf)
-cdf.inv(grow.vec)
-cdf.inv <- inverse(cdf, gam.pars)
-cdf.inv
-cdf.inv <- inverse(cdf)
-cdf.inv(grow.vec)
-cdf.inv(grow.vec, min_x = min(grow.vec), max_x = max(gorw.vec))
-cdf <- function(x, fn = mix.gamma) {#
-  min_x <- min(x)#
-  max_x <- max(x)#
-  area_under_curve <- integrate(mix.gamma,#
-    lower = min_x,#
-    upper = max_x,#
-    gam.pars)$value#
-    apply_fn <- function(xval){integrate(mix.gamma, min_x, min(xval, max_x), gam.pars)$value}#
-    y <- rep(NA, length(x))#
-    y[min_x <= x & x <= max_x] <-#
-    sapply(x[min_x <= x & x <= max_x], FUN = apply_fn) /#
-    area_under_curve#
-    y[x < min_x] <- 0#
-    y[x > max_x] <- 1#
-      return(y)#
-}
-cdf.inv <- inverse(cdf)
-cdf.inv(grow.vec, min_x = min(grow.vec), max_x = max(gorw.vec))
-cdf.inv(grow.vec)
-traceback()
-cdf <- function(x, min_x, max_x) {#
-  f <- function(x) {#
-    area_under_curve <- integrate(mix.gamma,#
-    lower = min_x,#
-    upper = max_x,#
-    gam.pars)$value#
-    apply_fn <- function(xval){integrate(mix.gamma, min_x, min(xval, max_x), gam.pars)$value}#
-    y <- rep(NA, length(x))#
-    y[min_x <= x & x <= max_x] <-#
-    sapply(x[min_x <= x & x <= max_x], FUN = apply_fn) /#
-    area_under_curve#
-    y[x < min_x] <- 0#
-    y[x > max_x] <- 1#
-      return(y)#
-    }#
-    return(f)#
-}
-plot(cdf(grow.vec, min(grow.vec), max(grow.vec)))
-cdf(grow.vec)
-plot(cdf(grow.vec))
-fn <- cdf(grow.vec, min(grow.vec), max(grow.vec))
-fn
-fn(grow.vec)
-inv(fn)
-inverse(nf)
-inverse(fn)
-cdf.nf <- cdf(grow.vec, min(grow.vec), max(grow.vec))
-cdf.inv <- inverse(cdf.fn)
-cdf.inv(.4)
-cdf.inv(.4, min_x = min(grow.vec))
-cdf.nf
-cdf.inv <- inverse(cdf.fn, min(grow.vec), max(grow.vec))
-cdf.inv(.4)
-cdf.fn <- cdf(grow.vec, min(grow.vec), max(grow.vec))
-cdf.inv <- inverse(cdf.fn, min(grow.vec), max(grow.vec))
-cdf.inv(.4)
-cdf.inv(.4, gam.pars)
-cdf.fn
-cdf.inv
-cdf.fn
-cdf.inv
-cdf.inv(.4, gam.pars)
-cdf <- function(x, min_x, max_x) {#
-  f <- function(x, gam.pars) {#
-    area_under_curve <- integrate(mix.gamma,#
-    lower = min_x,#
-    upper = max_x,#
-    gam.pars)$value#
-    apply_fn <- function(xval){integrate(mix.gamma, min_x, min(xval, max_x), gam.pars)$value}#
-    y <- rep(NA, length(x))#
-    y[min_x <= x & x <= max_x] <-#
-    sapply(x[min_x <= x & x <= max_x], FUN = apply_fn) /#
-    area_under_curve#
-    y[x < min_x] <- 0#
-    y[x > max_x] <- 1#
-      return(y)#
-    }#
-    return(f)#
-}
-cdf.fn <- cdf(grow.vec, min(grow.vec), max(grow.vec))#
-cdf.inv <- inverse(cdf.fn, min(grow.vec), max(grow.vec))#
-cdf.inv(.4, gam.pars)
-cdf.inv(.4, gam.pars = gam.pars)
-cdf.inv <- inverse(cdf.fn, gam.pars, min_x = min(grow.vec), max_x = max(grow.vec))
-cdf.inv(.4, gam.pars = gam.pars)
-cdf <- function(x, min_x, max_x, gam.pars) {#
-  f <- function(x, gam.pars) {#
-    area_under_curve <- integrate(mix.gamma,#
-    lower = min_x,#
-    upper = max_x,#
-    gam.pars)$value#
-    apply_fn <- function(xval){integrate(mix.gamma, min_x, min(xval, max_x), gam.pars)$value}#
-    y <- rep(NA, length(x))#
-    y[min_x <= x & x <= max_x] <-#
-    sapply(x[min_x <= x & x <= max_x], FUN = apply_fn) /#
-    area_under_curve#
-    y[x < min_x] <- 0#
-    y[x > max_x] <- 1#
-      return(y)#
-    }#
-    return(f)#
+lo <- 100#
+perc.mort <- seq(0.1, 0.01, length.out = lo)#
+time.incr <- seq(1, 50, length.out = lo)#
+mort.mat <- expand.grid((1 - perc.mort), time.incr)#
+out.val <- matrix(cohort.hit(mort.mat[, 1], mort.mat[, 2]), nrow = lo, byrow = FALSE)#
+#
+xx <- rep(perc.mort, times = lo)#
+yy <- rep(time.incr, each = lo)#
+image(perc.mort, time.incr, out.val, col = rev(terrain.colors(100)),#
+  xlab = "% Mortality", ylab = "Years", main = "", breaks = seq(0, 1, by = 0.01))#
+contour(perc.mort, time.incr, out.val, add = TRUE, labcex = 0.9)
+library(RColorBrewer)#
+library(knitr)#
+library(IPMpack)#
+library(truncnorm)#
+cols <- brewer.pal(3, "Dark2")#
+#
+## ----image_plot, eval=TRUE, echo=FALSE, width=5, height=6----------------#
+#
+cohort.hit <- function(perc, time, start.no = 1) {#
+  return(perc ^ time * start.no)#
 }#
-cdf.fn <- cdf(grow.vec, min(grow.vec), max(grow.vec), gam.pars)#
-cdf.inv <- inverse(cdf.fn, gam.pars, min_x = min(grow.vec), max_x = max(grow.vec))#
-cdf.inv(.4, gam.pars = gam.pars)
-?inverse
-??inverse
-GoFKernel
-install.packages(GoFKernel)
-install.packages('GoFKernel')
-library(GoFKernel)
-inverse
-rm(inverse)
-inverse
-cdf.inv <- inverse(cdf.fn, min_x = min(grow.vec), max_x = max(grow.vec))
-cdf.inv <- inverse(cdf.fn, min(grow.vec), max(grow.vec))
-cdf.inv <- inverse(cdf.fn, min(grow.vec), max(grow.vec), gam.pars)
-cdf.inv <- inverse(cdf.fn, lower = min(grow.vec), upper = max(grow.vec), gam.pars)
-cdf.fn
-mix.gamma
-run.mix.gamma <- function(x, gam.pars){#
-   # Returns a spline function (made up of cubic polynomials) that interpolates the#
-   # points given by the x and y vectors. The function has range [min(x), max(x)].#
-   fn <- mix.gamma(x, gam.pars)#
-   min_x <- min(x)#
-   max_x <- max(x)#
-   f <- function(x){#
-      y <- fn(x)#
-      y[x < min_x | max_x < x] <- NA#
-      return(y)#
-   }#
-   return(f)#
+#
+lo <- 100#
+perc.mort <- seq(0.1, 0.01, length.out = lo)#
+time.incr <- seq(1, 50, length.out = lo)#
+mort.mat <- expand.grid((1 - perc.mort), time.incr)#
+out.val <- matrix(cohort.hit(mort.mat[, 1], mort.mat[, 2]), nrow = lo, byrow = FALSE)#
+#
+xx <- rep(perc.mort, times = lo)#
+yy <- rep(time.incr, each = lo)#
+image(perc.mort, time.incr, out.val, col = rev(terrain.colors(100)),#
+  xlab = "% Mortality", ylab = "Years", main = "", breaks = seq(0, 1, by = 0.01))#
+contour(perc.mort, time.incr, out.val, add = TRUE, labcex = 0.9)
+mort.mat
+perc.mort
+image(1 - perc.mort, time.incr, out.val, col = rev(terrain.colors(100)),#
+  xlab = "% Mortality", ylab = "Years", main = "", breaks = seq(0, 1, by = 0.01))
+contour(perc.mort, time.incr, out.val, add = TRUE, labcex = 0.9)
+contour(1 - perc.mort, time.incr, out.val, add = TRUE, labcex = 0.9)
+image(1 - perc.mort, time.incr, out.val, col = rev(terrain.colors(100)),#
+  xlab = "% Mortality", ylab = "Years", main = "", breaks = seq(0, 1, by = 0.01), #
+  axes = FALSE)
+axis(1, ticks = perc.mort, at = 1 - perc.mort)
+?axis
+perc.mort
+mort.lab <- seq(0.1, 0.01, by = 0.1)
+?seq
+seq(0.1, 0.01, by = 0.1)
+mort.lab <- seq(0.1, 0.01, by = 1)
+seq(1, 9, by = 2)     # matches 'end'
+mort.lab <- seq(0.1, 0.01, by = 0.01)
+mort.lab <- seq(0.1, 0.01
+)
+mort.lab
+seq(0.1, 0.01, by = 0.01)
+seq(0.1, 0.01, by = -0.01)
+mort.lab <- seq(0.1, 0.01, by = -0.01)
+axis(1, labels = more.lab, at = 1 - mort.lab)
+image(1 - perc.mort, time.incr, out.val, col = rev(terrain.colors(100)),#
+  xlab = "% Mortality", ylab = "Years", main = "", breaks = seq(0, 1, by = 0.01), #
+  axes = FALSE)#
+contour(1 - perc.mort, time.incr, out.val, add = TRUE, labcex = 0.9)#
+axis(1, labels = mort.lab, at = 1 - mort.lab)
+axis(2)
+box()
+yr.ln <- 300#
+years <- seq(yr.ln)#
+years.2 <- seq(yr.ln * 1.25)#
+bio.max <- 1#
+#
+mp <- 50#
+year.bio <- bio.max * (years / (years + mp))#
+year.bio2 <- bio.max * (years.2 / (years.2 + mp))#
+plot(years, year.bio, "l", cex.axis = 0.8, ylab = "% Total biomass",#
+  cex.lab = 0.85, xlab = "Years", col = "white")#
+polygon(c(years.2, rev(years.2)), c(year.bio2, rep(0, length(year.bio2))),#
+  col = "lightgray", border = NA)#
+#
+LE.98 <- meanLifeExpect(matrix(0.98, 1, 1))#
+LE.96 <- meanLifeExpect(matrix(0.96, 1, 1))#
+#
+segments(LE.98, 0, LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98], LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+#
+segments(LE.96, 0, LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96], LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+#
+segments(LE.98.95, 0, LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98.95], LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+#
+segments(LE.96.95, 0, LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96.95], LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+#
+# polygon(c(LE.96, LE.98, LE.98, LE.96), c(0, 0, year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+# polygon(c(0, LE.96, LE.96, 0), c(year.bio[LE.96], year.bio[LE.96],#
+#   year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+polygon(c(LE.96.95, LE.98.95, LE.98.95, LE.96.95), c(0, 0, year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+#
+polygon(c(0, LE.96.95, LE.96.95, 0), c(year.bio[LE.96.95], year.bio[LE.96.95],#
+  year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+legend("bottomright", c("2% mortality", "4% mortality"), col = c("black", "red"),#
+  lty = 1, cex = 0.8, bty = "n")#
+text(0, year.bio[LE.98.95] - 0.05, labels = "Longest lived 5%", pos = 4, offset = 0.5,#
+  cex = 0.6)#
+#
+# text(0, year.bio[LE.98] - 0.05, labels = "Mean", pos = 4, offset = 0.5,#
+#   cex = 0.6)#
+# mtext("b)", side = 3, line = 0.5, adj = 0)#
+#
+year.bio[LE.98] - year.bio[LE.96]#
+year.bio[LE.98.95] - year.bio[LE.96.95]
+yr.ln <- 300#
+years <- seq(yr.ln)#
+years.2 <- seq(yr.ln * 1.25)#
+bio.max <- 1#
+#
+mp <- 50#
+year.bio <- bio.max * (years / (years + mp))#
+year.bio2 <- bio.max * (years.2 / (years.2 + mp))#
+plot(years, year.bio, "l", cex.axis = 0.8, ylab = "% Total biomass",#
+  cex.lab = 0.85, xlab = "Years", col = "white")#
+polygon(c(years.2, rev(years.2)), c(year.bio2, rep(0, length(year.bio2))),#
+  col = "lightgray", border = NA)#
+#
+LE.98 <- meanLifeExpect(matrix(0.98, 1, 1))#
+LE.96 <- meanLifeExpect(matrix(0.96, 1, 1))
+segments(LE.98, 0, LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98], LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+#
+segments(LE.96, 0, LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96], LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+#
+segments(LE.98.95, 0, LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98.95], LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+#
+segments(LE.96.95, 0, LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96.95], LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+#
+# polygon(c(LE.96, LE.98, LE.98, LE.96)
+yr.ln <- 300#
+years <- seq(yr.ln)#
+surv1 <- 0.98#
+surv2 <- 0.96#
+pop <- 100000#
+LE <- function(x) {#
+    LE.samp <- length(x[!is.na(x)])#
+  return(LE.samp)#
+}#
+#
+pop.mat1 <- matrix(NA, pop, yr.ln)#
+pop.mat1[, 1] <- 1#
+pop.mat2 <- matrix(NA, pop, yr.ln)#
+pop.mat2[, 1] <- 1#
+#
+for(i in 2:yr.ln) {#
+  surv.pop1 <- which(!is.na(pop.mat1[, i - 1]))#
+  surv.out1 <- rbinom(length(surv.pop1), 1, prob = surv1)#
+  pop.mat1[surv.pop1, i] <- ifelse(surv.out1 == 1, 1, NA)#
+#
+  surv.pop2 <- which(!is.na(pop.mat2[, i - 1]))#
+  surv.out2 <- rbinom(length(surv.pop2), 1, prob = surv2)#
+  pop.mat2[surv.pop2, i] <- ifelse(surv.out2 == 1, 1, NA)#
+}#
+#
+LE.1 <- apply(pop.mat1, MAR = 1, LE)#
+dens.1 <- density(LE.1, from = 0)#
+#
+LE.98 <- mean(LE.1)#
+LE.98.95 <- quantile(LE.1, 0.95, na.rm = TRUE)#
+#
+LE.2 <- apply(pop.mat2, MAR = 1, LE)#
+dens.2 <- density(LE.2, from = 0)#
+LE.96 <- mean(LE.2)#
+LE.96.95 <- quantile(LE.2, 0.95, na.rm = TRUE)#
+#
+par(mfrow = c(2, 1), mar = c(4, 4, 2, 2))#
+#
+plot(dens.1$x, dens.1$y / max(dens.1$y), "l", axes = TRUE,#
+  ylab = "Relative frequency", xlab = "Age at death",  cex.lab = 0.85)#
+axis(1)#
+box()#
+lines(dens.2$x, dens.2$y / max(dens.2$y, na.rm = TRUE), col = "red", lty = 1,#
+  lwd = 2)#
+legend("topright", c("2% mortality", "4% mortality"), col = c("black", "red"),#
+  lty = 1, cex = 0.8)#
+mtext("a)", side = 3, line = 0.5, adj = 0)#
+#
+## ----Biomass, eval=TRUE, echo=FALSE, width=6, height=4-------------------#
+#
+yr.ln <- 300#
+years <- seq(yr.ln)#
+years.2 <- seq(yr.ln * 1.25)#
+bio.max <- 1#
+#
+mp <- 50#
+year.bio <- bio.max * (years / (years + mp))#
+year.bio2 <- bio.max * (years.2 / (years.2 + mp))#
+plot(years, year.bio, "l", cex.axis = 0.8, ylab = "% Total biomass",#
+  cex.lab = 0.85, xlab = "Years", col = "white")#
+polygon(c(years.2, rev(years.2)), c(year.bio2, rep(0, length(year.bio2))),#
+  col = "lightgray", border = NA)#
+#
+LE.98 <- meanLifeExpect(matrix(0.98, 1, 1))#
+LE.96 <- meanLifeExpect(matrix(0.96, 1, 1))#
+#
+segments(LE.98, 0, LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98], LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+#
+segments(LE.96, 0, LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96], LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+#
+segments(LE.98.95, 0, LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98.95], LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+#
+segments(LE.96.95, 0, LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96.95], LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+#
+# polygon(c(LE.96, LE.98, LE.98, LE.96), c(0, 0, year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+# polygon(c(0, LE.96, LE.96, 0), c(year.bio[LE.96], year.bio[LE.96],#
+#   year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+polygon(c(LE.96.95, LE.98.95, LE.98.95, LE.96.95), c(0, 0, year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+#
+polygon(c(0, LE.96.95, LE.96.95, 0), c(year.bio[LE.96.95], year.bio[LE.96.95],#
+  year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+legend("bottomright", c("2% mortality", "4% mortality"), col = c("black", "red"),#
+  lty = 1, cex = 0.8, bty = "n")#
+text(0, year.bio[LE.98.95] - 0.05, labels = "Longest lived 5%", pos = 4, offset = 0.5,#
+  cex = 0.6)#
+#
+# text(0, year.bio[LE.98] - 0.05, labels = "Mean", pos = 4, offset = 0.5,#
+#   cex = 0.6)#
+# mtext("b)", side = 3, line = 0.5, adj = 0)#
+#
+year.bio[LE.98] - year.bio[LE.96]#
+year.bio[LE.98.95] - year.bio[LE.96.95]
+yr.ln <- 300#
+years <- seq(yr.ln)#
+surv1 <- 0.98#
+surv2 <- 0.96#
+pop <- 100000#
+LE <- function(x) {#
+    LE.samp <- length(x[!is.na(x)])#
+  return(LE.samp)#
+}#
+#
+pop.mat1 <- matrix(NA, pop, yr.ln)#
+pop.mat1[, 1] <- 1#
+pop.mat2 <- matrix(NA, pop, yr.ln)#
+pop.mat2[, 1] <- 1#
+#
+for(i in 2:yr.ln) {#
+  surv.pop1 <- which(!is.na(pop.mat1[, i - 1]))#
+  surv.out1 <- rbinom(length(surv.pop1), 1, prob = surv1)#
+  pop.mat1[surv.pop1, i] <- ifelse(surv.out1 == 1, 1, NA)#
+#
+  surv.pop2 <- which(!is.na(pop.mat2[, i - 1]))#
+  surv.out2 <- rbinom(length(surv.pop2), 1, prob = surv2)#
+  pop.mat2[surv.pop2, i] <- ifelse(surv.out2 == 1, 1, NA)#
+}#
+#
+LE.1 <- apply(pop.mat1, MAR = 1, LE)#
+dens.1 <- density(LE.1, from = 0)#
+#
+LE.98 <- mean(LE.1)#
+LE.98.95 <- quantile(LE.1, 0.95, na.rm = TRUE)#
+#
+LE.2 <- apply(pop.mat2, MAR = 1, LE)#
+dens.2 <- density(LE.2, from = 0)#
+LE.96 <- mean(LE.2)#
+LE.96.95 <- quantile(LE.2, 0.95, na.rm = TRUE)#
+#
+par(mfrow = c(2, 1), mar = c(4, 4, 2, 2))#
+#
+plot(dens.1$x, dens.1$y / max(dens.1$y), "l", axes = TRUE,#
+  ylab = "Relative frequency", xlab = "Age at death",  cex.lab = 0.85)#
+axis(1)#
+box()#
+lines(dens.2$x, dens.2$y / max(dens.2$y, na.rm = TRUE), col = "red", lty = 1,#
+  lwd = 2)#
+legend("topright", c("2% mortality", "4% mortality"), col = c("black", "red"),#
+  lty = 1, cex = 0.8)#
+mtext("a)", side = 3, line = 0.5, adj = 0)#
+#
+## ----Biomass, eval=TRUE, echo=FALSE, width=6, height=4-------------------#
+#
+yr.ln <- 300#
+years <- seq(yr.ln)#
+years.2 <- seq(yr.ln * 1.25)#
+bio.max <- 1#
+#
+mp <- 50#
+year.bio <- bio.max * (years / (years + mp))#
+year.bio2 <- bio.max * (years.2 / (years.2 + mp))#
+plot(years, year.bio, "l", cex.axis = 0.8, ylab = "% Total biomass",#
+  cex.lab = 0.85, xlab = "Years", col = "white")#
+polygon(c(years.2, rev(years.2)), c(year.bio2, rep(0, length(year.bio2))),#
+  col = "lightgray", border = NA)#
+#
+LE.98 <- meanLifeExpect(matrix(0.98, 1, 1))#
+LE.96 <- meanLifeExpect(matrix(0.96, 1, 1))#
+#
+# segments(LE.98, 0, LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+# segments(0, year.bio[LE.98], LE.98, year.bio[LE.98], lwd = 1.6, lty = 1)#
+#
+# segments(LE.96, 0, LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+# segments(0, year.bio[LE.96], LE.96, year.bio[LE.96], lwd = 1.6, lty = 1, col = "red")#
+#
+segments(LE.98.95, 0, LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+segments(0, year.bio[LE.98.95], LE.98.95, year.bio[LE.98.95], lwd = 1.6, lty = 1)#
+#
+segments(LE.96.95, 0, LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+segments(0, year.bio[LE.96.95], LE.96.95, year.bio[LE.96.95], lwd = 1.6, lty = 1, col = "red")#
+#
+# polygon(c(LE.96, LE.98, LE.98, LE.96), c(0, 0, year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+# polygon(c(0, LE.96, LE.96, 0), c(year.bio[LE.96], year.bio[LE.96],#
+#   year.bio[LE.98], year.bio[LE.98]),#
+#   border = NA, col = paste0(cols[1], "50"))#
+#
+polygon(c(LE.96.95, LE.98.95, LE.98.95, LE.96.95), c(0, 0, year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+#
+polygon(c(0, LE.96.95, LE.96.95, 0), c(year.bio[LE.96.95], year.bio[LE.96.95],#
+  year.bio[LE.98.95], year.bio[LE.98.95]),#
+  border = NA, col = paste0(cols[3], "50"))#
+legend("bottomright", c("2% mortality", "4% mortality"), col = c("black", "red"),#
+  lty = 1, cex = 0.8, bty = "n")#
+text(0, year.bio[LE.98.95] - 0.05, labels = "Longest lived 5%", pos = 4, offset = 0.5,#
+  cex = 0.6)#
+#
+# text(0, year.bio[LE.98] - 0.05, labels = "Mean", pos = 4, offset = 0.5,#
+#   cex = 0.6)#
+# mtext("b)", side = 3, line = 0.5, adj = 0)#
+#
+year.bio[LE.98] - year.bio[LE.96]#
+year.bio[LE.98.95] - year.bio[LE.96.95]
+300*.15
+?png
+?posix
+?posixct
+?date
+?kmeans
+load('~/Downloads/PCA_global.RData')
+objects
+objects()
+head(res)
+class(res)
+str(res)
+coor <- res$ind$coord
+head(coor)
+kmeans(head(coord))
+kmeans(head(coor))
+?kmeans
+kmeans(head(coor), centers = 8)
+kmeans(head(coor, 100), centers = 8)
+kmeans(head(coor, 100), centers = 8) -> km
+table(km)
+str(km)
+table(km$cluster)
+km <- kmeans(head(coor, 100), centers = 8)
+km <- kmeans(head(coor, 100), centers = 8, trace = 1)
+dim(coor)
+km <- kmeans(head(coor, 1000), centers = 8, trace = 1)
+km <- kmeans(head(coor), centers = 8, trace = 1)
+km <- kmeans(coor, centers = 8, trace = 1)
+table(km$cluster)
+km <- kmeans(coor, centers = 8, trace = 1) #
+km2 <- kmeans(coor, centers = 8, trace = 1)
+km2 <- kmeans(coor, centers = 8, trace = 1)
+table(km$cluster)#
+#
+table(km2$cluster)
+km <- kmeans(coor, centers = 8, trace = 1)
+km <- kmeans(coor, centers = 8, trace = 1, max.iter = 20)
+km <- kmeans(coor, centers = 8, trace = 1, iter.max = 20)
+km <- kmeans(coor, centers = 8, trace = 1, iter.max = 20, nstart = 20)
+km2 <- kmeans(coor, centers = 8, trace = 1, nstart = 20)
+table(km$cluster)#
+#
+table(km2$cluster)
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+km <- kmeans(coor, centers = 8, trace = 1, iter.max = 20, nstart = 1) #
+km2 <- kmeans(coor, centers = 8, trace = 1, nstart = 1) #
+#
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+km <- kmeans(coor, centers = 8, trace = 0, iter.max = 20, nstart = 10) #
+km2 <- kmeans(coor, centers = 8, trace = 0, nstart = 10) #
+#
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+km <- kmeans(coor, centers = 8, trace = 0, iter.max = 20, nstart = 100) #
+km2 <- kmeans(coor, centers = 8, trace = 0, nstart = 100)
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+km <- kmeans(coor, centers = 8, trace = 0, iter.max = 20, nstart = 50) #
+km2 <- kmeans(coor, centers = 8, trace = 0, nstart = 50) #
+#
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+km <- kmeans(coor, centers = 8, trace = 0, iter.max = 20, nstart = 30) #
+km2 <- kmeans(coor, centers = 8, trace = 0, nstart = 30) #
+#
+sort(table(km$cluster))#
+sort(table(km2$cluster))
+install.packages('rgl')
+480/60
+8*582
+4656/60
+77.6/20
+load('~/Dropbox/GIT_REPOSITORIES/stan_model/output/Growth_Fit_366_socrex_medium.Rdata')
+objects()
+summary(growth.fit)
+summary(growth.fit[[1]])
+str(growth.fit)
+library(stanarm)
+install.packages(rstan)
+library(rstan)
+?extract
+extract(growth.fit)
+library(shinystan)
+shinystan(growth.fit)
+?shiny
+??shiny
+launch_shinystan(growth.fit)
+INPUT.data <- read.csv("data/input_data.csv")
+save(INPUT.data, file = "data/INPUT_data.RData")
+gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {#
+  gw1 <- ifelse(units == "cm", gw1, gw1 * 0.1)#
+  gw2 <- ifelse(units == "cm", gw1, gw1 * 0.1)#
+  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))#
+  #rhs is the length of the dendrometer band at time 1#
+  dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
+    gw2 = gw2, rhs = rhs)#
+  return(dbh2$minimum)#
+}#
+#
+.difdendro <- function(dbh2, gw2, rhs) {#
+  lhs <- dbh2 * (pi - asin(gw2 / dbh2))#
+  return(abs(lhs - rhs))#
 }
-gam.fn <- run.mix.gamma(grow.vec, gam.pars)
-gam.fn
-gam.fn(grow.vec)
-plot(gam.fn(grow.vec))
-9 / 19
-9 / 10
-10 - 9
-load('~/Dropbox/size.structure.dataset.outputs.RData')
-objects()
-lapply(objects(), summary)
-lapply(objects(), str)
-plot.chm
-objects()
-str(plot.meta)
-summary(plot.meta)
-str(plot.meta)
-library(tidyverse)
-?mdy
-as.Date
-?as.Date
-library(forecast)#
-library(fpp2)
-?ts
-?seasonplot
-autoplot()
-?outoplot
-?autoplot
-?substr
-?split
-2^6
-?optim
-100895.46 *0.28
-28250.73 -7018.25
-99602.66-3000
-96602.66 * 0.0475
-96602.66 * 0.0475+90
-96602.66-4678.626
-99602.66 * 0.025
-99602.66 * 0.025 + 4678.63
-99602.66 * 0.025 + 4678.63 - 6844.12
-251 / 8
-library(mvtnorm)
-dmvnorm(x=c(0,0))#
-dmvnorm(x=c(0,0), mean=c(1,1))#
-x <- rmvnorm(n=100, mean=c(1,1))#
-plot(x)
-x
-35 *12
-rm(list = ls())#
-#
-### LIBRARIES ####
-if (!require("pacman")) install.packages("pacman"); library(pacman)#
-pacman::p_load(parallel, doParallel, foreach, Rcpp)#
-#
-### SOURCE THE data ####
-# load interval and working.iter#
-load("results/BCI/GLUEsetup_BCI.RData") # has model info and data on obs #
-load(file.path("results/BCI/4.1GLUEsetup_part2_BCI.RData")) # has working.iter and growth and si matrix#
-#
-intervals <- info$intervals#
-working.iter <- 1e+05 #growth_by_si.info$working.iter#
-growth.data <- growth_by_si.info$growth.data#
-load(file = paste("results/BCI/ds.bestfit_", working.iter, "_", growth.data, ".Rdata", sep = ""))# imports ds.bestfit
-devtools::install_github("seanmcm/RDendrom")
-library(RDendrom)
-data(INPUT_dendro)
-head(INPUT.dendro)
-get.optimized.dendro(INPUT.dendro,#
-  no.neg.growth = TRUE, cutoff = 9,#
-  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),#
-  OUTPUT.folder = ".",#
-  param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$DATA_SET[1]),#
-  Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$DATA_SET[1]),#
-  Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$DATA_SET[1]))
-devtools::install_github("seanmcm/RDendrom")
-library(RDendrom)
-data(INPUT_dendro)
-head(INPUT.dendro)
-get.optimized.dendro(INPUT.dendro,#
-  no.neg.growth = TRUE, cutoff = 9,#
-  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),#
-  OUTPUT.folder = ".",#
-  param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$DATA_SET[1]),#
-  Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$DATA_SET[1]),#
-  Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$DATA_SET[1]))
-traceback()
-devtools::install_github("seanmcm/RDendrom")
-get.params
-devtools::install_github("seanmcm/RDendrom")
-library(RDendrom)
-get.params
-data(INPUT_dendro)
-head(INPUT.dendro)
-get.optimized.dendro(INPUT.dendro,#
-  no.neg.growth = TRUE, cutoff = 9,#
-  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),#
-  OUTPUT.folder = ".",#
-  param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$DATA_SET[1]),#
-  Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$DATA_SET[1]),#
-  Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$DATA_SET[1]))
-getwd()
-INPUT.dendro$DATA_SET[1]
-INPUT.dendro$DATA_SET
-INPUT.dendro
-head(INPUT.dendro)
-get.optimized.dendro(INPUT.dendro,#
-  no.neg.growth = TRUE, cutoff = 9,#
-  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),#
-  OUTPUT.folder = ".",#
-  param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$PROJECT[1]),#
-  Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$PROJECT[1]),#
-  Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$PROJECT[1]))
-param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$PROJECT[1])#
-Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$PROJECT[1])#
-Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$PROJECT[1])#
-OUTPUT.folder <- c(".")#
-param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))#
-load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete#
-load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split#
-load(file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/")) #loads Dendro.tree#
-#
-get.extra.metrics(#
-  param.table,#
-  Dendro.split,#
-  OUTPUT.folder      = "OUTPUT",#
-  param.table.name = sprintf("Param_table_complete_%s.csv", INPUT.dendro$PROJECT[1]),#
-  Dendro.data.name = sprintf("Dendro_data_complete_%s.Rdata", INPUT.dendro$PROJECT[1]),#
-  Dendro.split.name = sprintf("Dendro_data_split_complete_%s.Rdata", INPUT.dendro$PROJECT[1]),#
-  Quantile.hull.name = "Quantile.hull.Rdata")
-param.table.name = sprintf("Param_table_%s.csv", INPUT.dendro$PROJECT[1])#
-Dendro.data.name = sprintf("Dendro_data_%s.Rdata", INPUT.dendro$PROJECT[1])#
-Dendro.split.name = sprintf("Dendro_data_split_%s.Rdata", INPUT.dendro$PROJECT[1])#
-OUTPUT.folder <- c(".")#
-param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))#
-load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete#
-load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split#
-load(file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/")) #loads Dendro.tree#
-#
-get.extra.metrics(#
-  param.table,#
-  Dendro.split,#
-  OUTPUT.folder      = ".",#
-  param.table.name = sprintf("Param_table_complete_%s.csv", INPUT.dendro$PROJECT[1]),#
-  Dendro.data.name = sprintf("Dendro_data_complete_%s.Rdata", INPUT.dendro$PROJECT[1]),#
-  Dendro.split.name = sprintf("Dendro_data_split_complete_%s.Rdata", INPUT.dendro$PROJECT[1]),#
-  Quantile.hull.name = "Quantile.hull.Rdata")
-param.table.name = sprintf("Param_table_complete_%s.csv", INPUT.dendro$PROJECT[1])#
-OUTPUT.folder <- c(".")#
-param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))#
-head(param.table)
-devtools::install_github("seanmcm/RDendrom")
-library(RDendrom)
-data(INPUT_dendro)
-head(INPUT.dendro)
-get.optimized.dendro(INPUT.dendro,#
-  no.neg.growth = TRUE, cutoff = 9,#
-  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),#
-  OUTPUT.folder = ".",#
-  param.table.name = sprintf("Param_table.csv"),#
-  Dendro.data.name = sprintf("Dendro_data.Rdata"),#
-  Dendro.split.name = sprintf("Dendro_data_split.Rdata"))
-param.table.name = sprintf("Param_table.csv")
-Dendro.data.name = sprintf("Dendro_data.Rdata")
-Dendro.split.name = sprintf("Dendro_data_split.Rdata")
-OUTPUT.folder <- c(".")
-param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))
-load(file = paste(OUTPUT.folder, Dendro.data.name, sep = "/")) # loads Dendro.complete
-load(file = paste(OUTPUT.folder, Dendro.split.name, sep = "/")) #loads Dendro.split
-load(file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/")) #loads Dendro.tree
-get.extra.metrics(#
-  param.table,#
-  Dendro.split,#
-  OUTPUT.folder      = ".",#
-  param.table.name = sprintf("Param_table_complete.csv"),#
-  Dendro.data.name = sprintf("Dendro_data_complete.Rdata"),#
-  Dendro.split.name = sprintf("Dendro_data_split_complete.Rdata"),#
-  Quantile.hull.name = "Quantile.hull.Rdata")
-param.table.name = sprintf("Param_table_complete.csv")#
-OUTPUT.folder <- c(".")#
-param.table <- read.csv(file = paste(OUTPUT.folder, param.table.name, sep = "/"))#
-head(param.table)
-plot.dendro.ts(ts.data = Dendro.split[[3]], params = param.table[3, ],#
-  day = seq(365))
-plot.dendro.tree(Dendro.tree[[1]], param.tab = param.table)
-plot.dendro.tree
-dendro.ts
-roxygen2::roxygenise()
-roxygen2::roxygenise()
-library(RDendrom)
-make.dendro.plot.ts
-make.dendro.plot.ts(ts.data = Dendro.split[[3]], params = param.table[3, ],#
-  day = seq(365))
-# This takes multiple years (and bands) from the same tree
-make.dendro.plot.tree(Dendro.tree[[1]], param.tab = param.table)
-param.tab = param.table
-Dendro.tree <-Dendro.tree[[1]]
-get.years      <- unique(Dendro.tree$YEAR) #Just the years#
-  start.date     <- paste(get.years[1], "-01-01", sep = "")#
-  end.date       <- paste(get.years[length(get.years)], "-12-31", sep = "")#
-  date.seq       <- format(seq(as.Date(start.date), as.Date(end.date),#
-                    by = "1 day")) # vector of dates y-m-d#
-  doy.seq        <- seq_along(date.seq) # sequence length of dates (for x axis)#
-  year.index     <- droplevels(cut(as.Date(date.seq), breaks = "year",#
-        right = FALSE, drop = TRUE))#
-  ln.year.ind    <- length(levels(year.index))#
-  year.split.seq <- split(doy.seq, year.index) # splits dates into years#
-  year.dates     <- split(date.seq, year.index) # splits dates into years#
-  year.doy.seq   <- lapply(year.dates, function(x) seq(length(x)))#
-#
-  doy.shift <- cumsum(sapply(year.doy.seq, length)) - length(year.doy.seq[[1]])#
-#
-  if (length(get.years) != ln.year.ind) return(NULL)#
-  # SETTING UP PLOTTING
-doy.ls <- split(Dendro.tree$DOY, Dendro.tree$YEAR)#
-  doy.new.tmp <- vector("list", length(doy.ls))#
-  for(i in 1:length(doy.ls)) {#
-    doy.new.tmp[[i]] <- doy.ls[[i]] + .sum.doy(doy.ls[[i]], doy.shift[i])#
+gap2dbh <- function(gap.width, org.dbh, units = "cm") {#
+  if(units == "cm") {#
+    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))#
+  } else {#
+    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 1 / pi))#
   }#
-  doy.4.plotting <- as.integer(unlist(doy.new.tmp))
-axis.date.at <- as.integer(which(unlist(year.doy.seq) == 180))#
-  year.at <- as.integer(which(unlist(year.doy.seq) == 1))#
-  axis.dates <- date.seq[axis.date.at]#
-#
-  # Need to put any par() adjustments or meta-plot info#
-  cols <- ifelse(Dendro.tree$ADJUST != 0, "gold", "black")#
-  # Plot the data and establish the axes#
-  plot(doy.4.plotting, Dendro.tree$DBH_TRUE, col = cols, pch = 18, cex = 0.5,#
-    main = sprintf(" %s | %s | %s", Dendro.tree$SITE[1], Dendro.tree$TREE_ID[1],#
-      Dendro.tree$SP[1]),#
-    ylab = "DBH (cm)", xlab = "Date", axes = FALSE)#
-  axis(2)#
-  axis(1, labels = get.years, at = axis.date.at, tick = FALSE)#
-  box()#
-  abline(v = year.at, col = "gray", lty = 3)
-axis.date.at <- as.integer(which(unlist(year.doy.seq) == 180))#
-  year.at <- as.integer(which(unlist(year.doy.seq) == 1))#
-  axis.dates <- date.seq[axis.date.at]#
-#
-  # Need to put any par() adjustments or meta-plot info#
-  cols <- ifelse(Dendro.tree$ADJUST != 0, "gold", "black")#
-  # Plot the data and establish the axes#
-  plot(doy.4.plotting, Dendro.tree$DBH_TRUE, col = cols, pch = 18, cex = 0.5,#
-    main = sprintf(" %s | %s | %s", Dendro.tree$SITE[1], Dendro.tree$TREE_ID[1],#
-      Dendro.tree$SP[1]),#
-    ylab = "DBH (cm)", xlab = "Date", axes = FALSE)#
-  axis(2)#
-  axis(1, labels = get.years, at = axis.date.at, tick = FALSE)#
-  box()#
-  abline(v = year.at, col = "gray", lty = 3)
-axis.date.at <- as.integer(which(unlist(year.doy.seq) == 180))#
-  year.at <- as.integer(which(unlist(year.doy.seq) == 1))#
-  axis.dates <- date.seq[axis.date.at]#
-#
-  # Need to put any par() adjustments or meta-plot info#
-  cols <- ifelse(Dendro.tree$ADJUST != 0, "gold", "black")#
-  # Plot the data and establish the axes#
-  plot(doy.4.plotting, Dendro.tree$DBH_TRUE, col = cols, pch = 18, cex = 0.5,#
-    main = sprintf(" %s | %s | %s", Dendro.tree$SITE[1], Dendro.tree$TREE_ID[1],#
-      Dendro.tree$SP[1]),#
-    ylab = "DBH (cm)", xlab = "Date", axes = FALSE)#
-  axis(2)#
-  axis(1, labels = get.years, at = axis.date.at, tick = FALSE)#
-  box()#
-  abline(v = year.at, col = "gray", lty = 3)
-Dendro.tree[[1]]
-Dendro.tree[
-]
-Dendro.complete
-head(INPUT.data)
-head(INPUT.dendro)
-head(INPUT.dendro, 100)
-tail(INPUT.dendro, 100)
-INPUT.dendro <- read.csv("~/Dropbox/GIT_REPOSITORIES/RDendrom/data/Data_sample.csv")
-save(INPUT.dendro, file = "INPUT_dendro.RData")
-head(INPUT.dendro)
-summary(INPUT.dendro)
-no.neg.growth = TRUE
-cutoff = 9
+  return(dbh.vec)#
+}
 units = "cm"
 par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd")
-OUTPUT.folder = "."
-param.table.name = "Param_table.csv"
-Dendro.data.name = "Dendro_data.Rdata"
-Dendro.split.name = "Dendro_data_split.Rdata"
 options(warn = -1)#
-  TREE.ID <- paste(INPUT.dendro$SITE, INPUT.dendro$TREE_ID,#
-    INPUT.dendro$BAND_NUM, sep = "_")#
   TREE.ID.YR <- paste(as.character(INPUT.dendro$SITE), as.character(INPUT.dendro$TREE_ID),#
     as.character(INPUT.dendro$YEAR), sep = "_")#
   Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))#
-  ind.dendro <- split(INPUT.dendro, f = TREE.ID)
-n.obs <- length(ind.dendro)
-i <- 1
-n.obs <- length(ind.dendro)#
+  ind.dendro <- split(INPUT.dendro, f = INPUT.dendro$TREE_ID)#
 #
-  param.table <-c()#
+  n.obs <- length(ind.dendro)
+dim(INPUT.data)
+TREE.ID.YR <- paste(as.character(INPUT.data$SITE), as.character(INPUT.data$TREE_ID),#
+    as.character(INPUT.data$YEAR), sep = "_")#
+  Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))#
+  ind.dendro <- split(INPUT.data, f = INPUT.data$TREE_ID)#
+#
+  n.obs <- length(ind.dendro)
+param.table <-c()#
   pb <- txtProgressBar(style = 3)#
   Dendro.tree <- vector("list", length(ind.dendro))#
   ct <- 1
+i <- 1
 ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
-    OD <- which(!is.na(ind.data$ORG_DBH))
-OD
-INPUT.dendro
-xx <- subset(INPUT.dendro, TREE_ID == 30261)
-xx
-!is.duplicated(xx$BAND_NUM)
-!duplicated(xx$BAND_NUM)
-which(!duplicated(xx$BAND_NUM))
+    ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[1], nrow(ind.data))#
+    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    for(v in 2:length(ind.data$DBH)) {#
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = 0.1 * ind.data$GAP_WIDTH[v - 1],#
+        gw2 =  0.1 * ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
+    }#
+    ind.data$DBH_TRUE[1] <- ifelse(units == "cm", ind.data$ORG_DBH, ind.data$ORG_DBH[1] / 10)
+max(ind.data$BAND_NUM)
+nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]
+nb.index
+b <- 1
+!duplicated(ind.data$BAND_NUM)
+ind.data$BAND_NUM
+ind.data.band <- split(ind.data, ind.data$BAND_NUM)
+ind.data$ORG_DBH
+ind.data$ORG_DBH[nb.index] <-#
+          ind.data$DBH_TRUE[(nb.index - 1)]
+ind.data
+ind.data$DBH_TRUE
+cols <- RBrewerPal::brewer.pal(3, "Dark2")
+cols <- RColorBrewer::brewer.pal(3, "Dark2")
+cols
+ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
+#
+      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
+      for(b in 1:length(ind.data.band)) {#
+        ind.data.band[[b]]$DBH_TRUE[nb.index[b]] <- ind.data.band[[b]]$ORG_DBH[nb.index[b]]#
+        for(v in 2:length(nb.index)){#
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+            units = units)#
+        }#
+      }#
+    }#
+      ind.data <- split(ind.data.band, ind.data$BAND_NUM)
+for(b in 1:length(ind.data.band)) {#
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b]]$ORG_DBH[1]#
+        for(v in 2:nrow(ind.data.band[[b]])){#
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+            units = units)#
+        }#
+      }
+ind.data <- split(ind.data.band, ind.data$BAND_NUM)
+ind.data.band
+ind.data <- split(ind.data.band, ind.data$BAND_NUM)
+ind.data$BAND_NUM
+ind.data
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
+    ind.data$ORG_DBH <- rep(ind.data$ORG_DBH[1], nrow(ind.data))#
+    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    for(v in 2:length(ind.data$DBH)) {#
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
+        gw2 =  ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
+    }
+ind.data$DBH_TRUE
+units
+ind.data$DBH_TRUE
+ind.data$GAP_WIDTH
+ind.data$DBH_TRUE[1] <- ifelse(units == "cm", ind.data$ORG_DBH, ind.data$ORG_DBH[1] / 10)
+ind.data$DBH_TRUE
+ind.data$DBH_TRUE[1] <- ifelse(units == "cm", ind.data$ORG_DBH, ind.data$ORG_DBH[1] / 10)
+gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {#
+  gw1 <- ifelse(units == "cm", gw1, gw1 * 0.1)#
+  gw2 <- ifelse(units == "cm", gw1, gw2 * 0.1)#
+  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))#
+  #rhs is the length of the dendrometer band at time 1#
+  dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
+    gw2 = gw2, rhs = rhs)#
+  return(dbh2$minimum)#
+}
+.difdendro <- function(dbh2, gw2, rhs) {#
+  lhs <- dbh2 * (pi - asin(gw2 / dbh2))#
+  return(abs(lhs - rhs))#
+}
+gap2dbh <- function(gap.width, org.dbh, units = "cm") {#
+  if(units == "cm") {#
+    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / pi))#
+  } else {#
+    dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))#
+  }#
+  return(dbh.vec)#
+}
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
+      # FIX NEW BAND ISSUE#
+    nb.index <- which(!duplicated(ind.data$BAND_NUM))#
+    ind.data$ORG_DBH[nb.index] <-#
+    ind.data$DBH_TRUE[(nb.index - 1)]#
+#
+    ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
+#
+      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
+    for(b in 1:length(ind.data.band)) {#
+      ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b]]$ORG_DBH[1]#
+#
+      for(v in 2:nrow(ind.data.band[[b]])){#
+        ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+          gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+          units = units)#
+      }#
+#
+    }
+nb.index
+ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    # FIX NEW BAND ISSUE#
+    nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
+    ind.data$ORG_DBH[nb.index] <-#
+        ind.data$DBH_TRUE[(nb.index - 1)]
+ind.data$ORG_DBH
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
+ind.data$DBH_TRUE
+ind.data$ORG_DBH
+ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    # FIX NEW BAND ISSUE#
+    nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
+    ind.data$ORG_DBH[nb.index] <-#
+        ind.data$DBH_TRUE[(nb.index - 1)]
+ind.data.band <- split(ind.data, ind.data$BAND_NUM)
+ind.data.band
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
+    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    for(v in 2:length(ind.data$DBH)) {#
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
+        gw2 =  ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
+    }
+ind.data$DBH_TRUE
+ind.data$DBH_TRUE
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
+ind.data$DBH_TRUE
+ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
+ind.data$DBH_TRUE
+ind.data$GAP_WIDTH
+v <- 2
+gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
+        gw2 =  ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)
+gettruedbh
+gw1 = ind.data$GAP_WIDTH[v - 1]
+gw2 = ind.data$GAP_WIDTH[v]
+dbh1 = ind.data$DBH_TRUE[v - 1]
+units
+gw1 <- ifelse(units == "cm", gw1, gw1 * 0.1)#
+  gw2 <- ifelse(units == "cm", gw1, gw2 * 0.1)
+gw1
+gw2
+ind.data$GAP_WIDTH
+ind.data$GAP_WIDTH[v - 1]
+gw2
+gw2 = ind.data$GAP_WIDTH[v]
+gw2
+dbh1 <- ifelse(units == "cm", dbh1, dbh1 * 0.1)#
+  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))#
+  #rhs is the length of the dendrometer band at time 1#
+  dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
+    gw2 = gw2, rhs = rhs)
+dbh2
+dbh1
+dbh1 <- ifelse(units == "cm", dbh1, dbh1 * 0.1)#
+  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))
+dbh1
+rhs
+gw1
+gw1 / dbh1
+dbh1 <- ifelse(units == "cm", dbh1 * 0.1, dbh1)
+dbh1
+dbh1 <- ifelse(units == "cm", dbh1 * 10, dbh1)
+dbh1 <- ifelse(units == "cm", dbh1 * 10, dbh1)#
+  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))
+rhs
+dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
+    gw2 = gw2, rhs = rhs)
+dbh2
+dbh1
+dbh2.min <- ifelse(units == "cm", dbh2$minimum / 10, dbh2$minimum)
+dbh2.min
+gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {#
+  dbh1 <- ifelse(units == "cm", dbh1 * 10, dbh1)#
+  rhs  <- dbh1 * (pi - asin(gw1 / dbh1))#
+  #rhs is the length of the dendrometer band at time 1#
+  dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),#
+    gw2 = gw2, rhs = rhs)#
+  dbh2.min <- ifelse(units == "cm", dbh2$minimum / 10, dbh2$minimum)#
+  return(dbh2.min)#
+}
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
+    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    for(v in 2:length(ind.data$DBH)) {#
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
+        gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
+    }
+ind.data$DBH_TRUE
+nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
+      nb.org.dbh <- ind.data$TRUE_DBH[nb.index - 1]
+nb.org.dbh
+ind.data$TRUE_DBH
+nb.org.dbh <- ind.data$DBH_TRUE[nb.index - 1]
+nb.org.dbh
+nrows(ind.data.band[[b - 1]]
+)
+nrow(ind.data.band[[b - 1]])
+nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
+#
+      ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
+#
+      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
+      for(b in 1:length(ind.data.band)) {#
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$ORG_DBH[nrow(ind.data.band[[b - 1]])]#
+#
+        for(v in 2:nrow(ind.data.band[[b]])){#
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+            units = units)#
+        }#
+#
+      }
+ind.data
+split(ind.data, ind.data$BAND_NUM)
+for(b in 2:length(ind.data.band)) {#
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$ORG_DBH[nrow(ind.data.band[[b - 1]])]#
+#
+        for(v in 2:nrow(ind.data.band[[b]])){#
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+            units = units)#
+        }#
+#
+      }
+ind.data <- split(ind.data.band, ind.data$BAND_NUM)
+ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
+ind.data
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
+    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    for(v in 2:length(ind.data$DBH)) {#
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
+        gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
+    }#
+#
+    if(max(ind.data$BAND_NUM) > 1) {#
+#
+      # FIX NEW BAND ISSUE#
+      nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
+#
+      ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
+#
+      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
+      for(b in 2:length(ind.data.band)) {#
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$ORG_DBH[nrow(ind.data.band[[b - 1]])]#
+#
+        for(v in 2:nrow(ind.data.band[[b]])){#
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+            units = units)#
+        }#
+#
+      }#
+      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)#
+    }
+ind.data
+plot(ind.data$DBH_TRUE, col = cols[ind.data$BAND_NUM])
+v <- 2
+b
+ind.data.band[[b]]$DBH_TRUE
+ind.data.band[[b - 1]]$ORG_DBH
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
+    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    for(v in 2:length(ind.data$DBH)) {#
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
+        gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
+    }#
+#
+    if(max(ind.data$BAND_NUM) > 1) {#
+#
+      # FIX NEW BAND ISSUE#
+      nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]#
+#
+      ind.data.band <- split(ind.data, ind.data$BAND_NUM)#
+#
+      # NOW GET ALL OF THE CORRECT "DBHs" for all bands#
+      for(b in 2:length(ind.data.band)) {#
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]#
+#
+        for(v in 2:nrow(ind.data.band[[b]])){#
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+            units = units)#
+        }#
+#
+      }#
+      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
+}
+plot(ind.data$DBH_TRUE, col = cols[ind.data$BAND_NUM])
+ind.data <- ind.dendro[[i]] # loads an individual (multiple years)#
+    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]#
+    for(v in 2:length(ind.data$DBH)) {#
+      ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],#
+        gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)#
+    }
+nb.index <- which(!duplicated(ind.data$BAND_NUM))[-1]
+ind.data.band <- split(ind.data, ind.data$BAND_NUM)
+b
+b <- 2
+v <- 2
+ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
+ind.data.band[[b - 1]]$DBH_TRUE
+ind.data$GAP_WIDTH
+ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
+ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]#
+#
+        for(v in 2:nrow(ind.data.band[[b]])){#
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+            units = units)#
+        }
+ind.data.band[[b]]$DBH_TRUE
+ind.data.band[[b]]$GAP_WIDTH
+ind.data.band[[b]]
+plot(ind.data$DBH_TRUE, col = cols[ind.data$BAND_NUM], pch = 18, cex = 0.75)
+ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
+plot(ind.data$DBH_TRUE, col = cols[ind.data$BAND_NUM], pch = 18, cex = 0.75)
+b <- 3
+ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
+ind.data.band[[b - 1]]$DBH_TRUE
+ind.data.band[[b]]$DBH_TRUE
+for(v in 2:nrow(ind.data.band[[b]])){#
+          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],#
+            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],#
+            units = units)#
+        }
+ind.data.band[[b]]$DBH_TRUE
+ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
+plot(ind.data$DBH_TRUE, col = cols[ind.data$BAND_NUM], pch = 18, cex = 0.75)
+Dendro.tree[[i]] <- ind.data#
+    ind.year <- split(ind.data,#
+      f = list(YEAR = ind.data$YEAR, BAND_NUM = ind.data$BAND_NUM), drop = TRUE)#
+#
+    params <- rep(NA, 7)#
+    r.squared <- 0#
+    param.mat <- matrix(NA, length(ind.year), length(par.names))#
+    years <- vector("integer", length(ind.year))
+for(t in 1:length(ind.year)) {#
+#
+      ts.data.tmp <- ind.year[[t]]#
+      ts.data <- subset(ts.data.tmp, REMOVE == 0)#
+      ts.sd <- sd(ts.data$DBH_TRUE, na.rm = TRUE)#
+      years[t] <- ts.data$YEAR[1]#
+#
+      if (sum(!is.na(ts.data$DBH_TRUE)) < cutoff) {#
+        param.mat[t, ] <- c(params, r.squared, ts.sd)#
+        ct <- ct + 1#
+        next#
+      }#
+#
+      if (no.neg.growth == TRUE) {#
+        lm.out <- coef(lm(ts.data$DBH_TRUE ~ ts.data$DOY ))#
+        if(as.numeric(lm.out[2]) < 0) {#
+          ts.data$SKIP[1] <- 1#
+          param.mat[t, ] <- c(params, r.squared, ts.sd)#
+          ct <- ct + 1#
+          next#
+        }#
+      }#
+      params <- get.params(ts.data)#
+      r.squared <- summary(lm(ts.data$DBH_TRUE ~ lg5.pred.a(params[6:7],#
+        params, doy = ts.data$DOY)))$r.squared#
+      param.mat[t, ] <- c(params, r.squared, ts.sd)#
+      Dendro.split[[ct]] <- ts.data#
+      ct <- ct + 1#
+    }
+roxygen2::roxygenise
+roxygen2::roxygenise()

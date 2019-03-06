@@ -164,7 +164,7 @@ make.dendro.plot.ts(ts.data = Dendro.split[[3]], params = param.table[3, ],
   day = seq(365))
 
   # This takes multiple years (and bands) from the same tree
-make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = param.table)
+make.dendro.plot.tree(Dendro.ind = Dendro.tree[[1]], param.tab = subset(param.table, TREE_ID == Dendro.tree[[1]]$TREE_ID[1]))
 
 
 ```

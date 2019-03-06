@@ -61,7 +61,8 @@ get.optimized.dendro <- function(INPUT.data,
 
       # NOW GET ALL OF THE CORRECT "DBHs" for all bands
       for(b in 2:length(ind.data.band)) {
-        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
+        doy.band <- max(which(ind.data.band[[b - 1]]$DOY <= ind.data.band[[b]]$DOY[1]))
+        ind.data.band[[b]]$DBH_TRUE[1] <- ind.data.band[[b - 1]]$DBH_TRUE[doy.band]
 
         for(v in 2:nrow(ind.data.band[[b]])){
           ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],
@@ -74,19 +75,21 @@ get.optimized.dendro <- function(INPUT.data,
     }
 
     Dendro.tree[[i]] <- ind.data
-    ind.year <- split(ind.data,
+    ind.year.band <- split(ind.data,
       f = list(YEAR = ind.data$YEAR, BAND_NUM = ind.data$BAND_NUM), drop = TRUE)
 
     params <- rep(NA, 7)
     r.squared <- 0
-    param.mat <- matrix(NA, length(ind.year), length(par.names))
-    years <- vector("integer", length(ind.year))
-    for(t in 1:length(ind.year)) {
+    param.mat <- matrix(NA, length(ind.year.band), length(par.names))
+    years <- vector("integer", length(ind.year.band))
+    band.no <- vector("integer", length(ind.year.band))
+    for(t in 1:length(ind.year.band)) {
 
-      ts.data.tmp <- ind.year[[t]]
+      ts.data.tmp <- ind.year.band[[t]]
       ts.data <- subset(ts.data.tmp, REMOVE == 0)
       ts.sd <- sd(ts.data$DBH_TRUE, na.rm = TRUE)
       years[t] <- ts.data$YEAR[1]
+      band.no[t] <- ts.data$BAND_NUM[1]
 
       if (sum(!is.na(ts.data$DBH_TRUE)) < cutoff) {
         param.mat[t, ] <- c(params, r.squared, ts.sd)
@@ -113,7 +116,7 @@ get.optimized.dendro <- function(INPUT.data,
 
     param.tab.tmp <- data.frame(SITE = ts.data$SITE[1],
       YEAR = years, TREE_ID = ts.data$TREE_ID[1],
-      BAND_NUM = ts.data$BAND_NUM[1], UNIQUE_ID = ts.data$UNIQUE_ID[1],
+      BAND_NUM = band.no, UNIQUE_ID = ts.data$UNIQUE_ID[1],
       SP = ts.data$SP[1], param.mat)
     param.table <- rbind(param.table, param.tab.tmp)
 

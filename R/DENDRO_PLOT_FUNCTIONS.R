@@ -91,9 +91,9 @@ make.dendro.plot.tree <- function(Dendro.ind, param.tab) {
   axis.dates <- date.seq[axis.date.at]
 
   # Need to put any par() adjustments or meta-plot info
-  cols <- ifelse(Dendro.ind$ADJUST != 0, "gold", "black")
+  cols <- c("black", "steelblue", "tomato", "purple")
   # Plot the data and establish the axes
-  plot(doy.4.plotting, Dendro.ind$DBH_TRUE, col = cols, pch = 18, cex = 0.5,
+  plot(doy.4.plotting, Dendro.ind$DBH_TRUE, col = cols[Dendro.ind$BAND_NUM], pch = 18, cex = 0.5,
     main = sprintf(" %s | %s | %s", Dendro.ind$SITE[1], Dendro.ind$TREE_ID[1],
       Dendro.ind$SP[1]),
     ylab = "DBH (cm)", xlab = "Date", axes = FALSE)
@@ -105,7 +105,7 @@ make.dendro.plot.tree <- function(Dendro.ind, param.tab) {
   ##################################################
   # Plot functional fits to the data
   # with a and b from fits
-  cols <- c("steelblue", "tomato")
+  # cols <- c("steelblue", "tomato")
   p.years <- param.tab$YEAR
   fit.ls <- vector("list", length(p.years))
   pred.dbh <- vector("list", dim(param.tab)[1])
@@ -121,18 +121,19 @@ make.dendro.plot.tree <- function(Dendro.ind, param.tab) {
   param.base.col <- names(param.tab) %in% par.base
   param.ab.col <- names(param.tab) %in% par.ab
   param.cc <- complete.cases(param.tab[, param.base.col])
-
+  year.match <- match(param.tab$YEAR, get.years)
   for(y in 1:dim(param.tab)[1]) {
     if(param.cc[y] == FALSE) next
+    yr.ind <- year.match[y]
     param.y <- as.numeric(param.tab[y, param.base.col])
     param.ab <- as.numeric(param.tab[y, param.ab.col])
     param.ab.alt <- c(param.tab$alt.a[y], param.ab[2]) #as.numeric(param.tab[y, c(11:12)])
     pred.dbh[[y]] <- lg5.pred.a(a = param.ab, params = param.y,
-      doy = year.doy.seq[[y]])
+      doy = year.doy.seq[[yr.ind]])
     pred.dbh2[[y]] <- lg5.pred.a(a = param.ab.alt, params = param.y,
-      doy = year.doy.seq[[y]])
-    lines(year.split.seq[[y]] , pred.dbh2[[y]], col = cols[2], lty = 2)
-    lines(year.split.seq[[y]] , pred.dbh[[y]], col = cols[1])
+      doy = year.doy.seq[[yr.ind]])
+    lines(year.split.seq[[yr.ind]] , pred.dbh2[[y]], col = cols[2], lty = 2)
+    lines(year.split.seq[[yr.ind]] , pred.dbh[[y]], col = cols[1])
   }
 
   # param.tab.final <- param.tab
