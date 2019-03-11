@@ -1,10 +1,10 @@
 ---
-title: "Using Rdendrom for the analysis of intra-annual tree growth time series"
+title: "Using RDendrom for the analysis of intra-annual tree growth time series"
 author: "Sean M. McMahon"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using Rdendrom for the analysis of intra-annual tree growth time series}
+  %\VignetteIndexEntry{Using RDendrom for the analysis of intra-annual tree growth time series}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 
