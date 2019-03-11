@@ -62,19 +62,25 @@ get.optimized.dendro <- function(INPUT.data,
       # NOW GET ALL OF THE CORRECT "DBHs" for all bands
       for(b in 2:length(ind.data.band)) {
         year.nb <- ind.data.band[[b]]$YEAR[1]
+        year.ob <- ind.data.band[[b - 1]]$YEAR
         old.band.data <- subset(ind.data.band[[b - 1]], YEAR == year.nb)
-        doy.band <- max(which(old.band.data$DOY <= ind.data.band[[b]]$DOY[1]))
-        ind.data.band[[b]]$DBH_TRUE[1] <- old.band.data$DBH_TRUE[doy.band]
-
-        for(v in 2:nrow(ind.data.band[[b]])){
-          ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],
-            gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],
-            units = units)
+        if (dim(old.band.data)[1] != 0) {
+         doy.band <- max(which(old.band.data$DOY <= ind.data.band[[b]]$DOY[1]))
+         ind.data.band[[b]]$DBH_TRUE[1] <- old.band.data$DBH_TRUE[doy.band]
+        } else {
+         ind.data.band[[b]]$DBH_TRUE[1] <-
+           ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
         }
 
+       for(v in 2:nrow(ind.data.band[[b]])){
+        ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],
+          gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],
+          units = units)
       }
-      ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
+
     }
+    ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
+  }
 
     Dendro.tree[[i]] <- ind.data
     ind.year.band <- split(ind.data,
