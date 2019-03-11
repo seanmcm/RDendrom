@@ -12,6 +12,12 @@ library(RDendrom)
 data(INPUT_data)
 head(INPUT.data)
 
+## ----eval=FALSE, echo=TRUE, tidy=TRUE, results="hide"--------------------
+## band.index <- as.numeric(table(INPUT.data$BAND_NUM))
+## INPUT.data$BAND_NUM <- unlist(mapply(rep, seq(length(band.index)), length.out = band.index))
+## 
+## INPUT.data <- subset(INPUT.data, complete.cases(INPUT.data$GAP_WIDTH))
+
 ## ----eval=TRUE, echo=TRUE, tidy=TRUE, results="hide"---------------------
 get.optimized.dendro(INPUT.data,
   no.neg.growth = TRUE, cutoff = 9,
