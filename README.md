@@ -7,7 +7,7 @@ The general workflow for these data includes processing, analyzing, vetting, and
 
 ## Processing
 
-The primary approach to 'processing' data is through fitting a three-part general additive model (GAM) to the data. This generally follows McMahon and Parker 2014, Ecology and Evolution. The core of the procedure is the fitting of a 5-parameter logistic function to the growth time series. The two other parts of the GAM are the starting diameter and ending diameter which essentially estimates the leaf-off dormant diameter at breast height (DBH) from the winter before and after the growing season. The LG5 function relates *dbh*, or the diameter measurements at a given day of the year.  
+The primary approach to processing data is through fitting a three-part general additive model (GAM) to the data. This generally follows McMahon and Parker 2014, Ecology and Evolution. The core of the procedure is the fitting of a 5-parameter logistic function to the growth time series. The two other parts of the GAM are the starting diameter and ending diameter which essentially estimates the leaf-off dormant diameter at breast height (DBH) from the winter before and after the growing season. The LG5 function relates *dbh*, or the diameter measurements at a given day of the year.  
 
 The LG5 comes from a family of functions, known collectively
 as Richards models, that can produce good candidate parameterizations for intra-
