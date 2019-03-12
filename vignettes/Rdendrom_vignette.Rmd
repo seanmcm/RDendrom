@@ -35,6 +35,7 @@ head(INPUT.data)
 Here we see the basic structure necessary to use the Rdendrom package. The basic variables deal with sites and tags and bands, etc. What *must* be included is the 'TREE_ID', 'SITE', 'BAND_NUM', 'YEAR', 'ORG_DBH', 'GAP_WIDTH', and the four 'STATUS' columns, which will be detailed later. The status columns should be set by default at all zeros (they should only accept integer ones or zeros), and can be ignored. However, I developed them to be able to handle some of the common adjustments that need to be made to dendrometer band data, some of which have useful applications within 'Rdendrom' functions. 'UNIQUE_ID' is important for some subfunctions that split the data according to the 'SITE', 'TREE_ID', and 'BAND_NUM', or any other combination that uniquely identifies a specific time-series.
 
 Also note that 'BAND_NUM' is a vector of integers from 1 to the number of bands that have been recorded on that tree (not unique identifiers but just the series of bands). Also, 'GAP_WIDTH' must have no na's (i.e., only measured vaules and no missing values). The following code will ensure these two requirements are met.
+
 ```{r eval=FALSE, echo=TRUE, tidy=TRUE, results="hide"}
 band.index <- as.numeric(table(INPUT.data$BAND_NUM))
 INPUT.data$BAND_NUM <- unlist(mapply(rep, seq(length(band.index)), length.out = band.index))

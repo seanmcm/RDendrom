@@ -46,6 +46,9 @@ get.optimized.dendro <- function(INPUT.data,
   for(i in 1:n.obs) {
     setTxtProgressBar(pb, i / n.obs, title = NULL, label = NULL)
     ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
+    band.index <- as.numeric(table(ind.data$BAND_NUM))
+    ind.data$BAND_NUM <- unlist(mapply(rep, seq(length(band.index)), length.out = band.index))
+
     ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
     for(v in 2:length(ind.data$DBH)) {
       ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],
