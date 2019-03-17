@@ -327,8 +327,8 @@ get.extra.metrics <- function(
     ts.data$sd.resids <- scale(ts.data$resids.vec)
     RGR[i] <- as.numeric(log(params$b) - log(params$a))
     GR[i] <- as.numeric(params$b - params$a)
-    max.growth.day[i] <- max.growth.day(as.numeric(params))
-    max.growth.rate[i] <- max.growth.rate(params)
+    max.grow.day[i] <- max.growth.day(as.numeric(params))
+    max.grow.rate[i] <- max.growth.rate(params)
     Size[i] <- params$a
     Size.alt[i] <- params$alt.a
     start.doy[i] <- round(pred.doy(params, params$a))
@@ -346,7 +346,7 @@ get.extra.metrics <- function(
   close(pb)
 
   tmp.df <- data.frame(WD = WD.sum, RGR = RGR, GR = GR,
-    Max.growth.day = max.growth.day, Max.growth.rate = max.growth.rate,
+    Max.growth.day = max.grow.day, Max.growth.rate = max.grow.rate,
     Size.a = Size, Size.alt.a = Size.alt,
     Start.g = start.doy, Stop.g = stop.doy,
     Median.g = fifty.doy, DOY.05 = doy.05, DOY.95 = doy.95,
