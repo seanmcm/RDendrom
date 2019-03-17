@@ -70,10 +70,12 @@ get.optimized.dendro <- function(INPUT.data,
         if (dim(old.band.data)[1] != 0) {
          doy.band <- max(which(old.band.data$DOY <= ind.data.band[[b]]$DOY[1]))
          ind.data.band[[b]]$DBH_TRUE[1] <- old.band.data$DBH_TRUE[doy.band]
-        } else {
+       } else {
          ind.data.band[[b]]$DBH_TRUE[1] <-
-           ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
-        }
+         ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
+       }
+
+       if(nrow(ind.data.band[[b]]) < 2) next #for case with a band with one measurement
 
        for(v in 2:nrow(ind.data.band[[b]])){
         ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],
@@ -85,65 +87,64 @@ get.optimized.dendro <- function(INPUT.data,
     ind.data <- unsplit(ind.data.band, ind.data$BAND_NUM)
   }
 
-    Dendro.tree[[i]] <- ind.data
-    ind.year.band <- split(ind.data,
-      f = list(YEAR = ind.data$YEAR, BAND_NUM = ind.data$BAND_NUM), drop = TRUE)
+  Dendro.tree[[i]] <- ind.data
+  ind.year.band <- split(ind.data,
+    f = list(YEAR = ind.data$YEAR, BAND_NUM = ind.data$BAND_NUM), drop = TRUE)
 
-    params <- rep(NA, 7)
-    r.squared <- 0
-    param.mat <- matrix(NA, length(ind.year.band), length(par.names))
-    years <- vector("integer", length(ind.year.band))
-    band.no <- vector("integer", length(ind.year.band))
-    for(t in 1:length(ind.year.band)) {
+  params <- rep(NA, 7)
+  r.squared <- 0
+  param.mat <- matrix(NA, length(ind.year.band), length(par.names))
+  years <- vector("integer", length(ind.year.band))
+  band.no <- vector("integer", length(ind.year.band))
+  for(t in 1:length(ind.year.band)) {
+    ts.data.tmp <- ind.year.band[[t]]
+    ts.data <- subset(ts.data.tmp, REMOVE == 0)
+    ts.sd <- sd(ts.data$DBH_TRUE, na.rm = TRUE)
+    years[t] <- ts.data$YEAR[1]
+    band.no[t] <- ts.data$BAND_NUM[1]
 
-      ts.data.tmp <- ind.year.band[[t]]
-      ts.data <- subset(ts.data.tmp, REMOVE == 0)
-      ts.sd <- sd(ts.data$DBH_TRUE, na.rm = TRUE)
-      years[t] <- ts.data$YEAR[1]
-      band.no[t] <- ts.data$BAND_NUM[1]
+    if (sum(!is.na(ts.data$DBH_TRUE)) < cutoff) {
+      param.mat[t, ] <- c(params, r.squared, ts.sd)
+      ct <- ct + 1
+      next
+    }
 
-      if (sum(!is.na(ts.data$DBH_TRUE)) < cutoff) {
+    if (no.neg.growth == TRUE) {
+      lm.out <- coef(lm(ts.data$DBH_TRUE ~ ts.data$DOY ))
+      if(as.numeric(lm.out[2]) < 0) {
+        ts.data$SKIP[1] <- 1
         param.mat[t, ] <- c(params, r.squared, ts.sd)
         ct <- ct + 1
         next
       }
-
-      if (no.neg.growth == TRUE) {
-        lm.out <- coef(lm(ts.data$DBH_TRUE ~ ts.data$DOY ))
-        if(as.numeric(lm.out[2]) < 0) {
-          ts.data$SKIP[1] <- 1
-          param.mat[t, ] <- c(params, r.squared, ts.sd)
-          ct <- ct + 1
-          next
-        }
-      }
-      params <- get.params(ts.data)
-      r.squared <- summary(lm(ts.data$DBH_TRUE ~ lg5.pred.a(params[6:7],
-        params, doy = ts.data$DOY)))$r.squared
-      param.mat[t, ] <- c(params, r.squared, ts.sd)
-      Dendro.split[[ct]] <- ts.data
-      ct <- ct + 1
     }
-
-    param.tab.tmp <- data.frame(SITE = ts.data$SITE[1],
-      YEAR = years, TREE_ID = ts.data$TREE_ID[1],
-      BAND_NUM = band.no, UNIQUE_ID = ts.data$UNIQUE_ID[1],
-      SP = ts.data$SP[1], param.mat)
-    param.table <- rbind(param.table, param.tab.tmp)
-
+    params <- get.params(ts.data)
+    r.squared <- summary(lm(ts.data$DBH_TRUE ~ lg5.pred.a(params[6:7],
+      params, doy = ts.data$DOY)))$r.squared
+    param.mat[t, ] <- c(params, r.squared, ts.sd)
+    Dendro.split[[ct]] <- ts.data
+    ct <- ct + 1
   }
-  close(pb)
-  Dendro.split <- Dendro.split[1:(ct - 1)]
-  par.ind <- grep("X", names(param.table))
-  names(param.table)[par.ind] <- par.names ## MAKE SURE THIS IS RIGHT ALWAYS
-  alt.a <- get.alt.a(param.table)
-  param.table$alt.a <- alt.a
-  Dendro.complete <- do.call(rbind, Dendro.tree)
-  write.csv(param.table, file = paste(OUTPUT.folder, param.table.name, sep = "/"),
-    quote = FALSE, row.names = FALSE)
-  save(Dendro.complete, file = paste(OUTPUT.folder, Dendro.data.name, sep = "/"))
-  save(Dendro.split, file = paste(OUTPUT.folder, Dendro.split.name, sep = "/"))
-  save(Dendro.tree, file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/"))
+  if(is.na(ts.data$TREE_ID[1])) break
+  param.tab.tmp <- data.frame(SITE = ts.data$SITE[1],
+    YEAR = years, TREE_ID = ts.data$TREE_ID[1],
+    BAND_NUM = band.no, UNIQUE_ID = ts.data$UNIQUE_ID[1],
+    SP = ts.data$SP[1], param.mat)
+  param.table <- rbind(param.table, param.tab.tmp)
+
+}
+close(pb)
+Dendro.split <- Dendro.split[1:(ct - 1)]
+par.ind <- grep("X", names(param.table))
+names(param.table)[par.ind] <- par.names ## MAKE SURE THIS IS RIGHT ALWAYS
+alt.a <- get.alt.a(param.table)
+param.table$alt.a <- alt.a
+Dendro.complete <- do.call(rbind, Dendro.tree)
+write.csv(param.table, file = paste(OUTPUT.folder, param.table.name, sep = "/"),
+  quote = FALSE, row.names = FALSE)
+save(Dendro.complete, file = paste(OUTPUT.folder, Dendro.data.name, sep = "/"))
+save(Dendro.split, file = paste(OUTPUT.folder, Dendro.split.name, sep = "/"))
+save(Dendro.tree, file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/"))
 }
 
 
@@ -465,14 +466,18 @@ get_dcrit <- function(dbh,  params) {
 #' @export
 get.alt.a <- function(param.tab) {
   TREE.ID.F <- factor(param.tab$UNIQUE_ID, levels = unique(param.tab$UNIQUE_ID))
-  param.split <- split(param.tab, f = TREE.ID.F, drop = TRUE)
+  param.split <- split(param.tab, f = TREE.ID.F, drop = FALSE)
   new.alt.a <- c()
+  dim1 <- c()
+  ln.alt.a <- c()
   for(id in 1:length(param.split)) {
     alt.a <- rep(-99, length(param.split[[id]]$a))
+    dim1[id] <- dim(param.split[[id]])[1]
     if(length(alt.a) > 1) {
       alt.a[2:length(alt.a)] <- param.split[[id]]$b[1:(length(alt.a) - 1)]
     }
     new.alt.a <- c(new.alt.a, alt.a)
+    ln.alt.a[id] <- length(alt.a)
   }
   return(new.alt.a)
 }
