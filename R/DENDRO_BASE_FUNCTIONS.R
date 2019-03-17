@@ -706,9 +706,14 @@ max.growth.day <- function(params) {
 #' @export
 max.growth.rate <- function(params) {
   paras <- as.numeric(params)
-  days <- seq(round(pred.doy(params, params$a)), 365)
-  .deriv <- lg5.deriv(paras, days)
-  growth.rate <- max(.deriv, na.rm = TRUE)
+  doy.a <- pred.doy(params, params$a)
+  if(!is.nan(doy.a)) {
+    days <- seq(round(doy.a), 365)
+    .deriv <- lg5.deriv(paras, days)
+    growth.rate <- max(.deriv, na.rm = TRUE)
   return(growth.rate)
+  } else {
+    return(NA)
+  }
 }
 
