@@ -402,8 +402,8 @@ fit.quantile.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
   doyP <- as.numeric(c(pred.doy(paras, growth.quants[1]), doy[curve.pure],
     pred.doy(paras, growth.quants[5])))
   dbhP <- as.numeric(c(growth.quants[1], dbh[curve.pure], growth.quants[5]))
+  # residsP <- .get.lg5.resids(params = paras, doy = doy, dbh = dbh)
   residsP <- .get.lg5.resids(params = paras, doy = doyP, dbh = dbhP)
-  residsP <- .get.lg5.resids(params = paras, doy = doy, dbh = dbh)
   ln.data <- length(residsP)
   top.resids <- unique(c(1, which(residsP >= quantile(residsP, quant)),
     length(residsP)))
