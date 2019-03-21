@@ -384,8 +384,7 @@ fit.quantile.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
   dbh <- as.numeric(dbh)
   complete <- complete.cases(dbh)
   dbh <- dbh[complete]
-  doy <- doy.full[complete]
-  out.fit <- quantile.hull(dbh, doy, params)
+  doy <- doy[complete]
   paras <- as.numeric(params[1:5])
   a <- as.numeric(params[6])
   b <- as.numeric(params[7])
@@ -403,8 +402,8 @@ fit.quantile.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
   doyP <- as.numeric(c(pred.doy(paras, growth.quants[1]), doy[curve.pure],
     pred.doy(paras, growth.quants[5])))
   dbhP <- as.numeric(c(growth.quants[1], dbh[curve.pure], growth.quants[5]))
-  residsP <- get.lg5.resids(params = paras, doy = doyP, dbh = dbhP)
-  residsP <- get.lg5.resids(params = paras, doy = doy, dbh = dbh)
+  residsP <- .get.lg5.resids(params = paras, doy = doyP, dbh = dbhP)
+  residsP <- .get.lg5.resids(params = paras, doy = doy, dbh = dbh)
   ln.data <- length(residsP)
   top.resids <- unique(c(1, which(residsP >= quantile(residsP, quant)),
     length(residsP)))
@@ -428,7 +427,7 @@ fit.quantile.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
     hessian = FALSE, control = list(trace = 0), doy = doyP2, dbh = dbhP2)
   deriv.list <- lg5.deriv(OH.fit$par, doyP, growth = (log(b) - log(a)),
     shift = 0.05)
-  resids.hull <- get.lg5.resids(OH.fit$par, doyP, dbhP)
+  resids.hull <- .get.lg5.resids(OH.fit$par, doyP, dbhP)
   weighted.deficit <- resids.hull * deriv.list
   OH.list <- list(doyP2 = doyP2, dbhP2 = dbhP2, doyP = doyP, dbhP = dbhP,
     OH.fit = OH.fit, Derivatives = deriv.list, Deficit = resids.hull,
