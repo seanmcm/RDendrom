@@ -92,18 +92,27 @@ get.optimized.dendro <- function(INPUT.data,
     f = list(YEAR = ind.data$YEAR, BAND_NUM = ind.data$BAND_NUM), drop = TRUE)
 
   params <- rep(NA, 7)
-  r.squared <- 0
+  r.squared <- -99
   param.mat <- matrix(NA, length(ind.year.band), length(par.names))
   years <- vector("integer", length(ind.year.band))
   band.no <- vector("integer", length(ind.year.band))
   for(t in 1:length(ind.year.band)) {
     ts.data.tmp <- ind.year.band[[t]]
+    if(any(ts.data.tmp$ADJUST == 1)) {
+      ts.data.tmp <- .make.adjust(ts.data.tmp)
+    }
     ts.data <- subset(ts.data.tmp, REMOVE == 0)
     ts.sd <- sd(ts.data$DBH_TRUE, na.rm = TRUE)
     years[t] <- ts.data$YEAR[1]
     band.no[t] <- ts.data$BAND_NUM[1]
 
-    if (sum(!is.na(ts.data$DBH_TRUE)) < cutoff) {
+    if (sum(!is.na(ts.data$DBH_TRUE)) < cutoff | any(ts.data$SKIP == 1)) {
+      param.mat[t, ] <- c(params, r.squared, ts.sd)
+      ct <- ct + 1
+      next
+    }
+
+    if (min(ts.data$DOY) > 140 | max(ts.data$DOY < 250)) {
       param.mat[t, ] <- c(params, r.squared, ts.sd)
       ct <- ct + 1
       next
@@ -145,6 +154,15 @@ write.csv(param.table, file = paste(OUTPUT.folder, param.table.name, sep = "/"),
 save(Dendro.complete, file = paste(OUTPUT.folder, Dendro.data.name, sep = "/"))
 save(Dendro.split, file = paste(OUTPUT.folder, Dendro.split.name, sep = "/"))
 save(Dendro.tree, file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/"))
+}
+
+.make.adjust <- function(ts.data) {
+  which.adjust <- c(which(ts.data$ADJUST == 1), nrow(ts.data))
+  which.adjust.dbh <- ts.data$DBH_TRUE[which.adjust - 1]
+  for(r in 1:(length(which.adjust) - 1)) {
+      ts.data$DBH_TRUE[which.adjust[r] : which.adjust[r + 1]] <-
+        ts.data$DBH_TRUE[which.adjust[r] : which.adjust[r + 1]] + which.adjust.dbh[r]
+  }
 }
 
 
@@ -270,6 +288,7 @@ get.extra.metrics <- function(
   doy.95          <- rep(NA, nrow(param.table))
   doy.10          <- rep(NA, nrow(param.table))
   doy.90          <- rep(NA, nrow(param.table))
+  DATA_SET        <- rep(NA, nrow(param.table))
 
   new.metrics.df <- data.frame() # this collects new parameters and will be joined
 # with params.table at the bottom (in the form of Results.mat)
@@ -297,8 +316,6 @@ get.extra.metrics <- function(
     params <- param.table[i, par.col]
     params.numeric <- as.numeric(params)
 
-    resids.vec    <- vector("numeric", length = nrow(ts.data))
-
     Site <- as.character(param.data$SITE)
     Year <- as.integer(param.data$YEAR[1])
 
@@ -318,13 +335,13 @@ get.extra.metrics <- function(
 
     if(class(try.hull) != "try-error") {
       QH.list[[i]] <- try.hull
-      D.sum[i] <- sum(QH.list$Deficit)
-      WD.sum[i] <- sum(QH.list$Weighted.deficit)
+      D.sum[i] <- sum(try.hull$Deficit)
+      WD.sum[i] <- sum(try.hull$Weighted.deficit)
     }
 
     # Other summary stats
     ts.data$resids.vec <- .get.lg5.resids(params.numeric, doy, dbh)
-    ts.data$sd.resids <- scale(ts.data$resids.vec)
+    ts.data$std.resids <- scale(ts.data$resids.vec)
     RGR[i] <- as.numeric(log(params$b) - log(params$a))
     GR[i] <- as.numeric(params$b - params$a)
     max.grow.day[i] <- max.growth.day(as.numeric(params))
@@ -340,12 +357,13 @@ get.extra.metrics <- function(
     doy.10[i] <- round(pred.doy(params, params$a + 0.10 * GR[i]))
     doy.90[i] <- round(pred.doy(params, params$a + 0.90 * GR[i]))
 
+    DATA_SET[i] <- as.character(ts.data$DATA_SET[1])
     Dendro.split[[i]] <- ts.data
 
   }
   close(pb)
 
-  tmp.df <- data.frame(WD = WD.sum, RGR = RGR, GR = GR,
+  tmp.df <- data.frame(DATA_SET = DATA_SET, WD = WD.sum, RGR = RGR, GR = GR,
     Max.growth.day = max.grow.day, Max.growth.rate = max.grow.rate,
     Size.a = Size, Size.alt.a = Size.alt,
     Start.g = start.doy, Stop.g = stop.doy,
@@ -427,7 +445,7 @@ fit.quantile.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
     hessian = FALSE, control = list(trace = 0), doy = doyP2, dbh = dbhP2)
   deriv.list <- lg5.deriv(OH.fit$par, doyP, growth = (log(b) - log(a)),
     shift = 0.05)
-  resids.hull <- .get.lg5.resids(OH.fit$par, doyP, dbhP)
+  resids.hull <- scale(.get.lg5.resids(OH.fit$par, doyP, dbhP))
   weighted.deficit <- resids.hull * deriv.list
   OH.list <- list(doyP2 = doyP2, dbhP2 = dbhP2, doyP = doyP, dbhP = dbhP,
     OH.fit = OH.fit, Derivatives = deriv.list, Deficit = resids.hull,
