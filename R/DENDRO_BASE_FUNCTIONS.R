@@ -96,6 +96,7 @@ get.optimized.dendro <- function(INPUT.data,
   param.mat <- matrix(NA, length(ind.year.band), length(par.names))
   years <- vector("integer", length(ind.year.band))
   band.no <- vector("integer", length(ind.year.band))
+
   for(t in 1:length(ind.year.band)) {
     ts.data.tmp <- ind.year.band[[t]]
     if(any(ts.data.tmp$ADJUST == 1)) {
@@ -157,12 +158,13 @@ save(Dendro.tree, file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/"))
 }
 
 .make.adjust <- function(ts.data) {
-  which.adjust <- c(which(ts.data$ADJUST == 1), nrow(ts.data))
-  which.adjust.dbh <- ts.data$DBH_TRUE[which.adjust - 1]
+  which.adjust <- c(which(ts.data$ADJUST == 1), (nrow(ts.data) + 1))
+  which.adjust.dbh <- cumsum(ts.data$DBH_TRUE[which.adjust] - ts.data$DBH_TRUE[which.adjust - 1])
   for(r in 1:(length(which.adjust) - 1)) {
-      ts.data$DBH_TRUE[which.adjust[r] : which.adjust[r + 1]] <-
-        ts.data$DBH_TRUE[which.adjust[r] : which.adjust[r + 1]] + which.adjust.dbh[r]
+      ts.data$DBH_TRUE[which.adjust[r] : (which.adjust[r + 1] - 1)] <-
+        ts.data$DBH_TRUE[which.adjust[r] : (which.adjust[r + 1] - 1)] - which.adjust.dbh[r]
   }
+  return(ts.data)
 }
 
 
