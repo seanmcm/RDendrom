@@ -112,7 +112,7 @@ get.optimized.dendro <- function(INPUT.data,
       next
     }
 
-    if (min(ts.data$DOY) > 140 | max(ts.data$DOY < 250)) {
+    if (min(ts.data$DOY) > 140 | max(ts.data$DOY) < 250) {
       param.mat[t, ] <- c(params, r.squared, ts.sd)
       ct <- ct + 1
       next
