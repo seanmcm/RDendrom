@@ -13,8 +13,35 @@
 #' @return A plot of the dbh and doy of a single band in a year, with, optionally, a fitted line from the optimize output and outlier denotion in red.
 #' @seealso \code{\link{get.params}}, which creates Dendro.split, a list vector containing time-series dataframes for every tree, year, band.
 #' @export
-make.dendro.plot.ts <- function(ts.data, params = NULL, day = seq(365), outlier = TRUE,
-                           par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {
+make.dendro.plot.ts <- function(ts.data,
+            params = NULL, day = seq(365),
+            ts.number = 0, outlier = TRUE,
+            par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {
+
+  if(is.null(ts.data$DBH_TRUE)) {
+    ts.data$ORG_DBH[1] <- ifelse(is.na(ts.data$ORG_DBH[1]), 25, ts.data$ORG_DBH[1])
+    ts.data$DBH_TRUE <- rep(NA, length = nrow(ts.data))
+    ts.data$DBH_TRUE[1] <- ts.data$ORG_DBH[1]
+    for(v in 2:length(ts.data$DBH)) {
+      ts.data$DBH_TRUE[v] <- gettruedbh(gw1 = ts.data$GAP_WIDTH[v - 1],
+        gw2 = ts.data$GAP_WIDTH[v], dbh1 = ts.data$DBH_TRUE[v - 1], units = units)
+    }
+  }
+
+  if(ts.number > 0) {
+  main.title <- sprintf("TS.NO: %i | SITE: %s | TREE_ID: %s | YEAR: %s",
+                      ts.number,
+                      ts.data$SITE[1],
+                      ts.data$TREE_ID[1],
+                      ts.data$YEAR[1])
+
+  } else {
+  main.title <- sprintf("SITE: %s | TREE_ID: %s | YEAR: %s",
+                      ts.data$SITE[1],
+                      ts.data$TREE_ID[1],
+                      ts.data$YEAR[1])
+
+  }
 
   plot(ts.data$DOY, ts.data$DBH_TRUE, pch = 19, cex = 0.7,
        cex.main = 0.9, ylab = "DBH (cm)", xlab = "Day of year", xlim = c(0, 365),
@@ -22,10 +49,7 @@ make.dendro.plot.ts <- function(ts.data, params = NULL, day = seq(365), outlier 
        cex.main = 0.8,
        cex.axis = 0.8,
        cex.lab = 0.8,
-       main = sprintf("SITE: %s | TREE_ID: %s | YEAR: %s",
-                      ts.data$SITE[1],
-                      ts.data$TREE_ID[1],
-                      ts.data$YEAR[1]))
+       main = main.title)
 
   if(!is.null(params)) {
 
@@ -36,11 +60,24 @@ make.dendro.plot.ts <- function(ts.data, params = NULL, day = seq(365), outlier 
 
     segments(0, para[6], pred.doy(para, para[6]), para[6], col = "black")
     segments(pred.doy(para, para[7]), para[7], 365, para[7], col = "black")
-    if(outlier == TRUE) {
-    }
-    flag.0 <- subset(ts.data, REMOVE == 1)
-    points(flag.0$DOY, flag.0$DBH_TRUE, col = "red")
   }
+   if(outlier == TRUE) {
+      flag.0 <- subset(ts.data, REMOVE == 1)
+      points(flag.0$DOY, flag.0$DBH_TRUE, col = "red")
+    }
+    if(any(ts.data$SKIP == 1)) {
+      points(ts.data$DOY, ts.data$DBH_TRUE, pch = 4, cex = 1.2)
+    }
+    if(any(ts.data$ADJUST == 1)) {
+      flag.0 <- ts.data[seq(nrow(ts.data))[which(ts.data$ADJUST == 1):nrow(ts.data)], ]
+      points(flag.0$DOY, flag.0$DBH_TRUE, pch = 5, cex = 1.2)
+    }
+    if(any(ts.data$BAND_NO > 1)) {
+      flag.0 <- subset(ts.data, NEW_BAND > 1)
+      points(flag.0$DOY, flag.0$DBH_TRUE, col = (ts.data$NEW_BAND + 1))
+    }
+
+
 }
 
 .sum.doy <- function(x, doy.diff) {

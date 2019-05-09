@@ -1,0 +1,477 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"git",
+				"Git: Commit"
+			],
+			[
+				"instalpack",
+				"Package Control: Install Package"
+			],
+			[
+				"setr",
+				"Set Syntax: R"
+			],
+			[
+				"gitcomm",
+				"Set Syntax: Git Commit"
+			],
+			[
+				"rmarkdow",
+				"Build With: knitr-Markdown - Run"
+			],
+			[
+				"projec",
+				"Project: Add Folder"
+			],
+			[
+				"instalp",
+				"Package Control: Install Package"
+			],
+			[
+				"r",
+				"R-IDE: Extract Function"
+			],
+			[
+				"instalpa",
+				"Package Control: Install Package"
+			],
+			[
+				"rename",
+				"Rename File"
+			],
+			[
+				"rmarkdown",
+				"Build With: knitr-Markdown - Run"
+			],
+			[
+				"pandownlatex",
+				"Build With: Pandown Markdown - Pandown: LaTeX - PDF"
+			],
+			[
+				"pan",
+				"Build With: Pandown HTML - Pandown: PDF"
+			],
+			[
+				"send",
+				"SendTextPlus: Choose Program"
+			],
+			[
+				"pandonpdf",
+				"Build With: Pandown Markdown - Pandown: LaTeX - PDF"
+			],
+			[
+				"colo",
+				"UI: Select Color Scheme"
+			],
+			[
+				"inde",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"up",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"pandoc",
+				"Pandoc"
+			],
+			[
+				"instalpac",
+				"Package Control: Install Package"
+			],
+			[
+				"markdpanpdf",
+				"Build With: Pandown Markdown - Pandown: LaTeX Beamer Slideshow - PDF"
+			],
+			[
+				"pand",
+				"Build With: Pandown HTML - Pandown: PDF"
+			],
+			[
+				"packaginsta",
+				"Package Control: Install Package"
+			],
+			[
+				"yaml",
+				"Set Syntax: Markdown Light"
+			],
+			[
+				"build",
+				"Build With: Markdown"
+			],
+			[
+				"col",
+				"UI: Select Color Scheme"
+			],
+			[
+				"color",
+				"UI: Select Color Scheme"
+			],
+			[
+				"convert",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"colorsc",
+				"UI: Select Color Scheme"
+			],
+			[
+				"schem",
+				"UI: Select Color Scheme"
+			],
+			[
+				"them",
+				"UI: Select Theme"
+			],
+			[
+				"RENAM",
+				"File: Rename"
+			],
+			[
+				"sen",
+				"SendTextPlus: Choose Program"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"sendt",
+				"SendTextPlus: Choose Program"
+			],
+			[
+				"listpack",
+				"Package Control: List Packages"
+			],
+			[
+				"prv: ",
+				"PackageResourceViewer: Open Resource"
+			],
+			[
+				"installpa",
+				"Package Control: Install Package"
+			],
+			[
+				"packins",
+				"Package Control: Install Package"
+			],
+			[
+				"rmark",
+				"Build With: R Markdown"
+			],
+			[
+				"packaremo",
+				"Package Control: Remove Package"
+			],
+			[
+				"markd",
+				"MarkdownEditing: New Image"
+			],
+			[
+				"packainst",
+				"Package Control: List Packages"
+			],
+			[
+				"insta",
+				"Install Package Control"
+			],
+			[
+				"packlis",
+				"Package Control: List Packages"
+			]
+		],
+		"width": 540.0
+	},
+	"console":
+	{
+		"height": 544.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'df21e130d211cfc94d9b0905775a7c0f' + '1e3d39e33b79698005270310898eea76'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/seanmcmahon/Dropbox/COLLABORATIVE_MANUSCRIPTS/Global_demography/Biomass_II/Source/Biomass_functions.R",
+		"/Users/seanmcmahon/Dropbox/COLLABORATIVE_MANUSCRIPTS/Global_demography/Biomass_II/Source/Diagnostic_figs.R",
+		"/Users/seanmcmahon/Dropbox/Global_demography/Biomass_II/Source/Diagnostic_figs.R",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/DENDRO/Intensive_dendrometer_project/CODE/RDendrom_wrapper_NSF.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/RDendrom/R/DENDRO_BASE_FUNCTIONS.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/RDendrom/README.md",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/RDendrom/vignettes/RDendrom_vignette.Rmd",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/DENDRO/Intensive_dendrometer_project/CODE/Post_fitting_analysis.R",
+		"/Users/seanmcmahon/Dropbox/REVIEWS/EDITORIAL_WORK/MEE-2019/DRONE_PHENO_PROTEST/Appeal_lettet.txt",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/DENDRO/Intensive_dendrometer_project/CODE/DENDRO_FIT_WRAPPER_optim.R",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/DENDRO/Intensive_dendrometer_project/PROCESSED_DATA/tree_10045.csv",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/DENDRO/Intensive_dendrometer_project/PROCESSED_DATA/tree_7444.csv",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/DENDRO/Intensive_dendrometer_project/CODE/DENDRO_Workflow_optim.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/RDendrom/man/outer.hull.Rd",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_FIT_WRAPPER_optim.R",
+		"/Users/seanmcmahon/Dropbox/COLLABORATIVE_RESEARCH/Growth-COMFORT/R/Hadad.cpp",
+		"/Users/seanmcmahon/Dropbox/COLLABORATIVE_RESEARCH/Growth-COMFORT/R/Hadad_cpp_wrapper.R",
+		"/Users/seanmcmahon/Dropbox/COLLABORATIVE_RESEARCH/Growth-COMFORT/R/post_process_plot_Hadad.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/stan_model/code/Hadad_cpp_wrapper.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/stan_model/code/TO_BE_C++_Best-fit_param_BCI.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/stan_model/code/Uptake_depth_wrapper_stan.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/stan_model/code/Find_UD_species.stan",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/stan_model/code/Post_Processing_stan.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/stan_model/code/Test_growth_fit_results.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/stan_model/documents/Manuscript_stan.Rmd",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/stan_model/code/Parameter_space_figures.R",
+		"/Users/seanmcmahon/Dropbox/COLLABORATIVE_RESEARCH/Growth-COMFORT/R/2.0growth.model.R",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/FATES_WORK/Working_package_ideas/Work_package.md",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/stan_model/code/Find_UD.stan",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/treeIPM_team_version/Vital_Rates_Zone/Source/growth_functions_stan.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/MODES_functions.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/MODES_ANALYSIS.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/Simulate_pops.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/Ade4_functions.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/Urchin_code.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/Simulation_functions.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/Mortality_note/ECOSPHERE/appendix-working-code-to-source-2017-may-10.R",
+		"/Users/seanmcmahon/Library/Group Containers/3L68KQB4HG.group.com.readdle.smartemail/databases/messagesData/2/13937/Research_Statement_JN_Levine.tex",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/PCA_distance_plots.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/PCA_FACTOMINER.r",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/Mode_summaries.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/Sample_mix_gamma_growth.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/MODES_WRAPPER.R",
+		"/Users/seanmcmahon/Dropbox/COLLABORATIVE_MANUSCRIPTS/TREE_DEMO/pandoc-config.json",
+		"/Users/seanmcmahon/Library/Application Support/Sublime Text 3/Packages/User/Pandoc.sublime-settings",
+		"/Users/seanmcmahon/Library/Application Support/Sublime Text 3/Packages/Pandoc/Pandoc.sublime-settings",
+		"/Users/seanmcmahon/Dropbox/Smithsonian/ForestGEO/SERC/INTERNS/PAT_MEZZO/NOTES_for_PAT.txt",
+		"/Users/seanmcmahon/Dropbox/COLLABORATIVE MANUSCRIPTS/KAMIL_GLOBAL/TTP/Break_Ponint_Code-Data/ttbrno.R",
+		"/Users/seanmcmahon/Dropbox/REVIEWS/2018/ECO_APP_JUNE/Eco_app_SM.md",
+		"/Users/seanmcmahon/Dropbox/REVIEWS/2018/ECO_APP_JUNE/replicate.R",
+		"/Users/seanmcmahon/Dropbox/REVIEWS/2018/NEW_PHYT_MAY/Review.txt",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/IDEAS/CNDD_rare_common.md",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/IDEAS/RARE_CNDD_as_range_limit_pop.md",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/IDEAS/MASTING.txt",
+		"/Users/seanmcmahon/Dropbox/COLLABORATIVE MANUSCRIPTS/RUTUJA_JFE/ECO_LETT_IandP/Proposal_draft.txt",
+		"/Users/seanmcmahon/Dropbox/PRESENTATIONS/STOCK/Termperate_symposium/wittakerclimatechange.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/LITTER/Bayes/Bayes_code/Bayes_MH wrapper_3.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/LITTER/Bayes/Bayes_code/Post_processing.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/LITTER_DENDRO/CODE/LITT_DEND_DATAprep.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/LITTER_DENDRO/CODE/LITT_DEND_analysis.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/LITTER/Bayes/Bayes_code/Bayes_MH wrapper_prep.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/LITTER/Bayes/Bayes_code/Bayes_data_PREP_2_v2.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/LITTER/Bayes/Bayes_code/Bayes_MH wrapper_v.2.0_3.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/LITTER/Bayes/Bayes_code/ML_analysis_1.R",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/FATES_WORK/config_machines-1.xml",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/FATES_WORK/config_compilers-1.xml",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/FATES_WORK/config_batch-1.xml",
+		"/Users/seanmcmahon/Dropbox/PAPERS/Mortality_note/Mortality_note_new.R",
+		"/Users/seanmcmahon/Dropbox/RESEARCH/FATES_WORK/config_batch.xml",
+		"/Users/seanmcmahon/Dropbox/Size_Distro_Model_2018/Bayes_code/Bayes_MH.R",
+		"/Users/seanmcmahon/Dropbox/Size_Distro_Model_2018_SM/Size_Distro_2018_V2.R",
+		"/Users/seanmcmahon/Dropbox/Size_Distro_Model_2018/Bayes_code/LAD_Bayes_wrapper.R",
+		"/Users/seanmcmahon/Dropbox/Size_Distro_Model_2018/Bayes_code/Size_Distro_2018_Practice4Bayes_SM.R",
+		"/Users/seanmcmahon/Dropbox/WEB_SITE/CORE_WEB/public_html/pages/transcriptome_project.html",
+		"/Users/seanmcmahon/Dropbox/WEB_SITE/CORE_WEB/public_html/pages/indexjs.html",
+		"/Users/seanmcmahon/Dropbox/WEB_SITE/CORE_WEB/public_html/pages/index.html",
+		"/Users/seanmcmahon/Downloads/appendix-working-code-to-source-2017-may-10.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/Survival_decouple/Demog_traits/Demog_traits.tex",
+		"/Users/seanmcmahon/Dropbox/PAPERS/Mortality_note/Mortality_note.R",
+		"/Users/seanmcmahon/Dropbox/Manuscript_Zone/Manuscript_Zone/treeIPM_manuscript_revision1_royalsocB_sm_Brno.tex",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/Gather_parameters_for_BCI.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/CODE/transition_test.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/OUTPUT_PROCESSING2.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_FIT_WRAPPER_optim_LUQ.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_Workflow_optim_LUQ.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/COMPLETE_GROWTH_FIGURE_LUQ.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/OUTPUT_PROCESSING_LUQ.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/Demog_traits.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/Mosaic_functions.R",
+		"/Users/seanmcmahon/Dropbox/GIT_REPOSITORIES/Demographic_modes/Simulation_functions.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/Water_deficit_regressions.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_Workflow_optim.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/Growth_response_modeling.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/SCBI_Data_processing.R",
+		"/Users/seanmcmahon/Dropbox/Smithsonian/Admin/Finances/CREDIT_CARD/May_Chase_amazon.csv",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/CODE/Data_processing_1.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/CODE/Data_processing_H3.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_FIT_WRAPPER_optim.R",
+		"/Users/seanmcmahon/Library/Application Support/Sublime Text 3/Packages/R/Comments.tmPreferences",
+		"/Users/seanmcmahon/Library/Application Support/Sublime Text 3/Packages/JavaScript/Comments.tmPreferences",
+		"/Users/seanmcmahon/Library/Application Support/Sublime Text 3/Packages/Alignment/Default.sublime-commands",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/SOURCE_CODE.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/COMPLETE_GROWTH_FIGURE.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/Functions_for_synthesis.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/Function_fitting_code.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/Time_series_pictures.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_FIT.stan",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_FIT_WRAPPER_SERC.R",
+		"/Users/seanmcmahon/Library/Caches/com.binarynights.ForkLift-3/687F5246-77FB-49B1-9D2D-14863A6D90AD/DENDRO_FIT_AB.stan",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_FIT_WRAPPER_SERC_pss.conflict.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_FIT_WRAPPER_Total.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_FIT_AB.stan",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/OUTPUT_PROCESSING.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_FIT_A.stan",
+		"/Users/seanmcmahon/Dropbox/PAPERS/GROWTH_COMP/source/growth_func_est.stan",
+		"/Users/seanmcmahon/Dropbox/PAPERS/GROWTH_COMP/source/samp_stan_nlfit.stan",
+		"/Users/seanmcmahon/Dropbox/PAPERS/DENDRO/SYNTHESIS_MANUSCRIPT/CODE/DENDRO_FIT_WRAPPER_SIMPLE.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/GROWTH_COMP/source/Growth_stan_wrapper.R",
+		"/Users/seanmcmahon/Dropbox/Phenology_ideas_perspectives/HF_AGB/AGB_inversion_2.rmd",
+		"/Users/seanmcmahon/Dropbox/Phenology_ideas_perspectives/HF_AGB/AGB_inversion_from_fits.rmd",
+		"/Users/seanmcmahon/Dropbox/Phenology_ideas_perspectives/HF_AGB/AGB_inversion_fdup.rmd",
+		"/Users/seanmcmahon/Dropbox/Phenology_ideas_perspectives/HF_AGB/AGB_inversion.rmd",
+		"/Users/seanmcmahon/Dropbox/PAPERS/GROWTH_COMP/source/BCI_wrapper.R",
+		"/Users/seanmcmahon/Dropbox/PAPERS/Survival_decouple/Ideas_perspectives/Demog_traits.rmd",
+		"/Users/seanmcmahon/Dropbox/cv/IP_bib.bib",
+		"/Users/seanmcmahon/Dropbox/PAPERS/MIXED_POP/_TODO.md",
+		"/Users/seanmcmahon/Documents/locate_code.R",
+		"/Users/seanmcmahon/Desktop/foo.R"
+	],
+	"find":
+	{
+		"height": 27.0
+	},
+	"find_in_files":
+	{
+		"height": 157.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 55.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "Rdendrom.sublime-project",
+	"replace":
+	{
+		"height": 50.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 246.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

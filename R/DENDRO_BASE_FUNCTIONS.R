@@ -135,7 +135,7 @@ get.optimized.dendro <- function(INPUT.data,
     Dendro.split[[ct]] <- ts.data
     ct <- ct + 1
   }
-  if(is.na(ts.data$TREE_ID[1])) break
+  # if(is.na(ts.data$TREE_ID[1])) break
   param.tab.tmp <- data.frame(SITE = ts.data$SITE[1],
     YEAR = years, TREE_ID = ts.data$TREE_ID[1],
     BAND_NUM = band.no, UNIQUE_ID = ts.data$UNIQUE_ID[1],
