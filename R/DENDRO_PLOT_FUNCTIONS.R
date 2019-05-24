@@ -14,9 +14,9 @@
 #' @seealso \code{\link{get.params}}, which creates Dendro.split, a list vector containing time-series dataframes for every tree, year, band.
 #' @export
 make.dendro.plot.ts <- function(ts.data,
-            params = NULL, day = seq(365),
-            ts.number = 0, outlier = TRUE,
-            par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {
+  params = NULL, day = seq(365),
+  ts.number = 0, outlier = TRUE,
+  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {
 
   if(is.null(ts.data$DBH_TRUE)) {
     ts.data$ORG_DBH[1] <- ifelse(is.na(ts.data$ORG_DBH[1]), 25, ts.data$ORG_DBH[1])
@@ -29,27 +29,27 @@ make.dendro.plot.ts <- function(ts.data,
   }
 
   if(ts.number > 0) {
-  main.title <- sprintf("TS.NO: %i | SITE: %s | TREE_ID: %s | YEAR: %s",
-                      ts.number,
-                      ts.data$SITE[1],
-                      ts.data$TREE_ID[1],
-                      ts.data$YEAR[1])
+    main.title <- sprintf("TS.NO: %i | SITE: %s | TREE_ID: %s | YEAR: %s",
+      ts.number,
+      ts.data$SITE[1],
+      ts.data$TREE_ID[1],
+      ts.data$YEAR[1])
 
   } else {
-  main.title <- sprintf("SITE: %s | TREE_ID: %s | YEAR: %s",
-                      ts.data$SITE[1],
-                      ts.data$TREE_ID[1],
-                      ts.data$YEAR[1])
+    main.title <- sprintf("SITE: %s | TREE_ID: %s | YEAR: %s",
+      ts.data$SITE[1],
+      ts.data$TREE_ID[1],
+      ts.data$YEAR[1])
 
   }
 
   plot(ts.data$DOY, ts.data$DBH_TRUE, pch = 19, cex = 0.7,
-       cex.main = 0.9, ylab = "DBH (cm)", xlab = "Day of year", xlim = c(0, 365),
-       col = "gray",
-       cex.main = 0.8,
-       cex.axis = 0.8,
-       cex.lab = 0.8,
-       main = main.title)
+   cex.main = 0.9, ylab = "DBH (cm)", xlab = "Day of year", xlim = c(0, 365),
+   col = "gray",
+   cex.main = 0.8,
+   cex.axis = 0.8,
+   cex.lab = 0.8,
+   main = main.title)
 
   if(!is.null(params)) {
 
@@ -61,21 +61,21 @@ make.dendro.plot.ts <- function(ts.data,
     segments(0, para[6], pred.doy(para, para[6]), para[6], col = "black")
     segments(pred.doy(para, para[7]), para[7], 365, para[7], col = "black")
   }
-   if(outlier == TRUE) {
-      flag.0 <- subset(ts.data, REMOVE == 1)
-      points(flag.0$DOY, flag.0$DBH_TRUE, col = "red")
-    }
-    if(any(ts.data$SKIP == 1)) {
-      points(ts.data$DOY, ts.data$DBH_TRUE, pch = 4, cex = 1.2)
-    }
-    if(any(ts.data$ADJUST == 1)) {
-      flag.0 <- ts.data[seq(nrow(ts.data))[which(ts.data$ADJUST == 1):nrow(ts.data)], ]
-      points(flag.0$DOY, flag.0$DBH_TRUE, pch = 5, cex = 1.2)
-    }
-    if(any(ts.data$BAND_NO > 1)) {
-      flag.0 <- subset(ts.data, NEW_BAND > 1)
-      points(flag.0$DOY, flag.0$DBH_TRUE, col = (ts.data$NEW_BAND + 1))
-    }
+  if(outlier == TRUE) {
+    flag.0 <- subset(ts.data, REMOVE == 1)
+    points(flag.0$DOY, flag.0$DBH_TRUE, col = "red", cex = 1.2)
+  }
+  if(any(ts.data$SKIP == 1)) {
+    points(ts.data$DOY, ts.data$DBH_TRUE, pch = 4, cex = 1.2)
+  }
+  if(any(ts.data$ADJUST == 1)) {
+    flag.0 <- subset(ts.data, ADJUST == 1)
+    points(flag.0$DOY, flag.0$DBH_TRUE, pch = 5, cex = 1.2, col = "darkgreen")
+  }
+  if(any(ts.data$BAND_NO > 1)) {
+    flag.0 <- subset(ts.data, NEW_BAND > 1)
+    points(flag.0$DOY, flag.0$DBH_TRUE, col = (ts.data$NEW_BAND + 1))
+  }
 
 
 }
@@ -101,10 +101,10 @@ make.dendro.plot.tree <- function(Dendro.ind, param.tab) {
   start.date     <- paste(get.years[1], "-01-01", sep = "")
   end.date       <- paste(get.years[length(get.years)], "-12-31", sep = "")
   date.seq       <- format(seq(as.Date(start.date), as.Date(end.date),
-                    by = "1 day")) # vector of dates y-m-d
+    by = "1 day")) # vector of dates y-m-d
   doy.seq        <- seq_along(date.seq) # sequence length of dates (for x axis)
   year.index     <- droplevels(cut(as.Date(date.seq), breaks = "year",
-        right = FALSE, drop = TRUE))
+    right = FALSE, drop = TRUE))
   ln.year.ind    <- length(levels(year.index))
   year.split.seq <- split(doy.seq, year.index) # splits dates into years
   year.dates     <- split(date.seq, year.index) # splits dates into years
@@ -115,7 +115,7 @@ make.dendro.plot.tree <- function(Dendro.ind, param.tab) {
   if (length(get.years) != ln.year.ind) return(NULL)
   # SETTING UP PLOTTING
 
-  doy.ls <- split(Dendro.ind$DOY, Dendro.ind$YEAR)
+    doy.ls <- split(Dendro.ind$DOY, Dendro.ind$YEAR)
   doy.new.tmp <- vector("list", length(doy.ls))
   for(i in 1:length(doy.ls)) {
     doy.new.tmp[[i]] <- doy.ls[[i]] + .sum.doy(doy.ls[[i]], doy.shift[i])
@@ -216,6 +216,7 @@ find.outliers <- function(ts.data, sd.lim = 3) {
   return(ts.data)
 }
 
+
 #' Identify outliers in dendrometer band time series
 #'
 #' @param ts.data  A dataframe of a time series of a single tree in a year.
@@ -231,49 +232,70 @@ find.outliers <- function(ts.data, sd.lim = 3) {
 #'
 #' @description An interactive figure for the identification and designation of
 #' slipped bands, outliers, and problematic bands.
-id.outliers <- function(ts.data, params, day = seq(365),
-  par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {
+id.outliers <- function(ts.data, params, day = seq(365)) {
 
-  param.col <- names(params) %in% par.names[1:7]
+  ts.data$SKIP <- 0
+  ts.data$ADJUST <- 0
+  par(mfrow = c(2, 1), mar = c(2, 4, 2, 2))
+  make.dendro.plot.ts(ts.data, params)
+  plot(ts.data$DOY, ts.data$GAP_WIDTH, pch = 19, cex = 0.7,
+   cex.main = 0.9, ylab = "GAP Width (mm)", xlab = "Day of year",
+   xlim = c(0, 365), col = "gray", cex.main = 0.8, cex.axis = 0.8,
+   cex.lab = 0.8, main = "")
 
-  for(i in 1:dim(params)[1]) {
-    ts.data <- Dendro.data.ls[[i]]
-    make.dendro.plot(ts.data,
-      params = as.numeric(params[i, param.col]),
-      r.square = NULL,
-      main.title = sprintf("SITE: %s | TREE_ID: %s | YEAR: %s",
-        ts.data$SITE[1],
-        ts.data$TREE_ID[1],
-        ts.data$YEAR[1]))
-    flag.0 <- subset(ts.data, Outlier == 1)
-    points(flag.0$DOY, flag.0$DBH_TRUE, col = "red")
+  y.pos <- (min(ts.data$GAP_WIDTH) +
+    ((max(ts.data$GAP_WIDTH) - min(ts.data$GAP_WIDTH)) * 0.5))
+  y.pos2 <- (min(ts.data$GAP_WIDTH) +
+    ((max(ts.data$GAP_WIDTH) - min(ts.data$GAP_WIDTH)) * 0.9))
+  y.pos3 <- (min(ts.data$GAP_WIDTH) +
+    ((max(ts.data$GAP_WIDTH) - min(ts.data$GAP_WIDTH)) * 0.7))
 
-    y.pos <- (min(ts.data$DBH_TRUE) +
-      ((max(ts.data$DBH_TRUE) - min(ts.data$DBH_TRUE)) * 0.8))
-    y.pos2 <- (min(ts.data$DBH_TRUE) +
-      ((max(ts.data$DBH_TRUE) - min(ts.data$DBH_TRUE)) * 0.9))
-    y.pos3 <- (min(ts.data$DBH_TRUE) +
-      ((max(ts.data$DBH_TRUE) - min(ts.data$DBH_TRUE)) * 0.7))
+  text(300, y.pos, labels = "NEXT", col = "black",
+    cex = 0.7, pos = 2, offset = 1)
+  pch.id <- 1
+  points(300, y.pos, col = "purple", cex = 3, pch = pch.id)
+  do.adjust <- identify(300, y.pos, labels = "X", offset = 0)
+  if(length(do.adjust) == 1) {
+    return(ts.data)
+  }
 
-    text(60, y.pos, labels = "Skip", col = "purple", cex = 1, pos = 2, offset = 1)
-    points(60, y.pos, col = "purple", cex = 3, pch = 1)
+  text(60, y.pos2, labels = "ADJUST", col = "purple",
+    cex = 0.7, pos = 2, offset = 1)
+  pch.id <- 1
+  points(60, y.pos2, col = "purple", cex = 2, pch = pch.id)
+  do.adjust <- identify(60, y.pos2, labels = "X", offset = 0)
+  if(length(do.adjust) == 1) {
+    ts.data$ADJUST <- rep(0, length = nrow(ts.data))
 
-    SK.id <- identify(60, y.pos, labels = "Will skip")
+    ad.vals <- identify(ts.data$DOY, ts.data$GAP_WIDTH, labels = "ADJUST")
+    points(ts.data$DOY[ad.vals], ts.data$GAP_WIDTH[ad.vals], pch = 22,
+      cex = 1.3, col = "red")
+    ts.data$ADJUST[ad.vals] <- 1
+  }
 
-    if(length(SK.id) != 0) next
+  text(300, y.pos, labels = "NEXT", col = "black",
+    cex = 0.7, pos = 2, offset = 1)
+  pch.id <- 1
+  points(300, y.pos, col = "purple", cex = 3, pch = pch.id)
+  do.adjust <- identify(300, y.pos, labels = "X", offset = 0)
+  if(length(do.adjust) == 1) {
+    return(ts.data)
+  }
 
-    text(60, y.pos2, labels = "Slip band", col = "orange", pos = 2, offset = 1)
-    points(60, y.pos2, col = "orange", cex = 3, pch = 1)
-    SL.id <- identify(60, y.pos2, labels = "ID slipped values")
-    if(length(SL.id) != 0)
-    SL.vals <- identify(ts.data$DOY, ts.data$DBH_TRUE, labels = "SL value")
+  text(60, y.pos3, labels = "REMOVE", col = "purple",
+    cex = 0.7, pos = 2, offset = 1)
+  pch.id <- 1
+  points(60, y.pos3, col = "purple", cex = 2, pch = pch.id)
+  do.adjust <- identify(60, y.pos3, labels = "X", offset = 0)
+  if(length(do.adjust) == 1) {
+    ts.data$REMOVE <- rep(0, length = nrow(ts.data))
+    rm.vals <- identify(ts.data$DOY, ts.data$GAP_WIDTH, labels = "REMOVE")
+    points(ts.data$DOY[rm.vals], ts.data$GAP_WIDTH[rm.vals], pch = 23,
+      cex = 1.3, col = "orange")
+    ts.data$REMOVE[rm.vals] <- 1
+  }
+  return(ts.data)
 
-    text(60, y.pos3, labels = "Now ID Outliers", col = "purple", cex = 1, pos = 2, offset = 1)
-    OL.id <- identify(ts.data$DOY, ts.data$DBH_TRUE, labels = ts.data$DOY)
-
-    Dendro.data.ls[[i]]$Outlier[OL.id] <- 1
-    }
-    return(do.call(rbind, Dendro.data.ls))
 }
 
 .integrate.outlier.id <- function(Dendro.complete, new.outlier.df) {
