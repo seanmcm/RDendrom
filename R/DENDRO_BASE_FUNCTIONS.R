@@ -46,6 +46,7 @@ get.optimized.dendro <- function(INPUT.data,
   for(i in 1:n.obs) {
     setTxtProgressBar(pb, i / n.obs, title = NULL, label = NULL)
     ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
+    if(is.na(ind.data$ORG_DBH[1])) ind.data$ORG_DBH[1] <- ind.data$DBH[1]
     band.index <- as.numeric(table(ind.data$BAND_NUM))
     ind.data$BAND_NUM <- unlist(mapply(rep, seq(length(band.index)), length.out = band.index))
 
