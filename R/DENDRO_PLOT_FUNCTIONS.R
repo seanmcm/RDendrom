@@ -295,7 +295,6 @@ id.outliers <- function(ts.data, params, day = seq(365)) {
     ts.data$REMOVE[rm.vals] <- 1
   }
   return(ts.data)
-
 }
 
 .integrate.outlier.id <- function(Dendro.complete, new.outlier.df) {
