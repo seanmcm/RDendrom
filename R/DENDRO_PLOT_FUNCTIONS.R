@@ -211,7 +211,8 @@ make.dendro.plot.tree <- function(Dendro.ind, param.tab) {
 #' deviation of the residuals. Assumes residuals are from a fit model.
 #' @export
 find.outliers <- function(ts.data, sd.lim = 3) {
-  ol.id <- which(abs(ts.data$sd.resids) > sd.lim)
+  sd.val <- sd(ts.data$GAP_WIDTH)
+  ol.id <- which(abs((ts.data$GAP_WIDTH) - mean(ts.data$GAP_WIDTH)) > (sd.val * sd.lim))
   ts.data$REMOVE[ol.id] <- 1
   return(ts.data)
 }

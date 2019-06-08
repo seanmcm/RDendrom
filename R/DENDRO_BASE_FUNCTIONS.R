@@ -20,7 +20,9 @@
 #' every entry is a separate time series of a band on a stem in a year.
 #'
 #' @description This is the wrapper for \emph{get.params()} which uses base \emph{optim()} (with two sequential methods) to
-#' estimate the parameters of the logistic function. This follows McMahon and Parker 2014. This function organizes output, skips removed datasets, fits a linear model to detect negative or non-significant growth, eliminates time series with small sample sizes, and removes identified outliers (see @identify.outliers ).
+#' estimate the parameters of the logistic function. This follows McMahon and Parker 2014. This function organizes output,
+#' skips removed datasets, fits a linear model to detect negative or non-significant growth, eliminates time series with
+#' small sample sizes, and removes identified outliers (see @identify.outliers ).
 #' @return Objects Saves four files to the OUTPUT folder as named above and collected stems.
 #' @export
 get.optimized.dendro <- function(INPUT.data,
