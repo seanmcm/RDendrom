@@ -10,7 +10,7 @@
 #' @param INPUT.data A data.frame of a specific form (see @details)
 #' @param no.neg.growth logical denoting whether to skip any time series with negative trends (from a call to \emph{lm()})
 #' @param cutoff Integer denoting the minimum sample size required to perform the optimization call.
-#' @param units Character string denoting the units that the dbh is in. Defaults to "cm".
+#' @param unit Character string denoting the unit that the dbh is in. Defaults to "cm".
 #' @param par.names  A character vector of the column names of the \emph{params} vector argument.
 #' This is used to pull out actual parameters from other information.
 #' @param OUTPUT.folder Character string for the target output folder.
@@ -24,7 +24,7 @@
 #' @return Objects Saves four files to the OUTPUT folder as named above and collected stems.
 #' @export
 get.optimized.dendro <- function(INPUT.data,
-  no.neg.growth = TRUE, cutoff = 9, units = "cm",
+  no.neg.growth = TRUE, cutoff = 9, unit = "cm",
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),
   OUTPUT.folder = ".",
   param.table.name = "Param_table.csv",
@@ -53,7 +53,7 @@ get.optimized.dendro <- function(INPUT.data,
     ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
     for(v in 2:length(ind.data$DBH)) {
       ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],
-        gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], units = units)
+        gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], unit = unit)
     }
 
     if(max(ind.data$BAND_NUM) > 1) {
@@ -81,7 +81,7 @@ get.optimized.dendro <- function(INPUT.data,
        for(v in 2:nrow(ind.data.band[[b]])){
         ind.data.band[[b]]$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data.band[[b]]$GAP_WIDTH[v - 1],
           gw2 =  ind.data.band[[b]]$GAP_WIDTH[v], dbh1 = ind.data.band[[b]]$DBH_TRUE[v - 1],
-          units = units)
+          unit = unit)
       }
 
     }
@@ -512,13 +512,13 @@ get.alt.a <- function(param.tab) {
 #'
 #' @return Numeric scalar for the corrected DBH
 #' @export
-gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {
-  dbh1 <- ifelse(units == "cm", dbh1 * 10, dbh1)
+gettruedbh <- function(gw1, gw2, dbh1, unit = "cm") {
+  dbh1 <- ifelse(unit == "cm", dbh1 * 10, dbh1)
   rhs  <- dbh1 * (pi - asin(gw1 / dbh1))
   #rhs is the length of the dendrometer band at time 1
   dbh2 <- optimize(.difdendro, interval = c(0, dbh1 + 2 * gw2),
     gw2 = gw2, rhs = rhs)
-  dbh2.min <- ifelse(units == "cm", dbh2$minimum / 10, dbh2$minimum)
+  dbh2.min <- ifelse(unit == "cm", dbh2$minimum / 10, dbh2$minimum)
   return(dbh2.min)
 }
 
@@ -532,11 +532,11 @@ gettruedbh <- function(gw1, gw2, dbh1, units = "cm") {
 #'
 #' @param gap.width Numeric vector of gap width measurements
 #' @param org.dbh Numeric scalar of the original dbh of the tree (when bands were installed)
-#' @param units Character string denoting the units that the dbh is in. Defaults to "cm".
+#' @param unit Character string denoting the unit that the dbh is in. Defaults to "cm".
 #' @return Numeric vector of DBH_TRUE values
 #' @export
-gap2dbh <- function(gap.width, org.dbh, units = "cm") {
-  if(units == "cm") {
+gap2dbh <- function(gap.width, org.dbh, unit = "cm") {
+  if(unit == "cm") {
     dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / pi))
   } else {
     dbh.vec <- org.dbh + (((gap.width - gap.width[1]) / 10 / pi))

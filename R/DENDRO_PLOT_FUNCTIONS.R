@@ -15,7 +15,7 @@
 #' @export
 make.dendro.plot.ts <- function(ts.data,
   params = NULL, day = seq(365),
-  ts.number = 0, outlier = TRUE, units = "cm",
+  ts.number = 0, outlier = TRUE, unit = "cm",
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {
 
   if(is.null(ts.data$DBH_TRUE)) {
@@ -24,7 +24,7 @@ make.dendro.plot.ts <- function(ts.data,
     ts.data$DBH_TRUE[1] <- ts.data$ORG_DBH[1]
     for(v in 2:length(ts.data$DBH)) {
       ts.data$DBH_TRUE[v] <- gettruedbh(gw1 = ts.data$GAP_WIDTH[v - 1],
-        gw2 = ts.data$GAP_WIDTH[v], dbh1 = ts.data$DBH_TRUE[v - 1], units = units)
+        gw2 = ts.data$GAP_WIDTH[v], dbh1 = ts.data$DBH_TRUE[v - 1], unit = unit)
     }
   }
 
