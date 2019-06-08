@@ -15,7 +15,7 @@
 #' @export
 make.dendro.plot.ts <- function(ts.data,
   params = NULL, day = seq(365),
-  ts.number = 0, outlier = TRUE,
+  ts.number = 0, outlier = TRUE, units = "cm",
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "alt.a")) {
 
   if(is.null(ts.data$DBH_TRUE)) {
@@ -232,7 +232,7 @@ find.outliers <- function(ts.data, sd.lim = 3) {
 #'
 #' @description An interactive figure for the identification and designation of
 #' slipped bands, outliers, and problematic bands.
-id.outliers <- function(ts.data, params, day = seq(365)) {
+id.outliers <- function(ts.data, params = NULL, day = seq(365)) {
 
   ts.data$SKIP <- 0
   ts.data$ADJUST <- 0
