@@ -68,11 +68,15 @@ get.optimized.dendro <- function(INPUT.data,
       # NOW GET ALL OF THE CORRECT "DBHs" for all bands
       for(b in 2:length(ind.data.band)) {
         year.nb <- ind.data.band[[b]]$YEAR[1]
-        year.ob <- ind.data.band[[b - 1]]$YEAR
+        year.ob <- ind.data.band[[b - 1]]$YEAR[1]
         old.band.data <- subset(ind.data.band[[b - 1]], YEAR == year.nb)
         if (dim(old.band.data)[1] != 0) {
          doy.band <- max(which(old.band.data$DOY <= ind.data.band[[b]]$DOY[1]))
-         ind.data.band[[b]]$DBH_TRUE[1] <- old.band.data$DBH_TRUE[doy.band]
+         if(doy.band < 0) {
+           ind.data.band[[b]]$DBH_TRUE[1] <- old.band.data$DBH_TRUE[1]
+         } else {
+           ind.data.band[[b]]$DBH_TRUE[1] <- old.band.data$DBH_TRUE[doy.band]
+         }
        } else {
          ind.data.band[[b]]$DBH_TRUE[1] <-
          ind.data.band[[b - 1]]$DBH_TRUE[nrow(ind.data.band[[b - 1]])]
@@ -164,8 +168,8 @@ save(Dendro.tree, file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/"))
   which.adjust <- c(which(ts.data$ADJUST == 1), (nrow(ts.data) + 1))
   which.adjust.dbh <- cumsum(ts.data$DBH_TRUE[which.adjust] - ts.data$DBH_TRUE[which.adjust - 1])
   for(r in 1:(length(which.adjust) - 1)) {
-      ts.data$DBH_TRUE[which.adjust[r] : (which.adjust[r + 1] - 1)] <-
-        ts.data$DBH_TRUE[which.adjust[r] : (which.adjust[r + 1] - 1)] - which.adjust.dbh[r]
+    ts.data$DBH_TRUE[which.adjust[r] : (which.adjust[r + 1] - 1)] <-
+    ts.data$DBH_TRUE[which.adjust[r] : (which.adjust[r + 1] - 1)] - which.adjust.dbh[r]
   }
   return(ts.data)
 }
