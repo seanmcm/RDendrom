@@ -37,7 +37,7 @@ get.optimized.dendro <- function(INPUT.data,
   TREE.ID.YR <- paste(as.character(INPUT.data$SITE), as.character(INPUT.data$TREE_ID),
     as.character(INPUT.data$YEAR), sep = "_")
   Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))
-  ind.dendro <- split(INPUT.data, f = INPUT.data$TREE_ID)
+  ind.dendro <- split(INPUT.data, f = INPUT.data$TREE_ID, drop = TRUE)
 
   n.obs <- length(ind.dendro)
 
@@ -297,7 +297,6 @@ get.extra.metrics <- function(
   doy.95          <- rep(NA, nrow(param.table))
   doy.10          <- rep(NA, nrow(param.table))
   doy.90          <- rep(NA, nrow(param.table))
-  DATA_SET        <- rep(NA, nrow(param.table))
 
   new.metrics.df <- data.frame() # this collects new parameters and will be joined
 # with params.table at the bottom (in the form of Results.mat)
@@ -365,14 +364,12 @@ get.extra.metrics <- function(
     doy.95[i] <- round(pred.doy(params, params$a + 0.95 * GR[i]))
     doy.10[i] <- round(pred.doy(params, params$a + 0.10 * GR[i]))
     doy.90[i] <- round(pred.doy(params, params$a + 0.90 * GR[i]))
-
-    DATA_SET[i] <- as.character(ts.data$DATA_SET[1])
     Dendro.split[[i]] <- ts.data
 
   }
   close(pb)
 
-  tmp.df <- data.frame(DATA_SET = DATA_SET, WD = WD.sum, RGR = RGR, GR = GR,
+  tmp.df <- data.frame(WD = WD.sum, RGR = RGR, GR = GR,
     Max.growth.day = max.grow.day, Max.growth.rate = max.grow.rate,
     Size.a = Size, Size.alt.a = Size.alt,
     Start.g = start.doy, Stop.g = stop.doy,
@@ -465,24 +462,6 @@ fit.quantile.hull <- function(dbh, doy, params, quant = 0.8, resid.sd = 0.02) {
 ##############################
 ## Auxiliary functions
 ##############################
-#' Gets the day of the year for any dbh and paramater combination
-#'
-#' @param dbh Numeric scalar for diameter at breast height (translated from the GAP_WIDTH)
-#' @param params Numeric vector of the parameter values of the LG5
-#'
-#' @return Returns day of the year for the input dbh and params.
-#' @export
-get_dcrit <- function(dbh,  params) {
-  L <- params[1] # min(dbh, na.rm = T)
-  K <- params[2]
-  doyip <- params[3]
-  r <- params[4]
-  theta <- params[5]
-
-  dcrit = doyip * r - theta * log((((K - L) /
-    (dbh - L) - 1) * theta) ^ (1 / theta)) / r
-  return(dcrit)
-}
 
 #' Gets the starting diameter from the year before
 #'
@@ -593,15 +572,15 @@ lg5.pred <- function(params, doy) {
   return(lg5.resid)
 }
 
+
 #' Predicts the day of the year given a diameter and parameter values
 #'
 #' @param params Numeric vector of parameter values.
 #' @param a Numeric scalar of diameter for which a doy is wanted
-#' @param diam.given Not sure
 #'
 #' @return returns day of year
 #' @export
-pred.doy <- function(params, a, diam.given = 0) {
+pred.doy <- function(params, a) {
 	params <- as.numeric(params)
 	L <- params[1] # min(dbh, na.rm = T)
 	K <- params[2]
