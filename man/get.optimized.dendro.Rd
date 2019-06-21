@@ -5,8 +5,8 @@
 \title{Fit the LG5 function}
 \usage{
 get.optimized.dendro(INPUT.data, no.neg.growth = TRUE, cutoff = 9,
-  units = "cm", par.names = c("L", "K", "doyip", "r", "theta", "a",
-  "b", "r.squared", "ts.sd"), OUTPUT.folder = ".",
+  unit = "cm", par.names = c("L", "K", "doyip", "r", "theta", "a", "b",
+  "r.squared", "ts.sd"), OUTPUT.folder = ".",
   param.table.name = "Param_table.csv",
   Dendro.data.name = "Dendro_data.Rdata",
   Dendro.split.name = "Dendro_data_split.Rdata")
@@ -18,7 +18,7 @@ get.optimized.dendro(INPUT.data, no.neg.growth = TRUE, cutoff = 9,
 
 \item{cutoff}{Integer denoting the minimum sample size required to perform the optimization call.}
 
-\item{units}{Character string denoting the units that the dbh is in. Defaults to "cm".}
+\item{unit}{Character string denoting the unit that the dbh is in. Defaults to "cm".}
 
 \item{par.names}{A character vector of the column names of the \emph{params} vector argument.
 This is used to pull out actual parameters from other information.}
@@ -37,5 +37,7 @@ Objects Saves four files to the OUTPUT folder as named above and collected stems
 }
 \description{
 This is the wrapper for \emph{get.params()} which uses base \emph{optim()} (with two sequential methods) to
-estimate the parameters of the logistic function. This follows McMahon and Parker 2014. This function organizes output, skips removed datasets, fits a linear model to detect negative or non-significant growth, eliminates time series with small sample sizes, and removes identified outliers (see @identify.outliers ).
+estimate the parameters of the logistic function. This follows McMahon and Parker 2014. This function organizes output,
+skips removed datasets, fits a linear model to detect negative or non-significant growth, eliminates time series with
+small sample sizes, and removes identified outliers (see @identify.outliers ).
 }

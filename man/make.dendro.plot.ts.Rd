@@ -5,8 +5,8 @@
 \title{Plotting Dendrometer Band Time Series}
 \usage{
 make.dendro.plot.ts(ts.data, params = NULL, day = seq(365),
-  outlier = TRUE, par.names = c("L", "K", "doyip", "r", "theta", "a",
-  "b", "alt.a"))
+  ts.number = 0, outlier = TRUE, unit = "cm", par.names = c("L",
+  "K", "doyip", "r", "theta", "a", "b", "alt.a"))
 }
 \arguments{
 \item{ts.data}{A dataframe of a time series of a single tree in a year.

@@ -4,8 +4,7 @@
 \alias{id.outliers}
 \title{Identify outliers in dendrometer band time series}
 \usage{
-id.outliers(ts.data, params, day = seq(365), par.names = c("L", "K",
-  "doyip", "r", "theta", "a", "b", "alt.a"))
+id.outliers(ts.data, params = NULL, day = seq(365))
 }
 \arguments{
 \item{ts.data}{A dataframe of a time series of a single tree in a year.

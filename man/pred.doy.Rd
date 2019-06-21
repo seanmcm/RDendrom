@@ -4,14 +4,12 @@
 \alias{pred.doy}
 \title{Predicts the day of the year given a diameter and parameter values}
 \usage{
-pred.doy(params, a, diam.given = 0)
+pred.doy(params, a)
 }
 \arguments{
 \item{params}{Numeric vector of parameter values.}
 
 \item{a}{Numeric scalar of diameter for which a doy is wanted}
-
-\item{diam.given}{Not sure}
 }
 \value{
 returns day of year

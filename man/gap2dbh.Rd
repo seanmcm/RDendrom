@@ -4,14 +4,14 @@
 \alias{gap2dbh}
 \title{Gets dbh from gap width given org.dbh.}
 \usage{
-gap2dbh(gap.width, org.dbh, units = "cm")
+gap2dbh(gap.width, org.dbh, unit = "cm")
 }
 \arguments{
 \item{gap.width}{Numeric vector of gap width measurements}
 
 \item{org.dbh}{Numeric scalar of the original dbh of the tree (when bands were installed)}
 
-\item{units}{Character string denoting the units that the dbh is in. Defaults to "cm".}
+\item{unit}{Character string denoting the unit that the dbh is in. Defaults to "cm".}
 }
 \value{
 Numeric vector of DBH_TRUE values
