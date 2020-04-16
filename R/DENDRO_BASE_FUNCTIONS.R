@@ -98,13 +98,13 @@ get.optimized.dendro <- function(INPUT.data,
   ind.year.band <- split(ind.data,
     f = list(YEAR = ind.data$YEAR, BAND_NUM = ind.data$BAND_NUM), drop = TRUE)
 
-  params <- rep(NA, 7)
-  r.squared <- -99
   param.mat <- matrix(NA, length(ind.year.band), length(par.names))
   years <- vector("integer", length(ind.year.band))
   band.no <- vector("integer", length(ind.year.band))
 
   for(t in 1:length(ind.year.band)) {
+    params <- rep(NA, 7)
+    r.squared <- -99
     ts.data.tmp <- ind.year.band[[t]]
     if(any(ts.data.tmp$ADJUST == 1)) {
       ts.data.tmp <- .make.adjust(ts.data.tmp)
