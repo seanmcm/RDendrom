@@ -34,10 +34,10 @@ get.optimized.dendro <- function(INPUT.data,
   Dendro.split.name = "Dendro_data_split.Rdata") {
 
   options(warn = -1)
-  TREE.ID.YR <- paste(as.character(INPUT.data$SITE), as.character(INPUT.data$TREE_ID),
-    as.character(INPUT.data$YEAR), sep = "_")
+  TREE.SITE.ID <- paste(as.character(INPUT.data$SITE),
+    as.character(INPUT.data$TREE_ID), sep = "_")
   Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))
-  ind.dendro <- split(INPUT.data, f = TREE.ID.YR, drop = TRUE)
+  ind.dendro <- split(INPUT.data, f = TREE.SITE.ID, drop = TRUE)
 
   n.obs <- length(ind.dendro)
 
