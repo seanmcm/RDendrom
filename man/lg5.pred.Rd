@@ -2,12 +2,12 @@
 % Please edit documentation in R/DENDRO_BASE_FUNCTIONS.R
 \name{lg5.pred}
 \alias{lg5.pred}
-\title{Predicts the dbh from doy and a parameter set}
+\title{Predicts the dbh from doy and a parameter set using a logistic growth function}
 \usage{
 lg5.pred(params, doy)
 }
 \arguments{
-\item{params}{Numeric vector of parameter values}
+\item{params}{Numeric vector of parameter values for logistic growth function}
 
 \item{doy}{Integer vector of days of the year}
 }
@@ -15,5 +15,25 @@ lg5.pred(params, doy)
 Numeric scalar or vector of dbh values
 }
 \description{
-Predicts the dbh from doy and a parameter set
+Predicts the dbh from doy and a parameter set using a logistic growth function
+}
+\details{
+The \code{params} argument should be a vector of length 5 of the following parameters:
+\tabular{ll}{
+\code{K} \tab lower asymptote of dbh \cr
+\code{L} \tab upper asymptote of dbh \cr
+\code{doy.ip} \tab day of year of inflection point of curve \cr
+\code{r} \tab slope of curve at \code{doy.ip} \cr
+\code{theta} \tab allows for asymmetical fits by changing the approach of the upper asymptote. When \code{theta = 1} curve is symmetrical\cr
+}
+}
+\examples{
+K <- 13.2
+L <- 13.8
+doy.ip <- 200
+r <- 0.075
+theta <- 2
+params <- c(K, L, doy.ip, r, theta)
+doy_domain <- seq(from = 100, to = 300)
+plot(doy_domain, lg5.pred(params = params, doy = doy_domain), xlab = "Day of year", ylab = "DBH (cm)")
 }
