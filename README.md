@@ -1,5 +1,5 @@
 # RDendrom
-An R package for analysis, diagnostics, and presentation of intra-annual tree growth time series.
+An R package for analysis, diagnostics, and presentation of intra-annual tree growth time series. 
 
 *RDendrom* contains functions designed to handle time series data from 'manual' dendrometer band measurements conducted intensively through the growing season. The data enter in a set 'long' form. Please see the [Vignette](vignettes/RDendrom_vignette.html) for more information.
 
