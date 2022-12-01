@@ -29,16 +29,16 @@ make.dendro.plot.ts <- function(ts.data,
   }
 
   if(ts.number > 0) {
-    main.title <- sprintf("TS.NO: %i | SITE: %s | TREE_ID: %s | YEAR: %s",
+    main.title <- sprintf("TS.NO: %i | TREE_ID: %s | YEAR: %s",
       ts.number,
-      ts.data$SITE[1],
       ts.data$TREE_ID[1],
       ts.data$YEAR[1])
 
   } else {
-    main.title <- sprintf("SITE: %s | TREE_ID: %s | YEAR: %s",
-      ts.data$SITE[1],
+    main.title <- sprintf("TREE_ID: %s | BAND_NO: %s | SPECIES: %s | YEAR: %s",
       ts.data$TREE_ID[1],
+      ts.data$BAND_NUM[1],
+      ts.data$SP[1],
       ts.data$YEAR[1])
 
   }

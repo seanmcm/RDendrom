@@ -1,7 +1,7 @@
 Package: RDendrom
 Type: Package
 Title: Plots and fits logistic function to dendrometer band time series.
-Version: 0.1.0
+Version: 0.1.1
 Author: Sean M. McMahon
 Maintainer: Sean M. McMahon <mcmahons@si.edu>
 Description: Works with multiple time series of dendrometer band data. Using inistial dbh of a stem, it estimates progressive diameter increment changes from the gap width of the dendrometer band. There are fitting functions to identify the functional form of the intra-annual growth, find outer contours of growth, collect residuals, outliers, and check for poor fits and dead trees. There are also a number of plotting functions for presentation and diagnostics of fits, data, and inference. A series of higher-order metrics such as growth phenology and derivatives of the growth function (i.e., rates) for further analysis.

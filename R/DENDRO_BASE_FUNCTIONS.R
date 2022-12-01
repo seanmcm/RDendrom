@@ -34,6 +34,8 @@ get.optimized.dendro <- function(INPUT.data,
   Dendro.split.name = "Dendro_data_split.Rdata") {
 
   options(warn = -1)
+  TREE.ID.YR <- paste(INPUT.data$TREE_ID, INPUT.data$BAND_NUM, 
+    INPUT.data$YEAR, sep = "_")
   TREE.SITE.ID <- paste(as.character(INPUT.data$SITE),
     as.character(INPUT.data$TREE_ID), sep = "_")
   Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))
@@ -48,11 +50,11 @@ get.optimized.dendro <- function(INPUT.data,
   for(i in 1:n.obs) {
     setTxtProgressBar(pb, i / n.obs, title = NULL, label = NULL)
     ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
-    if(is.na(ind.data$ORG_DBH[1])) ind.data$ORG_DBH[1] <- ind.data$DBH[1]
+    ind.data$ORG_DBH[1] <- ind.data$ORG_DBH[which(!is.na(ind.data$ORG_DBH))[1]]
     band.index <- as.numeric(table(ind.data$BAND_NUM))
     ind.data$BAND_NUM <- unlist(mapply(rep, seq(length(band.index)), length.out = band.index))
 
-    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[1]
+    ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[which(!is.na(ind.data$ORG_DBH))[1]]
     for(v in 2:length(ind.data$DBH)) {
       ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],
         gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], unit = unit)
