@@ -207,3 +207,16 @@ make.quant.pic <- function(quant.sp, var.1, var.2, buffx = 2, buffy = 2,
 }
 
 
+#' Shift the day of the year that defines annual growth for a
+#'  time series of an individual
+#'
+#' @param dff Data frame for shift
+#' @param doy.shift Integer value of the day of the year that becomes the first.
+#'
+#' @return Data frame with a new column of the days of the year of the shift
+#' @export
+
+shift.year <- function(dff, doy.shift) {
+  new.doy <- ifelse(dff$doy < doy.shift, 365 - doy.shift + dff.doy, 
+                dff$doy - doy.shift)
+}
