@@ -26,7 +26,7 @@
 #' @return Objects Saves four files to the OUTPUT folder as named above and collected stems.
 #' @export
 get.optimized.dendro <- function(INPUT.data,
-  no.neg.growth = TRUE, cutoff = 9, unit = "cm",
+  no.neg.growth = FALSE, cutoff = 4, unit = "cm",
   par.names = c("L", "K", "doyip", "r", "theta", "a", "b", "r.squared", "ts.sd"),
   OUTPUT.folder = ".",
   param.table.name = "Param_table.csv",
@@ -34,12 +34,15 @@ get.optimized.dendro <- function(INPUT.data,
   Dendro.split.name = "Dendro_data_split.Rdata") {
 
   options(warn = -1)
+
+  
   TREE.ID.YR <- paste(INPUT.data$TREE_ID, INPUT.data$BAND_NUM, 
     INPUT.data$YEAR, sep = "_")
   TREE.SITE.ID <- paste(as.character(INPUT.data$SITE),
     as.character(INPUT.data$TREE_ID), sep = "_")
-  Dendro.split <- vector("list", length = length(unique(TREE.ID.YR)))
-  ind.dendro <- split(INPUT.data, f = TREE.SITE.ID, drop = TRUE)
+
+  Dendro.split <- vector("list", length = length(unique(INPUT.data$UNIQUE_ID)))
+  ind.dendro <- split(INPUT.data, f = INPUT.data$TREE_ID, drop = TRUE)
 
   n.obs <- length(ind.dendro)
 
@@ -50,12 +53,17 @@ get.optimized.dendro <- function(INPUT.data,
   for(i in 1:n.obs) {
     setTxtProgressBar(pb, i / n.obs, title = NULL, label = NULL)
     ind.data <- ind.dendro[[i]] # loads an individual (multiple years)
-    ind.data$ORG_DBH[1] <- ind.data$ORG_DBH[which(!is.na(ind.data$ORG_DBH))[1]]
-    band.index <- as.numeric(table(ind.data$BAND_NUM))
-    ind.data$BAND_NUM <- unlist(mapply(rep, seq(length(band.index)), length.out = band.index))
+    if(nrow(ind.data) < cutoff) next
+    low.band <- min(ind.data$BAND_NUM)
+    ind.data$BAND_NUM <- ind.data$BAND_NUM - low.band + 1 
 
+    ind.data$ORG_DBH[1] <- ind.data$ORG_DBH[which(!is.na(ind.data$ORG_DBH))[1]]
+    # band.index <- as.numeric(table(ind.data$BAND_NUM))
+    # ind.data$BAND_NUM <- unlist(mapply(rep, seq(length(band.index)), 
+    #   length.out = band.index))
     ind.data$DBH_TRUE[1] <- ind.data$ORG_DBH[which(!is.na(ind.data$ORG_DBH))[1]]
-    for(v in 2:length(ind.data$DBH)) {
+  
+    for(v in 2:length(ind.data$GAP_WIDTH)) {
       ind.data$DBH_TRUE[v] <- gettruedbh(gw1 = ind.data$GAP_WIDTH[v - 1],
         gw2 = ind.data$GAP_WIDTH[v], dbh1 = ind.data$DBH_TRUE[v - 1], unit = unit)
     }
@@ -122,21 +130,15 @@ get.optimized.dendro <- function(INPUT.data,
       next
     }
 
-    if (min(ts.data$DOY) > 140 | max(ts.data$DOY) < 250) {
-      param.mat[t, ] <- c(params, r.squared, ts.sd)
-      ct <- ct + 1
-      next
-    }
-
-    if (no.neg.growth == TRUE) {
-      lm.out <- coef(lm(ts.data$DBH_TRUE ~ ts.data$DOY ))
-      if(as.numeric(lm.out[2]) < 0) {
-        ts.data$SKIP[1] <- 1
-        param.mat[t, ] <- c(params, r.squared, ts.sd)
-        ct <- ct + 1
-        next
-      }
-    }
+    # if (no.neg.growth == TRUE) {
+    #   lm.out <- coef(lm(ts.data$DBH_TRUE ~ ts.data$DOY ))
+    #   if(as.numeric(lm.out[2]) < 0) {
+    #     ts.data$SKIP[1] <- 1
+    #     param.mat[t, ] <- c(params, r.squared, ts.sd)
+    #     ct <- ct + 1
+    #     next
+    #   }
+    # }
     params <- get.params(ts.data)
     r.squared <- summary(lm(ts.data$DBH_TRUE ~ lg5.pred.a(params[6:7],
       params, doy = ts.data$DOY)))$r.squared
@@ -144,26 +146,26 @@ get.optimized.dendro <- function(INPUT.data,
     Dendro.split[[ct]] <- ts.data
     ct <- ct + 1
   }
-
   param.tab.tmp <- data.frame(SITE = ts.data$SITE[1],
     YEAR = years, TREE_ID = ts.data$TREE_ID[1],
     BAND_NUM = band.no, UNIQUE_ID = ts.data$UNIQUE_ID[1],
     SP = ts.data$SP[1], param.mat)
+
   param.table <- rbind(param.table, param.tab.tmp)
 
 }
-close(pb)
-Dendro.split <- Dendro.split[1:(ct - 1)]
-par.ind <- grep("X", names(param.table))
-names(param.table)[par.ind] <- par.names ## MAKE SURE THIS IS RIGHT ALWAYS
-alt.a <- get.alt.a(param.table)
-param.table$alt.a <- alt.a
-Dendro.complete <- do.call(rbind, Dendro.tree)
-write.csv(param.table, file = paste(OUTPUT.folder, param.table.name, sep = "/"),
-  quote = FALSE, row.names = FALSE)
-save(Dendro.complete, file = paste(OUTPUT.folder, Dendro.data.name, sep = "/"))
-save(Dendro.split, file = paste(OUTPUT.folder, Dendro.split.name, sep = "/"))
-save(Dendro.tree, file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/"))
+  close(pb)
+  Dendro.split <- Dendro.split[1:(ct - 1)]
+  par.ind <- grep("X", names(param.table))
+  names(param.table)[par.ind] <- par.names ## MAKE SURE THIS IS RIGHT ALWAYS
+  alt.a <- get.alt.a(param.table)
+  param.table$alt.a <- alt.a
+  Dendro.complete <- do.call(rbind, Dendro.tree)
+  write.csv(param.table, file = paste(OUTPUT.folder, param.table.name, sep = "/"),
+    quote = FALSE, row.names = FALSE)
+  save(Dendro.complete, file = paste(OUTPUT.folder, Dendro.data.name, sep = "/"))
+  save(Dendro.split, file = paste(OUTPUT.folder, Dendro.split.name, sep = "/"))
+  save(Dendro.tree, file = paste(OUTPUT.folder, "Dendro_Tree.Rdata", sep = "/"))
 }
 
 .make.adjust <- function(ts.data) {
@@ -189,12 +191,11 @@ get.params <- function(ts.data) {
   dbh      <- ts.data$DBH_TRUE
   doy      <- as.integer(ts.data$DOY)
     # date     <- Dates(ts.data$DATE, "%m/%d/%y") # need to fix this for plots
-  doy[doy < 75] <- NA
   complete <- complete.cases(dbh, doy)
   dbh      <- as.numeric(dbh[complete])
   doy      <- as.numeric(doy[complete])
 
-  doy.ip.hat <- doy[(which(dbh > mean(dbh)))[1]]
+  doy.ip.hat <- doy[(which(dbh > mean(dbh)))[1]] # gets the doy for the mean (50%) growth
 
   optim.min <- c((min(dbh, na.rm = TRUE) * 0.99),
     quantile(dbh, 0.5, na.rm = TRUE), -50, 0, 0.01)
@@ -238,7 +239,7 @@ get.params <- function(ts.data) {
     # c(lg5.output.NM$par, lg5.output.NM$value),
     c(lg5.output.NM.wt$par, lg5.output.NM.wt$value)
     # c(lg5.output.BFGS$par, lg5.output.BFGS$value)
-    )
+  )
 
   winner.int <- 1 + match(min(optim.output[-1, 6], na.rm = T), optim.output[-1, 6])
   winner <- rep(".", length = dim(optim.output)[1])
@@ -278,7 +279,7 @@ get.extra.metrics <- function(
   Dendro.split.name  = "Dendro_split.Rdata",
   Dendro.data.name   = "Dendro_data.Rdata",
   Quantile.hull.name = "Quantile.hull.Rdata"
-  ) {
+) {
 
   QH.list       <- vector("list", nrow(param.table))
 
