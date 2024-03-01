@@ -216,7 +216,11 @@ make.quant.pic <- function(quant.sp, var.1, var.2, buffx = 2, buffy = 2,
 #' @return Data frame with a new column of the days of the year of the shift
 #' @export
 
-shift.year <- function(dff, doy.shift) {
-  new.doy <- ifelse(dff$doy < doy.shift, 365 - doy.shift + dff.doy, 
-                dff$doy - doy.shift)
+shift.year <- function(dff, doy.shift = 1) {
+  dff$new.DOY <- ifelse(dff$DOY < doy.shift, 365 - doy.shift + dff$DOY, 
+                dff$DOY - doy.shift)
+  cut.ix <- cut(dff$new.DOY, breaks = cumsum(c(0, doy.shift, c(rep(365, length.out = length(unique(dff$YEAR)))) )) )
+  dff$new.YEAR <- as.vector(cumsum(unlist(sapply(split(dff$new.DOY, dff$YEAR), 
+    function(x)  ifelse(x == min(x), 1, 0))))) + 1
+  return(dff)
 }
