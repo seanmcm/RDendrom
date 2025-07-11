@@ -716,6 +716,7 @@ max.growth.day <- function(params) {
 max.growth.rate <- function(params) {
   paras <- as.numeric(params)
   doy.a <- pred.doy(params, params$a)
+  start.doy <- ifelse(round(doy.a) <= 0, 0, round(doy.a))
   days <- try(seq(round(doy.a), 365), silent = TRUE)
   if(class(days) == "try-error") {
     return(NA)
